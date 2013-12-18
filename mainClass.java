@@ -1,92 +1,53 @@
-import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import javax.swing.JFrame;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Handle;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 
 public class mainClass {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
-		new Gui();
-	}
-
-	@SuppressWarnings("serial")
-	public static class Gui extends JFrame {
-		public Gui() {
-			this.setTitle("Modpack Builder");
-            this.setPreferredSize(new Dimension(300,300));
-            
-            
-            
-            pack();
-            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            setVisible(true);
-		}
+		discoverAllMods(new File("C:\\Users\\Gregory\\Desktop\\MultiMC\\instances\\Hammercraft 4.3.0 Custom\\minecraft\\mods"));
 	}
 	
-	public class ModFileInfo {
-		public File file;
+	public static class ModFileInfo {
+		public String fileName;
 		public ArrayList<String> names = new ArrayList<String>();
 		
-		public ModFileInfo(File file) {
-			this.file = file;
+		public ModFileInfo(String file) {
+			fileName = file;
 		}
 		
 		public void addName(String name) {
 			names.add(name);
 		}
 	}
-
-	public static class ModInfo {
-		 HashMap<String, String> items = new HashMap<String, String>();
-		 String _name;
-		 
-		 public ModInfo(String name) {
-			 _name = name;
-		 }
-		 
-		 public void set(String key, String value) {
-			 //System.out.println(key);
-			 items.put(key, value);
-		 }
-		 
-		 @Override
-		public String toString() {
-			 return items.get("name");
-		}
-	}
  
-	public static ArrayList<ModInfo> mods = new ArrayList<ModInfo>();
+	public static ModFileInfo otherMod;
 	
 	public static class ModAnnotationVisitor extends AnnotationVisitor {
  
-		ModInfo _currentMod;
 		
-		public ModAnnotationVisitor(ModInfo info) {
+		public ModAnnotationVisitor() {
 			super(Opcodes.ASM4);
-			_currentMod = info;
 		}
 		
 		@Override
 		public void visit(String key, Object value) {
-			_currentMod.set(key, value.toString());
+			if(key.equals("modid")) {
+				otherMod.addName(value.toString());
+			}
 		}
 		
 		@Override
@@ -96,38 +57,86 @@ public class mainClass {
 		
 		@Override
 		public void visitEnd() {
-			mods.add(_currentMod);
+			
+		}
+	}
+	
+	public static class ModMethodVisitor extends MethodVisitor {
+		String idTemp; //TODO add name storage
+		String idStorage;
+		
+		public ModMethodVisitor() {
+			super(Opcodes.ASM4);
+			idTemp = null;
+			idStorage = null;
+		}
+		
+		@Override
+		public void visitFieldInsn(int opc, String owner, String name, String desc) {
+			//System.out.println("   "+owner+" : "+name+" : "+desc);
+			if(name.equals("modId")) {
+				idStorage = idTemp;
+			}
+		}
+
+		@Override
+		public void visitLdcInsn(Object cst) {
+			idTemp = cst.toString();
+			//System.out.println("   "+cst);
+		}
+		
+		@Override
+		public void visitEnd() {
+			if(idStorage != null) {
+				//System.out.println("Mod ID is "+idStorage);
+				otherMod.addName(idStorage);
+			}
 		}
 	}
  
 	public static class ModClassVisitor extends ClassVisitor {
- 
-		String _currentName = "";
+		boolean tmp;
 		
 		public ModClassVisitor() {
 			super(Opcodes.ASM4);
+			tmp = false;
 		}
 		
 		@Override
 		public void visit(int version, int access, String name, String signature,
 				String superName, String[] interfaces) {
-			_currentName = name;
+			if(superName.equals("BaseMod")) {
+				otherMod.addName(name);
+			} else if(superName.equals("DummyModContainer") || superName.equals("cpw/mods/fml/common/DummyModContainer")) {
+				System.out.println(name);
+				tmp = true;
+			}
 		}
 		
 		@Override
 		public AnnotationVisitor visitAnnotation(String name, boolean runtime) {
 			if (name.equals("Lcpw/mods/fml/common/Mod;")) {
-				return new ModAnnotationVisitor(new ModInfo(_currentName));
+				return new ModAnnotationVisitor();
 			} else {
 				return new AnnotationVisitor(Opcodes.ASM4) {};
 			}
 		}
- 
+		
+		@Override
+		public  MethodVisitor visitMethod(int access, String name, String desc,
+				String signature, String[] exceptions) {
+			if (tmp) {
+				return new ModMethodVisitor();
+			}
+			//System.out.println("    "+name);
+			return null;
+		}
 	}
 	
 	public static void processFile(File modArchive) throws IOException, ClassNotFoundException {
 		if (modArchive.getName().endsWith("jar") || 
 				modArchive.getName().endsWith("zip")) {
+			otherMod = new ModFileInfo(modArchive.getName());
 			ZipFile file = new ZipFile(modArchive);
 			Enumeration<? extends ZipEntry> files = file.entries();
 			while (files.hasMoreElements()) {
@@ -139,6 +148,14 @@ public class mainClass {
 				reader.accept(new ModClassVisitor(), 0);
 			}
 			file.close();
+			if(otherMod.names.isEmpty()) {
+				System.out.println("File "+otherMod.fileName+" doesn't look like a mod");
+			} else {
+				System.out.println(otherMod.fileName+" has mods");
+				for(String name : otherMod.names) {
+					System.out.println("   "+name);
+				}
+			}
 		}
 	}
 	
@@ -152,28 +169,5 @@ public class mainClass {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	public static void printAllMods(File folder) {
-		discoverAllMods(folder);
-		for (ModInfo mod : mods) {
-			System.out.println(mod.toString());
-		}
-	}
-	
-	public static ArrayList<ModInfo> returnAllMods(File folder) {
-		discoverAllMods(folder);
-		return mods;
-	}
-	
-	public static String[] returnModNames(File folder) {
-		ArrayList<ModInfo> tempmods = returnAllMods(folder);
-		String[] out = new String[tempmods.size()];
-		int counter = 0;
-		for(ModInfo info : tempmods) {
-			out[counter] = info.toString();
-			counter++;
-		}
-		return out;
 	}
 }
