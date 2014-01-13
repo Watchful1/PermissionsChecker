@@ -1,3 +1,4 @@
+package gr.watchful.permchecker.utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
