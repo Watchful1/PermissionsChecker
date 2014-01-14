@@ -5,10 +5,12 @@ import java.util.ArrayList;
 
 public class ModFile {
 	public File file;
+	private String fileName;
 	public ArrayList<String[]> names = new ArrayList<String[]>();
 	
 	public ModFile(File fileIn) {
 		file = fileIn;
+		fileName = file.getName();
 	}
 	
 	public String fileName() {
@@ -22,6 +24,6 @@ public class ModFile {
 	}
 	
 	public String toString() {
-		return file.getName();
+		return fileName;
 	}
 }

@@ -8,7 +8,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -198,4 +201,12 @@ public class FileUtils {
 		}
 		return bldr.toString();
 	}
+	
+	public static void downloadToFile(URL url, File file) throws IOException {
+        file.getParentFile().mkdirs();
+        ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+        FileOutputStream fos = new FileOutputStream(file);
+        fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+        fos.close();
+    }
 }

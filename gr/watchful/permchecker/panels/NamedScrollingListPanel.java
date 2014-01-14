@@ -15,8 +15,9 @@ public class NamedScrollingListPanel<T> extends JPanel {
 	
 	public NamedScrollingListPanel(String name, Dimension size, DefaultListModel<T> model) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setMinimumSize(size);
-		this.setMaximumSize(size);
+		//this.setMinimumSize(size);
+		//this.setMaximumSize(size);
+		this.setPreferredSize(size);
 		if(name != null) {
 			this.add(new JLabel(name));
 		}
@@ -30,5 +31,8 @@ public class NamedScrollingListPanel<T> extends JPanel {
 	
 	public void setModel(DefaultListModel<T> model) {
 		list.setModel(model);
+		for(int i=0; i<list.getModel().getSize(); i++) {
+			System.out.println(list.getModel().getElementAt(i));
+		}
 	}
 }
