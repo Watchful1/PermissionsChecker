@@ -33,6 +33,9 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	DefaultListModel<Mod> goodMods;
 	DefaultListModel<Mod> badMods;
 	DefaultListModel<ModFile> unknownMods;
+	NamedScrollingListPanel<Mod> good;
+	NamedScrollingListPanel<Mod> bad;
+	NamedScrollingListPanel<ModFile> unknown;
 	File permFile;
 
 	public mainClass() {
@@ -69,15 +72,15 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		mainPanel.setAlignmentX(0f);
 		this.add(mainPanel);
 
-		NamedScrollingListPanel<Mod> good = new NamedScrollingListPanel<Mod>(
+		good = new NamedScrollingListPanel<Mod>(
 				"Good", new Dimension(100, 300), goodMods);
 		good.addListener(this);
 		mainPanel.add(good);
-		NamedScrollingListPanel<Mod> bad = new NamedScrollingListPanel<Mod>(
+		bad = new NamedScrollingListPanel<Mod>(
 				"Bad", new Dimension(100, 300), badMods);
 		bad.addListener(this);
 		mainPanel.add(bad);
-		NamedScrollingListPanel<ModFile> unknown = new NamedScrollingListPanel<ModFile>(
+		unknown = new NamedScrollingListPanel<ModFile>(
 				"Unknown", new Dimension(100, 300), unknownMods);
 		mainPanel.add(unknown);
 		unknown.addListener(this);
@@ -159,5 +162,18 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 
 	public void selectionChanged(NamedSelectionEvent event) {
 		System.out.println(event.getParentName()+" : "+event.getSelected());
+		clearOthers(event.getParentName());
+	}
+	
+	private void clearOthers(String selected) {
+		if(!selected.equals("Good")) {
+			good.clearSelection();
+		}
+		if(!selected.equals("Bad")) {
+			bad.clearSelection();
+		}
+		if(!selected.equals("Unknown")) {
+			unknown.clearSelection();
+		}
 	}
 }

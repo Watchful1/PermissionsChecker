@@ -53,10 +53,14 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 			System.out.println(list.getModel().getElementAt(i));
 		}
 	}
+	
+	public void clearSelection() {
+		list.clearSelection();
+	}
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		if(!e.getValueIsAdjusting()) {
+		if(!e.getValueIsAdjusting() && list.getSelectedIndex() != -1) {
 			for(NamedScrollingListPanelListener listener : listeners) {
 				listener.selectionChanged(new NamedSelectionEvent(name, list.getSelectedIndex()));
 			}
