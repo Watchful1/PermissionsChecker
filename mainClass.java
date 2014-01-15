@@ -39,6 +39,8 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	private NamedScrollingListPanel<ModFile> unknown;
 	private File permFile;
 	private JPanel cards;
+	private ModEditor modEditor;
+	private ModFileEditor modFileEditor;
 
 	public mainClass() {
 		goodMods = new DefaultListModel<Mod>();
@@ -95,9 +97,9 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		cards.add(newWindow);
 		cards.add(modEditWindow);
 		
-		ModEditor modEditor = new ModEditor(new Dimension(300,300));
+		modEditor = new ModEditor(new Dimension(300,300));
 		cards.add(modEditor,"MODEDITOR");
-		ModFileEditor modFileEditor = new ModFileEditor(new Dimension(300,300));
+		modFileEditor = new ModFileEditor(new Dimension(300,300));
 		cards.add(modFileEditor,"MODFILEEDITOR");
 		
 		CardLayout cardLayout = (CardLayout)(cards.getLayout());
@@ -178,33 +180,36 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 
 	public void selectionChanged(NamedSelectionEvent event) {
 		System.out.println(event.getParentName()+" : "+event.getSelected());
-		clearOthers(event.getParentName());
-		updateEditor(event.getParentName());
+		updateEditor(event.getParentName(),event.getSelected());
 	}
 	
-	private void clearOthers(String selected) {
-		if(!selected.equals("Good")) {
-			good.clearSelection();
-		}
-		if(!selected.equals("Bad")) {
+	private void updateEditor(String list, int selected) {
+		if(list.equals("Good")) {
 			bad.clearSelection();
-		}
-		if(!selected.equals("Unknown")) {
 			unknown.clearSelection();
-		}
-	}
-	
-	private void updateEditor(String selected) {
-		if(selected.equals("Good")) {
 			
-		}
-		if(selected.equals("Bad")) {
 			CardLayout cardLayout = (CardLayout)(cards.getLayout());
 			cardLayout.show(cards, "MODEDITOR");
+			
+			modEditor.setMod(good.getSelected());
 		}
-		if(selected.equals("Unknown")) {
+		if(list.equals("Bad")) {
+			good.clearSelection();
+			unknown.clearSelection();
+			
+			CardLayout cardLayout = (CardLayout)(cards.getLayout());
+			cardLayout.show(cards, "MODEDITOR");
+
+			modEditor.setMod(bad.getSelected());
+		}
+		if(list.equals("Unknown")) {
+			good.clearSelection();
+			bad.clearSelection();
+			
 			CardLayout cardLayout = (CardLayout)(cards.getLayout());
 			cardLayout.show(cards, "MODFILEEDITOR");
+
+			modFileEditor.setModFile(unknown.getSelected());
 		}
 	}
 }

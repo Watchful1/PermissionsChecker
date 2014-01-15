@@ -43,6 +43,10 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
         this.add(scrList);
 	}
 	
+	public T getSelected() {
+		return list.getSelectedValue();
+	}
+	
 	public void addListener(NamedScrollingListPanelListener listener) {
 		listeners.add(listener);
 	}

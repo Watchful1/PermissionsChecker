@@ -1,5 +1,7 @@
 package gr.watchful.permchecker.panels;
 
+import gr.watchful.permchecker.datastructures.ModFile;
+
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
@@ -12,5 +14,9 @@ public class ModFileEditor extends JPanel {
 	public ModFileEditor(Dimension size) {
 		modName = new JTextField("NOTTEST");
 		this.add(modName);
+	}
+	
+	public void setModFile(ModFile modFile) {
+		
 	}
 }
