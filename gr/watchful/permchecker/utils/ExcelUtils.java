@@ -4,7 +4,7 @@
  * ~bearbear12345~ 
  * 
  */
-package u.r.a.l.bearbear12345.permchecker.utils;
+package gr.watchful.permchecker.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
