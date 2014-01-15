@@ -1,5 +1,8 @@
 package gr.watchful.permchecker.modhandling;
 
+import gr.watchful.permchecker.datastructures.Mod;
+import gr.watchful.permchecker.datastructures.ModFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -220,7 +223,7 @@ public class ModFinder {
 			unknownModFiles.addElement(modFile);
 		} else {
 			for(String ID : identifiedIDs) {
-				mods.addElement(new Mod(modFile.file, ID, nameRegistry.getName(ID)));
+				mods.addElement(new Mod(modFile, nameRegistry.getName(ID)));
 			}
 		}
 	}

@@ -1,0 +1,17 @@
+package gr.watchful.permchecker.datastructures;
+
+import java.io.File;
+
+public class Mod {
+	public String shortName;
+	public ModFile modFile;
+	
+	public Mod(ModFile modFile, String shortName) {
+		this.modFile = modFile;
+		this.shortName = shortName;
+	}
+	
+	public String toString() {
+		return shortName; //TODO reference the name database
+	}
+}

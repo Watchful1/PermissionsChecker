@@ -1,4 +1,4 @@
-package gr.watchful.permchecker.modhandling;
+package gr.watchful.permchecker.datastructures;
 
 import java.io.File;
 import java.util.ArrayList;

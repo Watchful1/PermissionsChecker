@@ -1,7 +1,7 @@
+import gr.watchful.permchecker.datastructures.Mod;
+import gr.watchful.permchecker.datastructures.ModFile;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
-import gr.watchful.permchecker.modhandling.Mod;
-import gr.watchful.permchecker.modhandling.ModFile;
 import gr.watchful.permchecker.modhandling.ModFinder;
 import gr.watchful.permchecker.panels.NamedScrollingListPanel;
 import gr.watchful.permchecker.utils.FileUtils;

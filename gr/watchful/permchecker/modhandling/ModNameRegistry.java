@@ -9,7 +9,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * Stores and gives access to mappings for modid to shortname as well as shortname to associated modinfo object
+ * @author Watchful
+ */
 public class ModNameRegistry {
+	public static String imageBaseUrl;
+	public static String imageExtension;
+	
 	private HashMap<String, String> mappings;
 	private HashMap<String, String> names;
 	private HashMap<String, String> fileNames;
