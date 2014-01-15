@@ -3,6 +3,8 @@ import gr.watchful.permchecker.datastructures.ModFile;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
 import gr.watchful.permchecker.modhandling.ModFinder;
+import gr.watchful.permchecker.panels.ModEditor;
+import gr.watchful.permchecker.panels.ModFileEditor;
 import gr.watchful.permchecker.panels.NamedScrollingListPanel;
 import gr.watchful.permchecker.utils.ExcelUtils;
 import gr.watchful.permchecker.utils.FileUtils;
@@ -26,18 +28,17 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 @SuppressWarnings("serial")
 public class mainClass extends JFrame implements NamedScrollingListPanelListener {
-	DefaultListModel<Mod> goodMods;
-	DefaultListModel<Mod> badMods;
-	DefaultListModel<ModFile> unknownMods;
-	NamedScrollingListPanel<Mod> good;
-	NamedScrollingListPanel<Mod> bad;
-	NamedScrollingListPanel<ModFile> unknown;
-	File permFile;
+	private DefaultListModel<Mod> goodMods;
+	private DefaultListModel<Mod> badMods;
+	private DefaultListModel<ModFile> unknownMods;
+	private NamedScrollingListPanel<Mod> good;
+	private NamedScrollingListPanel<Mod> bad;
+	private NamedScrollingListPanel<ModFile> unknown;
+	private File permFile;
+	private JPanel cards;
 
 	public mainClass() {
 		goodMods = new DefaultListModel<Mod>();
@@ -89,10 +90,18 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		JPanel newWindow = new JPanel();
 		JPanel modEditWindow = new JPanel();
 
-		JPanel cards = new JPanel(new CardLayout());
+		cards = new JPanel(new CardLayout());
 		cards.setMinimumSize(new Dimension(300, 300));
 		cards.add(newWindow);
 		cards.add(modEditWindow);
+		
+		ModEditor modEditor = new ModEditor(new Dimension(300,300));
+		cards.add(modEditor,"MODEDITOR");
+		ModFileEditor modFileEditor = new ModFileEditor(new Dimension(300,300));
+		cards.add(modFileEditor,"MODFILEEDITOR");
+		
+		CardLayout cardLayout = (CardLayout)(cards.getLayout());
+		cardLayout.show(cards, "MODEDITOR");
 
 		mainPanel.add(cards);
 
@@ -170,6 +179,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	public void selectionChanged(NamedSelectionEvent event) {
 		System.out.println(event.getParentName()+" : "+event.getSelected());
 		clearOthers(event.getParentName());
+		updateEditor(event.getParentName());
 	}
 	
 	private void clearOthers(String selected) {
@@ -181,6 +191,20 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		}
 		if(!selected.equals("Unknown")) {
 			unknown.clearSelection();
+		}
+	}
+	
+	private void updateEditor(String selected) {
+		if(selected.equals("Good")) {
+			
+		}
+		if(selected.equals("Bad")) {
+			CardLayout cardLayout = (CardLayout)(cards.getLayout());
+			cardLayout.show(cards, "MODEDITOR");
+		}
+		if(selected.equals("Unknown")) {
+			CardLayout cardLayout = (CardLayout)(cards.getLayout());
+			cardLayout.show(cards, "MODFILEEDITOR");
 		}
 	}
 }
