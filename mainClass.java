@@ -13,6 +13,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -113,7 +114,13 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 									new URL(
 											"https://skydrive.live.com/download?resid=96628E67B4C51B81!105&authkey=!AK7mlmHB0nrxmHg&ithint=file%2c.xlsx"),
 									permFile);
-					ExcelUtils.toArray(permFile);
+					try {
+						ExcelUtils.ttoArray(permFile,1);
+					} catch (FileNotFoundException e) {
+						System.out.println("UHOH");
+					} catch (IOException e) {
+						System.out.println("uhoh");
+					}
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
