@@ -215,3 +215,5 @@ pip-log.txt
 .mr.developer.cfg
 /ModHandler.class
 /mainClass.class
+/mainClass$1.class
+/mainClass$2.class
