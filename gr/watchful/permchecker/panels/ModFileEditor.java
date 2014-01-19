@@ -9,11 +9,11 @@ import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
 public class ModFileEditor extends JPanel {
-	private JTextField modName;
+	private JTextField name;
 	
 	public ModFileEditor(Dimension size) {
-		modName = new JTextField("NOTTEST");
-		this.add(modName);
+		name = new JTextField("NOTTEST");
+		this.add(name);
 	}
 	
 	public void setModFile(ModFile modFile) {

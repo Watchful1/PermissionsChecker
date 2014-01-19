@@ -3,6 +3,7 @@ import gr.watchful.permchecker.datastructures.ModFile;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
 import gr.watchful.permchecker.modhandling.ModFinder;
+import gr.watchful.permchecker.modhandling.ModNameRegistry;
 import gr.watchful.permchecker.panels.ModEditor;
 import gr.watchful.permchecker.panels.ModFileEditor;
 import gr.watchful.permchecker.panels.NamedScrollingListPanel;
@@ -19,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -41,11 +43,14 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	private JPanel cards;
 	private ModEditor modEditor;
 	private ModFileEditor modFileEditor;
+	private static ModNameRegistry nameRegistry;
 
 	public mainClass() {
 		goodMods = new DefaultListModel<Mod>();
 		badMods = new DefaultListModel<Mod>();
 		unknownMods = new DefaultListModel<ModFile>();
+
+		nameRegistry = new ModNameRegistry();
 
 		try {
 			permFile = File.createTempFile("PermissionsCheckerPermFile",
@@ -56,6 +61,8 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 
 		this.setTitle("Permissions Checker"); // Set the window title
 		this.setPreferredSize(new Dimension(600, 300)); // and the initial size
+		
+		updateListings();
 
 		//TODO move this stuff to a seperate method
 		File currentDir = new File(System.getProperty("user.dir"));
@@ -119,24 +126,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Check last modified - bandwidth
-				try {
-					FileUtils
-							.downloadToFile(
-									new URL(
-											"https://skydrive.live.com/download?resid=96628E67B4C51B81!105&authkey=!AK7mlmHB0nrxmHg&ithint=file%2c.xlsx"),
-									permFile);
-					try {
-						ExcelUtils.ttoArray(permFile,1);
-					} catch (FileNotFoundException e) {
-						System.out.println("UHOH");
-					} catch (IOException e) {
-						System.out.println("uhoh");
-					}
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				updateListings();
 			}
 		});
 		menu.add(updatePerms);
@@ -175,7 +165,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	}
 
 	private void discoverMods(File minecraftFolder) {
-		ModFinder.discoverAllMods(minecraftFolder, unknownMods, badMods);
+		ModFinder.discoverAllMods(minecraftFolder, unknownMods, badMods, nameRegistry);
 	}
 
 	public void selectionChanged(NamedSelectionEvent event) {
@@ -210,6 +200,29 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			cardLayout.show(cards, "MODFILEEDITOR");
 
 			modFileEditor.setModFile(unknown.getSelected());
+		}
+	}
+	
+	public void updateListings() {
+		try {
+			FileUtils
+					.downloadToFile(
+							new URL(
+									"https://skydrive.live.com/download?resid=96628E67B4C51B81!105&authkey=!AK7mlmHB0nrxmHg&ithint=file%2c.xlsx"),
+							permFile);
+			try {
+				//ArrayList<ArrayList<String>> rows = ExcelUtils.toArray(permFile,1);
+				ArrayList<ArrayList<String>> rows = ExcelUtils.toArray(permFile,2);
+				nameRegistry.loadMappings(rows);
+			} catch (FileNotFoundException e) {
+				System.out.println("UHOH");
+			} catch (IOException e) {
+				System.out.println("uhoh");
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

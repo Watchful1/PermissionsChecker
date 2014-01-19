@@ -9,11 +9,25 @@ import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
 public class ModEditor extends JPanel {
-	private JTextField modName;
+	private JTextField name;
+	private JTextField author;
+	private JTextField link;
+	private JTextField imageLink;
+	private JTextField permissionLink;
 	
 	public ModEditor(Dimension size) {
-		modName = new JTextField("TEST");
-		this.add(modName);
+		
+		
+		name = new JTextField("TEST");
+		this.add(name);
+		author = new JTextField("TEST");
+		this.add(author);
+		link = new JTextField("TEST");
+		this.add(link);
+		imageLink = new JTextField("TEST");
+		this.add(imageLink);
+		permissionLink = new JTextField("TEST");
+		this.add(permissionLink);
 	}
 	
 	public void setMod(Mod mod) {

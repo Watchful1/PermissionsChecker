@@ -26,11 +26,12 @@ public class ModFinder {
 	private static DefaultListModel<ModFile> unknownModFiles;
 	private static DefaultListModel<Mod> mods;
 
-	public static Mod[] discoverAllMods(File minecraftFolder, DefaultListModel<ModFile> unknownModFilesIn, DefaultListModel<Mod> modsIn) {
-		nameRegistry = new ModNameRegistry(new File("modAlias.txt"));
+	public static Mod[] discoverAllMods(File minecraftFolder, DefaultListModel<ModFile> unknownModFilesIn, DefaultListModel<Mod> modsIn, ModNameRegistry nameRegistryIn) {
 		modFiles = new DefaultListModel<ModFile>();
 		unknownModFiles = unknownModFilesIn;
 		mods = modsIn;
+		nameRegistry = nameRegistryIn;
+		
 		getMods(new File(minecraftFolder.getAbsolutePath() + File.separator + "mods"));
 		compileModNames(modFiles);
 		for(int i=0; i<mods.getSize(); i++) {
@@ -39,6 +40,11 @@ public class ModFinder {
 		System.out.println("\nUnknown mods\n");
 		for(int i=0; i<unknownModFiles.getSize(); i++) {
 			System.out.println("Couldn't identify a mod in "+unknownModFiles.get(i).fileName());
+			//System.out.print("     ");
+			for(int j=0; j<unknownModFiles.get(i).names.size(); j++) {
+				//System.out.print(unknownModFiles.get(i).names.get(j)[0]+", ");
+			}
+			//System.out.print("\n");
 		}
 		
 		return null;
@@ -214,7 +220,7 @@ public class ModFinder {
 		String result = null;
 		HashSet<String> identifiedIDs = new HashSet<String>();
 		for(String[] nameID : modFile.names) {
-			result = nameRegistry.checkMod(nameID[0]);
+			result = nameRegistry.checkID(nameID[0]);
 			if(result != null) {
 				identifiedIDs.add(result);
 			}
@@ -223,7 +229,7 @@ public class ModFinder {
 			unknownModFiles.addElement(modFile);
 		} else {
 			for(String ID : identifiedIDs) {
-				mods.addElement(new Mod(modFile, nameRegistry.getName(ID)));
+				mods.addElement(new Mod(modFile, ID));
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 package gr.watchful.permchecker.modhandling;
 
+import gr.watchful.permchecker.datastructures.ModInfo;
 import gr.watchful.permchecker.utils.FileUtils;
 import java.util.ArrayList;
 
@@ -17,54 +18,35 @@ public class ModNameRegistry {
 	public static String imageBaseUrl;
 	public static String imageExtension;
 	
-	private HashMap<String, String> mappings;
-	private HashMap<String, String> names;
-	private HashMap<String, String> fileNames;
-	private File mappingsFile;
+	private HashMap<String, String> shortNameMappings;
+	private HashMap<String, ModInfo> modInfoMappings;
 	
-	public ModNameRegistry(File modNameFile) {
-		mappingsFile = modNameFile;
-		mappings = new HashMap<String, String>();
-		names = new HashMap<String, String>();
-		fileNames = new HashMap<String, String>();
-		loadMappings();
+	public ModNameRegistry() {
+		shortNameMappings = new HashMap<String, String>();
+		modInfoMappings = new HashMap<String, ModInfo>();
 	}
 	
-	private void loadMappings() {
-		String[] mappingsStrings = FileUtils.readFile(mappingsFile).split("\\n");
-		for(String mappingString : mappingsStrings) {
-			//System.out.println(mappingString);
-			//System.out.println(mappingString.split("<=>")[0]);
-			//System.out.println(mappingString.split("<=>")[1]);
-			mappings.put(mappingString.split("<=>")[0], mappingString.split("<=>")[1]);
+	public void loadMappings(ArrayList<ArrayList<String>> rows) {
+		for(ArrayList<String> row : rows) {
+			if(row.get(0) != null && row.get(1) != null && !row.get(0).equals("") && !row.get(1).equals("")) {
+				shortNameMappings.put(row.get(0), row.get(1));
+			}
 		}
 	}
 	
-	private void saveMappings() {
-		StringBuilder bldr = new StringBuilder();
-		Iterator<Entry<String, String>> it = mappings.entrySet().iterator();
-		while (it.hasNext()) {
-			@SuppressWarnings("rawtypes")
-			Map.Entry pairs = (Map.Entry)it.next();
-			bldr.append(pairs.getKey() + "<=>" + pairs.getValue() + "\n");
-		}
-		mappingsFile.delete();
-		FileUtils.writeFile(bldr.toString(), mappingsFile);
-	}
-	
-	public String checkMod(String modID) {
-		if(mappings.containsKey(modID)) {
-			return mappings.get(modID);
+	public String checkID(String modID) {
+		if(shortNameMappings.containsKey(modID)) {
+			return shortNameMappings.get(modID);
 		} else {
 			return null;
 		}
 	}
 	
-	public String getName(String modID) {
-		if(names.containsKey(modID)) {
-			return names.get(modID);
+	public ModInfo getMod(String shortName) {
+		if(modInfoMappings.containsKey(shortName)) {
+			return modInfoMappings.get(shortName);
 		} else {
-			return "";
+			return null;
 		}
 	}
 }
