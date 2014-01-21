@@ -16,7 +16,7 @@ public class ModEditor extends JPanel {
 	private JTextField permissionLink;
 	
 	public ModEditor(Dimension size) {
-		//test
+		//test test
 		
 		name = new JTextField("TEST");
 		this.add(name);
