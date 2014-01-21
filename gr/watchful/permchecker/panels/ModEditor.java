@@ -4,6 +4,7 @@ import gr.watchful.permchecker.datastructures.Mod;
 
 import java.awt.Dimension;
 
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -16,7 +17,7 @@ public class ModEditor extends JPanel {
 	private JTextField permissionLink;
 	
 	public ModEditor(Dimension size) {
-		//test test
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		name = new JTextField("TEST");
 		this.add(name);
