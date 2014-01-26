@@ -62,7 +62,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		this.setTitle("Permissions Checker"); // Set the window title
 		this.setPreferredSize(new Dimension(600, 300)); // and the initial size
 		
-		updateListings();
+		//updateListings();
 
 		//TODO move this stuff to a seperate method
 		File currentDir = new File(System.getProperty("user.dir"));
@@ -75,7 +75,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			//also allow selecting of multiMC instances folder
 			
 			//debug
-			discoverMods(new File("C:\\Users\\Gregory\\Desktop\\MultiMC\\instances\\Hammercraft 4.3.0 Custom\\minecraft"));
+			//discoverMods(new File("C:\\Users\\Gregory\\Desktop\\MultiMC\\instances\\Hammercraft 4.3.0 Custom\\minecraft"));
 		}
 
 		JPanel mainPanel = new JPanel();
@@ -181,7 +181,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			CardLayout cardLayout = (CardLayout)(cards.getLayout());
 			cardLayout.show(cards, "MODEDITOR");
 			
-			modEditor.setMod(good.getSelected());
+			modEditor.setMod(nameRegistry.getMod(good.getSelected().shortName));
 		}
 		if(list.equals("Bad")) {
 			good.clearSelection();
@@ -190,7 +190,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			CardLayout cardLayout = (CardLayout)(cards.getLayout());
 			cardLayout.show(cards, "MODEDITOR");
 
-			modEditor.setMod(bad.getSelected());
+			modEditor.setMod(nameRegistry.getMod(bad.getSelected().shortName));
 		}
 		if(list.equals("Unknown")) {
 			good.clearSelection();
@@ -211,9 +211,10 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 									"https://skydrive.live.com/download?resid=96628E67B4C51B81!105&authkey=!AK7mlmHB0nrxmHg&ithint=file%2c.xlsx"),
 							permFile);
 			try {
-				//ArrayList<ArrayList<String>> rows = ExcelUtils.toArray(permFile,1);
-				ArrayList<ArrayList<String>> rows = ExcelUtils.toArray(permFile,2);
-				nameRegistry.loadMappings(rows);
+				ArrayList<ArrayList<String>> infos = ExcelUtils.toArray(permFile,1);
+				infos.remove(0);//remove the first row, it contains column titles
+				ArrayList<ArrayList<String>> mappings = ExcelUtils.toArray(permFile,2);
+				nameRegistry.loadMappings(infos, mappings);
 			} catch (FileNotFoundException e) {
 				System.out.println("UHOH");
 			} catch (IOException e) {

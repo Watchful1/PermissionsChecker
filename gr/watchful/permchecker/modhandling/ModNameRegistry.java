@@ -26,8 +26,15 @@ public class ModNameRegistry {
 		modInfoMappings = new HashMap<String, ModInfo>();
 	}
 	
-	public void loadMappings(ArrayList<ArrayList<String>> rows) {
-		for(ArrayList<String> row : rows) {
+	public void loadMappings(ArrayList<ArrayList<String>> infos, ArrayList<ArrayList<String>> mappings) {
+		for(ArrayList<String> row : infos) {
+			if(row.get(2) != null && !row.get(2).equals("")) {
+				ModInfo info = new ModInfo(row.get(2));
+				info.setModName(row.get(1));
+				modInfoMappings.put(row.get(2), info);
+			}
+		}
+		for(ArrayList<String> row : mappings) {
 			if(row.get(0) != null && row.get(1) != null && !row.get(0).equals("") && !row.get(1).equals("")) {
 				shortNameMappings.put(row.get(0), row.get(1));
 			}

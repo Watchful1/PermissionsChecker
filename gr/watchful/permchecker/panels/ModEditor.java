@@ -1,37 +1,45 @@
 package gr.watchful.permchecker.panels;
 
 import gr.watchful.permchecker.datastructures.Mod;
+import gr.watchful.permchecker.datastructures.ModInfo;
+import gr.watchful.permchecker.panels.LabelField;
 
 import java.awt.Dimension;
 
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
 public class ModEditor extends JPanel {
-	private JTextField name;
-	private JTextField author;
-	private JTextField link;
-	private JTextField imageLink;
-	private JTextField permissionLink;
+	private LabelField name;
+	private LabelField author;
+	private LabelField link;
+	private LabelField imageLink;
+	private LabelField permissionLink;
 	
 	public ModEditor(Dimension size) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		name = new JTextField("TEST");
+		name = new LabelField("Name");
 		this.add(name);
-		author = new JTextField("TEST");
+		author = new LabelField("Author");
 		this.add(author);
-		link = new JTextField("TEST");
+		link = new LabelField("Link");
 		this.add(link);
-		imageLink = new JTextField("TEST");
+		imageLink = new LabelField("Image");
 		this.add(imageLink);
-		permissionLink = new JTextField("TEST");
+		permissionLink = new LabelField("Perm Link");
 		this.add(permissionLink);
+		
 	}
 	
-	public void setMod(Mod mod) {
-		
+	public void setMod(ModInfo mod) {
+		name.setText(mod.getModName());
+		author.setText(mod.getModAuthor());
+		link.setText(mod.getModUrl());
+		imageLink.setText(mod.getImageLink());
+		permissionLink.setText(mod.getPermLink());
 	}
 }
