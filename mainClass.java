@@ -9,7 +9,7 @@ import gr.watchful.permchecker.panels.ModFileEditor;
 import gr.watchful.permchecker.panels.NamedScrollingListPanel;
 import gr.watchful.permchecker.utils.ExcelUtils;
 import gr.watchful.permchecker.utils.FileUtils;
-import gr.watchful.permchecker.utils.bearbear12345.OsTypes;
+import gr.watchful.permchecker.utils.OsTypes;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -40,6 +40,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	private NamedScrollingListPanel<Mod> bad;
 	private NamedScrollingListPanel<ModFile> unknown;
 	private File permFile;
+	private File appstore; //Location for the spreadsheet file
 	private JPanel cards;
 	private ModEditor modEditor;
 	private ModFileEditor modFileEditor;
@@ -89,7 +90,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
          * Old Code permFile = File.createTempFile("PermissionsCheckerPermFile",
          * ".xlsx");
          */
-        permFile = new File(appstore.getPath() + "/PermissionsChecker.data");
+        permFile = new File(appstore.getPath() + "/PermissionsChecker.xlsx");
         if (!permFile.exists()) {
             try {
                 permFile.createNewFile();
