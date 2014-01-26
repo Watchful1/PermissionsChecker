@@ -1,4 +1,4 @@
-package gr.watchful.permchecker.utils.bearbear12345;
+package gr.watchful.permchecker.utils;
 
 /**
  * http://stackoverflow.com/questions/228477/how-do-i-programmatically-determine-operating-system-in-java
