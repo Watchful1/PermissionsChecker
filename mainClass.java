@@ -9,7 +9,7 @@ import gr.watchful.permchecker.panels.ModFileEditor;
 import gr.watchful.permchecker.panels.NamedScrollingListPanel;
 import gr.watchful.permchecker.utils.ExcelUtils;
 import gr.watchful.permchecker.utils.FileUtils;
-import gr.watchful.permchecker.utils.bearbear12345.OsTypes;
+
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -51,52 +51,6 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		unknownMods = new DefaultListModel<ModFile>();
 
 		nameRegistry = new ModNameRegistry();
-
-        /**
-         * Check which OS the system is running, and make the appropriate directories if necessary
-         * @author bearbear12345
-         */
-        OsTypes.OSType ostype = OsTypes.getOperatingSystemType();
-        System.out.println("Operating System: " + ostype.toString());
-        System.out.println("Searching for application storage directory...");
-        switch (ostype) {
-            case Windows:
-                appstore = new File(System.getenv("APPDATA") + "/ftb/PermissionsChecker");
-                break;
-            case MacOS:
-                appstore = new File(System.getProperty("user.home") + "/Library/Application Support/ftb/PermissionsChecker");
-                break;
-            case Linux:
-                appstore = new File(System.getProperty("user.home") + "/.ftb/PermissionsChecker");
-                break;
-            case Other:
-                //TODO ????
-                break;
-        }
-        if (!appstore.exists()) {
-            System.out.println("Directory not found! Creating directory: " + appstore.getPath());
-            boolean result = appstore.mkdirs();
-            if (result) {
-                System.out.println(appstore.getPath() + " created!");
-            }
-        } else {
-            System.out.println("Directory exists!");
-        }
-
-
-        // Checks if PermissionsCheckerPermFile.xlsx is existent
-        /*
-         * Old Code permFile = File.createTempFile("PermissionsCheckerPermFile",
-         * ".xlsx");
-         */
-        permFile = new File(appstore.getPath() + "/PermissionsChecker.data");
-        if (!permFile.exists()) {
-            try {
-                permFile.createNewFile();
-            } catch (IOException e) {
-                System.out.println("An error occured while creating during setup. Please try again later. If issues persist, contact the author");
-            }
-        }
 
 		try {
 			permFile = File.createTempFile("PermissionsCheckerPermFile",
