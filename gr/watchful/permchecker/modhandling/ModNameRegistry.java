@@ -21,9 +21,12 @@ public class ModNameRegistry {
 		modInfoMappings = new HashMap<String, ModInfo>();
 	}
 	
-	public void loadMappings(ArrayList<ArrayList<String>> infos, ArrayList<ArrayList<String>> mappings) {
+	public void loadMappings(ArrayList<ArrayList<String>> infos, ArrayList<ArrayList<String>> mappings, String baseUrl, String extension) {
+		imageBaseUrl = baseUrl;
+		imageExtension = extension;
+		
 		for(ArrayList<String> row : infos) {
-			if(row.get(2) != null && !row.get(2).equals("")) {
+			if(row.size() > 9 && row.get(2) != null && !row.get(2).equals("")) {
 				ModInfo info = new ModInfo(row.get(2));
 				info.setModName(row.get(0));//set name
 				info.setModAuthor(row.get(1));//set author
@@ -36,13 +39,78 @@ public class ModNameRegistry {
 				}
 				if(row.get(7).equals("")) {//set private perm link
 					info.setPrivatePermLink(info.getPermLink());
+				} else if(row.get(7).equals("PM")) {
+					info.setPrivatePermLink(imageBaseUrl+"PrivateMessage"+imageExtension);
 				} else {
 					info.setPrivatePermLink(row.get(7));
 				}
 				if(row.get(8).equals("")) {//set FTB perm link
 					info.setFTBPermLink(info.getPermLink());
+				} else if(row.get(8).equals("PM")) {
+					info.setPrivatePermLink(imageBaseUrl+"PrivateMessage"+imageExtension);
 				} else {
 					info.setFTBPermLink(row.get(8));
+				}
+				
+				switch(row.get(3)){//set the public policy
+				case "Open":
+					info.setPublicPolicy(ModInfo.OPEN);
+					break;
+				case "Request":
+					info.setPublicPolicy(ModInfo.REQUEST);
+					break;
+				case "Closed":
+					info.setPublicPolicy(ModInfo.CLOSED);
+					break;
+				case "FTB":
+					info.setPublicPolicy(ModInfo.FTB);
+					break;
+				case "Not Available":
+					info.setPublicPolicy(ModInfo.UNKNOWN);
+					break;
+				default:
+					System.out.println("Couldn't set the public policy of "+info.getShortName());
+					break;
+				}
+				
+				switch(row.get(4)){//set the public policy
+				case "Open":
+					info.setPrivatePolicy(ModInfo.OPEN);
+					break;
+				case "Request":
+					info.setPrivatePolicy(ModInfo.REQUEST);
+					break;
+				case "Closed":
+					info.setPrivatePolicy(ModInfo.CLOSED);
+					break;
+				case "FTB":
+					info.setPrivatePolicy(ModInfo.FTB);
+					break;
+				case "Not Available":
+					info.setPrivatePolicy(ModInfo.UNKNOWN);
+					break;
+				default:
+					System.out.println("Couldn't set the private policy of "+info.getShortName());
+					break;
+				}
+				
+				//set FTB policy
+				if(info.getPublicPolicy() == ModInfo.OPEN || info.getPublicPolicy() == ModInfo.FTB || !row.get(8).equals("")) {
+					info.setFTBPolicy(ModInfo.FTB_GRANTED);
+				} else {
+					info.setFTBPolicy(ModInfo.FTB_UNKOWN);
+				}
+				
+				info.setImageLink(imageBaseUrl+info.getShortName()+imageExtension);//set perm image link
+				if(row.get(7).equals("")) {//set private perm image link
+					info.setPrivateImageLink(info.getImageLink());
+				} else {
+					info.setPrivateImageLink(imageBaseUrl+info.getShortName()+"private"+imageExtension);
+				}
+				if(row.get(8).equals("")) {//set FTB perm image link
+					info.setFTBImageLink(info.getImageLink());
+				} else {
+					info.setFTBImageLink(imageBaseUrl+info.getShortName()+"FTB"+imageExtension);
 				}
 				
 				modInfoMappings.put(row.get(2), info);

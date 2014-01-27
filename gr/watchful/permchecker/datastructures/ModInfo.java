@@ -8,8 +8,7 @@ public class ModInfo {
 	public static final int UNKNOWN = 4;
 
 	public static final int FTB_GRANTED = 5;
-	public static final int FTB_NOT_GRANTED = 6;
-	public static final int FTB_UNKOWN = 7;
+	public static final int FTB_UNKOWN = 6;
 	
 	private String shortName;
 	private String modName;

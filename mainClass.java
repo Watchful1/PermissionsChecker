@@ -261,7 +261,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 				ArrayList<ArrayList<String>> infos = ExcelUtils.toArray(permFile,1);
 				infos.remove(0);//remove the first row, it contains column titles
 				ArrayList<ArrayList<String>> mappings = ExcelUtils.toArray(permFile,2);
-				nameRegistry.loadMappings(infos, mappings);
+				nameRegistry.loadMappings(infos, mappings, infos.get(16).get(14), infos.get(16).get(15));
 			} catch (FileNotFoundException e) {
 				System.out.println("UHOH");
 			} catch (IOException e) {

@@ -1,15 +1,12 @@
 package gr.watchful.permchecker.panels;
 
-import gr.watchful.permchecker.datastructures.Mod;
 import gr.watchful.permchecker.datastructures.ModInfo;
 import gr.watchful.permchecker.panels.LabelField;
 
 import java.awt.Dimension;
 
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
 public class ModEditor extends JPanel {
