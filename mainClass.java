@@ -62,13 +62,13 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
         System.out.println("Searching for application storage directory...");
         switch (ostype) {
             case Windows:
-                appstore = new File(System.getenv("APPDATA") + "/ftb/PermissionsChecker");
+                appstore = new File(System.getenv("APPDATA") + "/PermissionsChecker");
                 break;
             case MacOS:
-                appstore = new File(System.getProperty("user.home") + "/Library/Application Support/ftb/PermissionsChecker");
+                appstore = new File(System.getProperty("user.home") + "/Library/Application Support/PermissionsChecker");
                 break;
             case Linux:
-                appstore = new File(System.getProperty("user.home") + "/.ftb/PermissionsChecker");
+                appstore = new File(System.getProperty("user.home") + "/.permissionsChecker");
                 break;
             case Other:
                 //TODO ????

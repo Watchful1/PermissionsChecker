@@ -33,10 +33,10 @@ public class ModEditor extends JPanel {
 	}
 	
 	public void setMod(ModInfo mod) {
-		name.setText(mod.getModName());
-		author.setText(mod.getModAuthor());
-		link.setText(mod.getModUrl());
-		imageLink.setText(mod.getImageLink());
-		permissionLink.setText(mod.getPermLink());
+		name.setText(mod.modName);
+		author.setText(mod.modAuthor);
+		link.setText(mod.modUrl);
+		imageLink.setText(mod.imageLink);
+		permissionLink.setText(mod.permLink);
 	}
 }

@@ -28,89 +28,89 @@ public class ModNameRegistry {
 		for(ArrayList<String> row : infos) {
 			if(row.size() > 9 && row.get(2) != null && !row.get(2).equals("")) {
 				ModInfo info = new ModInfo(row.get(2));
-				info.setModName(row.get(0));//set name
-				info.setModAuthor(row.get(1));//set author
-				info.setModUrl(row.get(5));//set url
+				info.modName = row.get(0);//set name
+				info.modAuthor = row.get(1);//set author
+				info.modUrl = row.get(5);//set url
 				
 				if(row.get(6).equals("")) {//set perm link
-					info.setPermLink(info.getModUrl());
+					info.permLink = info.modUrl;
 				} else {
-					info.setPermLink(row.get(6));
+					info.permLink = row.get(6);
 				}
 				if(row.get(7).equals("")) {//set private perm link
-					info.setPrivatePermLink(info.getPermLink());
+					info.privatePermLink = info.permLink;
 				} else if(row.get(7).equals("PM")) {
-					info.setPrivatePermLink(imageBaseUrl+"PrivateMessage"+imageExtension);
+					info.privatePermLink = imageBaseUrl+"PrivateMessage"+imageExtension;
 				} else {
-					info.setPrivatePermLink(row.get(7));
+					info.privatePermLink = row.get(7);
 				}
 				if(row.get(8).equals("")) {//set FTB perm link
-					info.setFTBPermLink(info.getPermLink());
+					info.FTBPermLink = info.permLink;
 				} else if(row.get(8).equals("PM")) {
-					info.setPrivatePermLink(imageBaseUrl+"PrivateMessage"+imageExtension);
+					info.FTBPermLink = imageBaseUrl+"PrivateMessage"+imageExtension;
 				} else {
-					info.setFTBPermLink(row.get(8));
+					info.FTBPermLink = row.get(8);
 				}
 				
 				switch(row.get(3)){//set the public policy
 				case "Open":
-					info.setPublicPolicy(ModInfo.OPEN);
+					info.publicPolicy = ModInfo.OPEN;
 					break;
 				case "Request":
-					info.setPublicPolicy(ModInfo.REQUEST);
+					info.publicPolicy = ModInfo.REQUEST;
 					break;
 				case "Closed":
-					info.setPublicPolicy(ModInfo.CLOSED);
+					info.publicPolicy = ModInfo.CLOSED;
 					break;
 				case "FTB":
-					info.setPublicPolicy(ModInfo.FTB);
+					info.publicPolicy = ModInfo.FTB;
 					break;
 				case "Not Available":
-					info.setPublicPolicy(ModInfo.UNKNOWN);
+					info.publicPolicy = ModInfo.UNKNOWN;
 					break;
 				default:
-					System.out.println("Couldn't set the public policy of "+info.getShortName());
+					System.out.println("Couldn't set the public policy of "+info.shortName);
 					break;
 				}
 				
 				switch(row.get(4)){//set the public policy
 				case "Open":
-					info.setPrivatePolicy(ModInfo.OPEN);
+					info.privatePolicy = ModInfo.OPEN;
 					break;
 				case "Request":
-					info.setPrivatePolicy(ModInfo.REQUEST);
+					info.privatePolicy = ModInfo.REQUEST;
 					break;
 				case "Closed":
-					info.setPrivatePolicy(ModInfo.CLOSED);
+					info.privatePolicy = ModInfo.CLOSED;
 					break;
 				case "FTB":
-					info.setPrivatePolicy(ModInfo.FTB);
+					info.privatePolicy = ModInfo.FTB;
 					break;
 				case "Not Available":
-					info.setPrivatePolicy(ModInfo.UNKNOWN);
+					info.privatePolicy = ModInfo.UNKNOWN;
 					break;
 				default:
-					System.out.println("Couldn't set the private policy of "+info.getShortName());
+					System.out.println("Couldn't set the private policy of "+info.shortName);
 					break;
 				}
 				
 				//set FTB policy
-				if(info.getPublicPolicy() == ModInfo.OPEN || info.getPublicPolicy() == ModInfo.FTB || !row.get(8).equals("")) {
-					info.setFTBPolicy(ModInfo.FTB_GRANTED);
+				if(info.publicPolicy == ModInfo.OPEN || info.publicPolicy == ModInfo.FTB || !row.get(8).equals("")) {
+					info.FTBPolicy = ModInfo.FTB_GRANTED;
 				} else {
-					info.setFTBPolicy(ModInfo.FTB_UNKOWN);
+					info.FTBPolicy = ModInfo.FTB_UNKOWN;
 				}
 				
-				info.setImageLink(imageBaseUrl+info.getShortName()+imageExtension);//set perm image link
+				info.imageLink = imageBaseUrl+info.shortName+imageExtension;//set perm image link
 				if(row.get(7).equals("")) {//set private perm image link
-					info.setPrivateImageLink(info.getImageLink());
+					info.privateImageLink = info.imageLink;
 				} else {
-					info.setPrivateImageLink(imageBaseUrl+info.getShortName()+"private"+imageExtension);
+					info.privateImageLink = imageBaseUrl+info.shortName+"private"+imageExtension;
 				}
 				if(row.get(8).equals("")) {//set FTB perm image link
-					info.setFTBImageLink(info.getImageLink());
+					info.FTBImageLink = info.imageLink;
 				} else {
-					info.setFTBImageLink(imageBaseUrl+info.getShortName()+"FTB"+imageExtension);
+					info.FTBImageLink = imageBaseUrl+info.shortName+"FTB"+imageExtension;
 				}
 				
 				modInfoMappings.put(row.get(2), info);
