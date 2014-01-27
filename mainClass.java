@@ -13,6 +13,7 @@ import gr.watchful.permchecker.utils.OsTypes;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -22,14 +23,18 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 
 @SuppressWarnings("serial")
 public class mainClass extends JFrame implements NamedScrollingListPanelListener {
@@ -84,12 +89,6 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
             System.out.println("Directory exists!");
         }
 
-
-        // Checks if PermissionsCheckerPermFile.xlsx is existent
-        /*
-         * Old Code permFile = File.createTempFile("PermissionsCheckerPermFile",
-         * ".xlsx");
-         */
         permFile = new File(appstore.getPath() + "/PermissionsChecker.xlsx");
         if (!permFile.exists()) {
             try {
@@ -124,11 +123,37 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			//debug
 			//discoverMods(new File("C:\\Users\\Gregory\\Desktop\\MultiMC\\instances\\Hammercraft 4.3.0 Custom\\minecraft"));
 		}
+		
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+		
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+		buttonPanel.setAlignmentX(0f);
+		buttonPanel.add(new JLabel("Public"));
+		JToggleButton packTypeToggle = new JToggleButton();
+		packTypeToggle.setBorderPainted(false);
+		packTypeToggle.setContentAreaFilled(false);
+		//try {
+		    //Image img = ImageIO.read(getClass().getResource("src/resources/toggleOff.png"));
+	    packTypeToggle.setIcon(new ImageIcon("src/resources/toggleOff.png"));
+	    packTypeToggle.setSelectedIcon(new ImageIcon("src/resources/toggleOn.png"));
+		//} catch (IOException ex) {
+		
+		//}
+		
+		
+		buttonPanel.add(packTypeToggle);
+		buttonPanel.add(new JLabel("Private"));
+		
+		topPanel.add(buttonPanel);
 
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
 		mainPanel.setAlignmentX(0f);
-		this.add(mainPanel);
+		topPanel.add(mainPanel);
+		
+		this.add(topPanel);
 
 		good = new NamedScrollingListPanel<Mod>(
 				"Good", new Dimension(100, 300), goodMods);
