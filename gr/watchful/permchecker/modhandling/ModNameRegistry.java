@@ -1,14 +1,9 @@
 package gr.watchful.permchecker.modhandling;
 
 import gr.watchful.permchecker.datastructures.ModInfo;
-import gr.watchful.permchecker.utils.FileUtils;
 import java.util.ArrayList;
 
-import java.io.File;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Stores and gives access to mappings for modid to shortname as well as shortname to associated modinfo object
@@ -30,7 +25,26 @@ public class ModNameRegistry {
 		for(ArrayList<String> row : infos) {
 			if(row.get(2) != null && !row.get(2).equals("")) {
 				ModInfo info = new ModInfo(row.get(2));
-				info.setModName(row.get(1));
+				info.setModName(row.get(0));//set name
+				info.setModAuthor(row.get(1));//set author
+				info.setModUrl(row.get(5));//set url
+				
+				if(row.get(6).equals("")) {//set perm link
+					info.setPermLink(info.getModUrl());
+				} else {
+					info.setPermLink(row.get(6));
+				}
+				if(row.get(7).equals("")) {//set private perm link
+					info.setPrivatePermLink(info.getPermLink());
+				} else {
+					info.setPrivatePermLink(row.get(7));
+				}
+				if(row.get(8).equals("")) {//set FTB perm link
+					info.setFTBPermLink(info.getPermLink());
+				} else {
+					info.setFTBPermLink(row.get(8));
+				}
+				
 				modInfoMappings.put(row.get(2), info);
 			}
 		}

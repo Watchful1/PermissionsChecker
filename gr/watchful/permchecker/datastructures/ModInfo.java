@@ -1,7 +1,5 @@
 package gr.watchful.permchecker.datastructures;
 
-import gr.watchful.permchecker.modhandling.ModNameRegistry;
-
 public class ModInfo {
 	public static final int OPEN = 0;
 	public static final int REQUEST = 1;
@@ -23,6 +21,9 @@ public class ModInfo {
 	private String permLink;
 	private String privatePermLink;
 	private String FTBPermLink;
+	private String imageLink;
+	private String privateImageLink;
+	private String FTBImageLink;
 	
 	public ModInfo(String shortName) {
 		this.shortName = shortName;
@@ -117,23 +118,38 @@ public class ModInfo {
 		return FTBPermLink;
 	}
 	
+	public void setImageLink(String imageLink) {
+		this.imageLink = imageLink;
+	}
+	
 	public String getImageLink() {
-		return ModNameRegistry.imageBaseUrl+shortName+ModNameRegistry.imageExtension;
+		return imageLink;
+		//return ModNameRegistry.imageBaseUrl+shortName+ModNameRegistry.imageExtension;
+	}
+	
+	public void setPrivateImageLink(String privateImageLink) {
+		this.privateImageLink = privateImageLink;
 	}
 	
 	public String getPrivateImageLink() {
-		if(getPrivatePermLink().equals("")) {
+		return privateImageLink;
+		/*if(getPrivatePermLink().equals("")) {
 			return "";
 		} else {
 			return ModNameRegistry.imageBaseUrl+shortName+"private"+ModNameRegistry.imageExtension;
-		}
+		}*/
+	}
+	
+	public void setFTBImageLink(String FTBImageLink) {
+		this.FTBImageLink = FTBImageLink;
 	}
 	
 	public String getFTBImageLink() {
-		if(getFTBPermLink().equals("")) {
+		return FTBImageLink;
+		/*if(getFTBPermLink().equals("")) {
 			return "";
 		} else {
 			return ModNameRegistry.imageBaseUrl+shortName+"FTB"+ModNameRegistry.imageExtension;
-		}
+		}*/
 	}
 }
