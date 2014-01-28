@@ -1,5 +1,5 @@
 
-package gr.watchful.permchecker;
+
 
 import gr.watchful.permchecker.datastructures.Mod;
 import gr.watchful.permchecker.datastructures.ModFile;
