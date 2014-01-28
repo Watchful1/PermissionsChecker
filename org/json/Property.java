@@ -33,6 +33,7 @@ import java.util.Properties;
  * @author JSON.org
  * @version 2013-05-23
  */
+@SuppressWarnings("all")
 public class Property {
     /**
      * Converts a property file object into a JSONObject. The property file object is a table of name value pairs.

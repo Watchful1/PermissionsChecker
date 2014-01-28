@@ -35,6 +35,7 @@ import org.json.Kim;
  * integer value. When the keep is compacted, each key can be given a new
  * value.
  */
+@SuppressWarnings("all")
 class MapKeep extends Keep {
     private Object[] list;
     private HashMap map;

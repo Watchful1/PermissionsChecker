@@ -1,8 +1,7 @@
 
 package gr.watchful.permchecker.utils;
 
-import mainClass;
-
+import gr.watchful.permchecker.mainClass;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

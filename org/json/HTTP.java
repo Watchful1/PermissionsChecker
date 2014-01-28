@@ -31,6 +31,7 @@ import java.util.Iterator;
  * @author JSON.org
  * @version 2010-12-24
  */
+@SuppressWarnings("all")
 public class HTTP {
 
     /** Carriage return/line feed. */
@@ -68,6 +69,7 @@ public class HTTP {
      * of the XML string.
      * @throws JSONException
      */
+
     public static JSONObject toJSONObject(String string) throws JSONException {
         JSONObject     jo = new JSONObject();
         HTTPTokener    x = new HTTPTokener(string);
@@ -124,6 +126,7 @@ public class HTTP {
      * @throws JSONException if the object does not contain enough
      *  information.
      */
+    
     public static String toString(JSONObject jo) throws JSONException {
         Iterator     keys = jo.keys();
         String       string;

@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
  * string wrapped in square brackets with commas separating the values. The
@@ -77,11 +76,13 @@ import java.util.Map;
  * @author JSON.org
  * @version 2013-04-18
  */
+@SuppressWarnings("all")
 public class JSONArray {
 
     /**
      * The arrayList where the JSONArray's properties are kept.
      */
+
     private final ArrayList myArrayList;
 
     /**

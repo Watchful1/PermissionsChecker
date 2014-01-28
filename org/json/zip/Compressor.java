@@ -49,6 +49,7 @@ import org.json.Kim;
  * FOR EVALUATION PURPOSES ONLY. THIS PACKAGE HAS NOT BEEN TESTED ADEQUATELY
  * FOR PRODUCTION USE.
  */
+@SuppressWarnings("all")
 public class Compressor extends JSONzip {
 
     /**
