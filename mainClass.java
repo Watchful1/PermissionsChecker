@@ -147,12 +147,12 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			}
 		});
 		
-		Dimension temp = new Dimension(92,28);//TODO
+		Dimension temp = new Dimension(92,28);
 		packTypeToggle.setMaximumSize(temp);
 		packTypeToggle.setMinimumSize(temp);
 		packTypeToggle.setPreferredSize(temp);
 
-		try {
+		try {//try as hard as possible to load the images and set them on the toggle button
 			URL leftUrl = getClass().getResource("resources/toggleLeft.png");
 			URL rightUrl = getClass().getResource("resources/toggleRight.png");
 		    if(leftUrl == null || rightUrl == null) {
@@ -163,11 +163,6 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		    	} else {
 		    		packTypeToggle.setIcon(leftIcon);
 		    		packTypeToggle.setSelectedIcon(rightIcon);
-		    		
-		    		packTypeToggle.setBorderPainted(false);
-		    		packTypeToggle.setContentAreaFilled(false);
-		    		packTypeToggle.setOpaque(false);
-		    		packTypeToggle.setFocusPainted(false);
 		    	}
 		    } else {
 		    	Image leftImg = ImageIO.read(leftUrl);
@@ -177,11 +172,6 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		    	} else {
 		    		packTypeToggle.setIcon(new ImageIcon(leftImg));
 		    		packTypeToggle.setSelectedIcon(new ImageIcon(rightImg));
-		    		
-		    		packTypeToggle.setBorderPainted(false);
-		    		packTypeToggle.setContentAreaFilled(false);
-		    		packTypeToggle.setOpaque(false);
-		    		packTypeToggle.setFocusPainted(false);
 		    	}
 		    }
 		} catch (IOException ex) {
@@ -193,6 +183,11 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			packTypeToggle.setMaximumSize(temp2);
 			packTypeToggle.setMinimumSize(temp2);
 			packTypeToggle.setPreferredSize(temp2);
+    		
+    		packTypeToggle.setBorderPainted(false);
+    		packTypeToggle.setContentAreaFilled(false);
+    		packTypeToggle.setOpaque(false);
+    		packTypeToggle.setFocusPainted(false);
 		}
 		
 		buttonPanel.add(packTypeToggle);
@@ -231,7 +226,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		
 		modEditor = new ModEditor(new Dimension(300,300));
 		cards.add(modEditor,"MODEDITOR");
-		modFileEditor = new ModFileEditor(new Dimension(300,300));
+		modFileEditor = new ModFileEditor(new Dimension(300,300), new ModFile(new File("/")));
 		cards.add(modFileEditor,"MODFILEEDITOR");
 		
 		CardLayout cardLayout = (CardLayout)(cards.getLayout());
@@ -243,8 +238,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		JMenu menu = new JMenu("Temp"); // with the submenus
 		menuBar.add(menu);
 
-		JMenuItem updatePerms = new JMenuItem(
-				"Force-update Permissions Listing");
+		JMenuItem updatePerms = new JMenuItem("Update Permissions");
 
 		// listen to all the menu items and then add them to the menus
 		updatePerms.addActionListener(new ActionListener() {

@@ -1,12 +1,14 @@
 package gr.watchful.permchecker.datastructures;
 
 import java.io.File;
-import java.util.ArrayList;
+
+import javax.swing.DefaultListModel;
 
 public class ModFile {
 	public File file;
 	private String fileName;
-	public ArrayList<String[]> names = new ArrayList<String[]>();
+	public DefaultListModel<String> IDs = new DefaultListModel<String>();
+	public DefaultListModel<String> names = new DefaultListModel<String>();
 	
 	public ModFile(File fileIn) {
 		file = fileIn;
@@ -17,10 +19,13 @@ public class ModFile {
 		return file.getName();
 	}
 	
-	public void addName(String ID, String name) {
-		String[] temp = new String[2];
-		temp[0] = ID; temp[1] = name;
-		names.add(temp);
+	public void addName(String name) {
+		names.addElement(name);
+	}
+	
+	public void addID(String ID) {
+		System.out.println("----- Adding ID "+ID+" -----");
+		IDs.addElement(ID);
 	}
 	
 	public String toString() {

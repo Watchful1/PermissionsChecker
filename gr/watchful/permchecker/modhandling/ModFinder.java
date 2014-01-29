@@ -95,7 +95,8 @@ public class ModFinder {
 		
 		@Override
 		public void visitEnd() {
-			otherMod.addName(id, name);
+			otherMod.addID(id);
+			otherMod.addName(name);
 		}
 	}
 	
@@ -133,7 +134,8 @@ public class ModFinder {
 		public void visitEnd() {
 			if(idStorage != null) {
 				//System.out.println("Mod ID is "+idStorage);
-				otherMod.addName(idStorage, nameStorage);
+				otherMod.addID(idStorage);
+				otherMod.addName(nameStorage);
 			}
 		}
 	}
@@ -151,7 +153,7 @@ public class ModFinder {
 				String superName, String[] interfaces) {
 			if(superName.equals("BaseMod")) {
 				//TODO modloader mod, add the class name
-				otherMod.addName(name,"");
+				otherMod.addID(name);
 			} else if(superName.equals("DummyModContainer") || superName.equals("cpw/mods/fml/common/DummyModContainer")) {
 				//TODO this is a forge coremod, launch a method visitor to try to find the name
 				//System.out.println(name);
@@ -203,9 +205,9 @@ public class ModFinder {
 			//System.out.println("File "+otherMod.fileName()+" doesn't look like a mod");
 		} else {
 			//System.out.println(otherMod.fileName()+" has mods");
-			for(String[] name : otherMod.names) {
+			//for(String[] name : otherMod.names) {
 				//System.out.println("   "+name[0]+"  :  "+name[1]);
-			}
+			//}
 		}
 		return otherMod;
 	}
@@ -219,8 +221,8 @@ public class ModFinder {
 	private static void processModFile(ModFile modFile) {
 		String result = null;
 		HashSet<String> identifiedIDs = new HashSet<String>();
-		for(String[] nameID : modFile.names) {
-			result = nameRegistry.checkID(nameID[0]);
+		for(int i=0; i<modFile.IDs.getSize(); i++) {
+			result = nameRegistry.checkID(modFile.IDs.get(i));
 			if(result != null) {
 				identifiedIDs.add(result);
 			}
