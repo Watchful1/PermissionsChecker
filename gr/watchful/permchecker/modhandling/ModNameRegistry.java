@@ -69,7 +69,7 @@ public class ModNameRegistry {
 					info.publicPolicy = ModInfo.UNKNOWN;
 					break;
 				default:
-					System.out.println("Couldn't set the public policy of "+info.shortName);
+					System.out.println("Couldn't set the public policy of "+info.shortName+". String was "+row.get(3));
 					break;
 				}
 				
@@ -90,7 +90,7 @@ public class ModNameRegistry {
 					info.privatePolicy = ModInfo.UNKNOWN;
 					break;
 				default:
-					System.out.println("Couldn't set the private policy of "+info.shortName);
+					System.out.println("Couldn't set the private policy of "+info.shortName+". String was "+row.get(4));
 					break;
 				}
 				

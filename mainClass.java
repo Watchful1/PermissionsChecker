@@ -1,5 +1,7 @@
 import gr.watchful.permchecker.datastructures.Mod;
 import gr.watchful.permchecker.datastructures.ModFile;
+import gr.watchful.permchecker.datastructures.ModInfo;
+import gr.watchful.permchecker.datastructures.ToolSettings;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
 import gr.watchful.permchecker.modhandling.ModFinder;
@@ -44,12 +46,14 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	private NamedScrollingListPanel<Mod> good;
 	private NamedScrollingListPanel<Mod> bad;
 	private NamedScrollingListPanel<ModFile> unknown;
+	private JToggleButton packTypeToggle;
 	private File permFile;
 	private File appstore; //Location for the spreadsheet file
 	private JPanel cards;
 	private ModEditor modEditor;
 	private ModFileEditor modFileEditor;
 	private static ModNameRegistry nameRegistry;
+	private static ToolSettings settings;
 
 	public mainClass() {
 		goodMods = new DefaultListModel<Mod>();
@@ -57,6 +61,8 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		unknownMods = new DefaultListModel<ModFile>();
 
 		nameRegistry = new ModNameRegistry();
+		
+		settings = new ToolSettings();
 
         /**
          * Check which OS the system is running, and make the appropriate directories if necessary
@@ -131,19 +137,66 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		buttonPanel.setAlignmentX(0f);
 		buttonPanel.add(new JLabel("Public"));
-		JToggleButton packTypeToggle = new JToggleButton();
-		packTypeToggle.setBorderPainted(false);
-		packTypeToggle.setContentAreaFilled(false);
-		//try {
-		    //Image img = ImageIO.read(getClass().getResource("src/resources/toggleOff.png"));
-	    packTypeToggle.setIcon(new ImageIcon("src/resources/toggleOff.png"));
-	    packTypeToggle.setSelectedIcon(new ImageIcon("src/resources/toggleOn.png"));
-		//} catch (IOException ex) {
 		
-		//}
+		packTypeToggle = new JToggleButton();
+		packTypeToggle.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				updateToggleIcons();
+				updateSettings();
+			}
+		});
 		
+		Dimension temp = new Dimension(92,28);//TODO
+		packTypeToggle.setMaximumSize(temp);
+		packTypeToggle.setMinimumSize(temp);
+		packTypeToggle.setPreferredSize(temp);
+
+		try {
+			URL leftUrl = getClass().getResource("resources/toggleLeft.png");
+			URL rightUrl = getClass().getResource("resources/toggleRight.png");
+		    if(leftUrl == null || rightUrl == null) {
+		    	ImageIcon leftIcon = new ImageIcon("bin/resources/toggleLeft.png");
+		    	ImageIcon rightIcon = new ImageIcon("bin/resources/toggleRight.png");
+		    	if(leftIcon.getIconWidth() == -1 || rightIcon.getIconWidth() == -1) {
+		    		packTypeToggle.setText("Switch");
+		    	} else {
+		    		packTypeToggle.setIcon(leftIcon);
+		    		packTypeToggle.setSelectedIcon(rightIcon);
+		    		
+		    		packTypeToggle.setBorderPainted(false);
+		    		packTypeToggle.setContentAreaFilled(false);
+		    		packTypeToggle.setOpaque(false);
+		    		packTypeToggle.setFocusPainted(false);
+		    	}
+		    } else {
+		    	Image leftImg = ImageIO.read(leftUrl);
+		    	Image rightImg = ImageIO.read(rightUrl);
+		    	if(leftImg == null || rightImg == null) {
+		    		packTypeToggle.setText("Switch");
+		    	} else {
+		    		packTypeToggle.setIcon(new ImageIcon(leftImg));
+		    		packTypeToggle.setSelectedIcon(new ImageIcon(rightImg));
+		    		
+		    		packTypeToggle.setBorderPainted(false);
+		    		packTypeToggle.setContentAreaFilled(false);
+		    		packTypeToggle.setOpaque(false);
+		    		packTypeToggle.setFocusPainted(false);
+		    	}
+		    }
+		} catch (IOException ex) {
+    		packTypeToggle.setText("Switch");
+		}
+		
+		if(packTypeToggle.getIcon() != null) {
+			Dimension temp2 = new Dimension(packTypeToggle.getIcon().getIconWidth()+2,packTypeToggle.getIcon().getIconHeight()+2);
+			packTypeToggle.setMaximumSize(temp2);
+			packTypeToggle.setMinimumSize(temp2);
+			packTypeToggle.setPreferredSize(temp2);
+		}
 		
 		buttonPanel.add(packTypeToggle);
+		
 		buttonPanel.add(new JLabel("Private"));
 		
 		topPanel.add(buttonPanel);
@@ -296,6 +349,32 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private void updateToggleIcons() {
+		if(packTypeToggle.isSelected()) {
+			packTypeToggle.setPressedIcon(packTypeToggle.getIcon());
+		} else {
+			packTypeToggle.setPressedIcon(packTypeToggle.getSelectedIcon());
+		}
+	}
+	
+	public void updateSettings() {
+		if(packTypeToggle.isSelected()) {
+			settings.packType = ToolSettings.PRIVATE;
+		} else {
+			settings.packType = ToolSettings.PUBLIC;
+		}
+		recheckMods();
+	}
+	
+	public void recheckMods() {
+		for(int i=0; i<badMods.getSize(); i++) {
+			ModInfo temp = nameRegistry.getMod(badMods.get(i).shortName);
+			if(temp != null && temp.publicPolicy == ModInfo.OPEN) {
+				System.out.println(temp.modName+" is good");
+			}
 		}
 	}
 }
