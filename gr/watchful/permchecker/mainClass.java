@@ -1,6 +1,5 @@
+
 package gr.watchful.permchecker;
-
-
 
 import gr.watchful.permchecker.datastructures.Mod;
 import gr.watchful.permchecker.datastructures.ModFile;
@@ -18,17 +17,13 @@ import gr.watchful.permchecker.utils.SkydriveUtils;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -41,8 +36,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
-import org.json.JSONArray;
-
 @SuppressWarnings("serial")
 public class mainClass extends JFrame implements NamedScrollingListPanelListener {
     private DefaultListModel<Mod> goodMods;
@@ -51,6 +44,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
     private NamedScrollingListPanel<Mod> good;
     private NamedScrollingListPanel<Mod> bad;
     private NamedScrollingListPanel<ModFile> unknown;
+    private String lastdir = System.getProperty("user.home"); // Modpack folder chooser
     private File permFile;
     public static File appstore; //Location for the spreadsheet file
     public static File appdata; //app.data (Store properties)
@@ -119,12 +113,6 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
                 System.out.println("Cannot create application data! Do you have permission to access the folder: " + appstore.getPath() + "?");
             }
         }
-        try {
-            permFile = File.createTempFile("PermissionsCheckerPermFile", ".xlsx");
-        } catch (IOException e) {
-            // TODO Tell user error (No perms?)
-        }
-
         this.setTitle("Permissions Checker"); // Set the window title
         this.setPreferredSize(new Dimension(600, 300)); // and the initial size
 
@@ -206,29 +194,30 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
         JMenu menu = new JMenu("Temp"); // with the submenus
         menuBar.add(menu);
 
-        JMenuItem updatePerms = new JMenuItem("Force-update Permissions Listing");
+        JMenuItem updatePerms = new JMenuItem("Update Permission List");
 
         // listen to all the menu items and then add them to the menus
         updatePerms.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                // TODO Check last modified - bandwidth
                 updateListings();
             }
         });
         menu.add(updatePerms);
         // TODO Folder select (Pre: Check if current folder is valid)
+        // TODO Last selected directory
         JMenuItem chooseModpack = new JMenuItem("Choose Modpack");
 
         // listen to all the menu items and then add them to the menus
         chooseModpack.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home"));
+                JFileChooser fileChooser = new JFileChooser(lastdir);
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 int returnVal = fileChooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File result = fileChooser.getSelectedFile();
+                    lastdir = result.getPath();
                     discoverMods(result);
                 }
             }
@@ -291,38 +280,38 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 
     public void updateListings() {
         System.out.println("Updating permission listings!");
-        JSONArray spreadsheet = null;
         String newupdatedtime = null;
+        String accesstoken = null;
+
+        // Read setting (Not settingS)
+        System.out.println("Reading Settings");
+        FileUtils.ReadSettings();
+
+        // Gets Access Token from Microsoft's API
+        System.out.println("Retrieving Access Token");
+        accesstoken = SkydriveUtils.getKey("access_token", "https://login.live.com/oauth20_token.srf?client_id=000000004410FE50&redirect_uri=https://login.live.com/oauth20_desktop.srf&grant_type=refresh_token&refresh_token=Chf9!6iNyOsxUtX2uCMG*SKiPuyCsVNuof8bK7avToNEtCbfzYspPLEbuRXdxwjOd8CFO7BpgmyJmVDUnCqZrT6eJgtZ7mCZgkpBUiLRFm8fLHzD2tbYyn!fhJ0I7Da7i!CG05xN8ZfAc*0cOo02bsqkfq!nak!fKtRfOUal1nHjMYdkWPnTQ8a86UxYNm0nJvEvAahJoayNzJ5tvSdsD0Ar8uauOmMyixRiXkoGUvxViQlBfJYeKeifBR1uZkb5f!*JLMA5!zUxNxES9ahzYR!MATG!tnqWtZLzWCYcESEo73YtjVcNAUnf26Ad0SWunHY1C*awrgf7OgwVbiruORR9pyZ*3QcXpK5lpMDCIsAK");
+        newupdatedtime = SkydriveUtils.getKey("updated_time", "https://apis.live.net/v5.0/file.a4423f3123801749.A4423F3123801749!418?access_token=" + accesstoken);
+
+        System.out.println("Current: " + updatedtime);
+        System.out.println("Server:  " + newupdatedtime);
+
+        if (!(updatedtime.equals(newupdatedtime))) {
+            System.out.println("A spreadsheet update has been found! Dowloading...");
+            FileUtils.downloadToFile("https://skydrive.live.com/download?resid=96628E67B4C51B81!105&authkey=!AK7mlmHB0nrxmHg&ithint=file%2c.xlsx", permFile);
+            updatedtime = newupdatedtime;
+            FileUtils.WriteSettings();
+        } else {
+            System.out.println("The local spreadsheet is the same as the cloud version! Not downloading!");
+        }
         try {
-            try {
-                System.out.println("Retrieving Access Token");
-                String accesstoken = SkydriveUtils.getAccessToken();
-                spreadsheet = SkydriveUtils.getJSON("https://apis.live.net/v5.0/file.a4423f3123801749.A4423F3123801749!418?access_token=" + accesstoken);
-                newupdatedtime = spreadsheet.getString(spreadsheet.length()-1);
-            } catch (Throwable error) {
-                error.printStackTrace();
-                System.out.println("Error retrieving spreadsheet information!");
-            }
-            FileUtils.ReadSettings();
-            if (!(updatedtime == newupdatedtime)) {
-                FileUtils.downloadToFile(new URL("https://skydrive.live.com/download?resid=96628E67B4C51B81!105&authkey=!AK7mlmHB0nrxmHg&ithint=file%2c.xlsx"), permFile);
-                updatedtime = newupdatedtime;
-                FileUtils.WriteSettings();
-            }
-            try {
-                ArrayList<ArrayList<String>> infos = ExcelUtils.toArray(permFile, 1);
-                infos.remove(0);//remove the first row, it contains column titles
-                ArrayList<ArrayList<String>> mappings = ExcelUtils.toArray(permFile, 2);
-                nameRegistry.loadMappings(infos, mappings, infos.get(16).get(14), infos.get(16).get(15));
-            } catch (FileNotFoundException e) {
-                System.out.println("UHOH");
-            } catch (IOException e) {
-                System.out.println("UHOH");
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+            ArrayList<ArrayList<String>> infos = ExcelUtils.toArray(permFile, 1);
+            infos.remove(0);//remove the first row, it contains column titles
+            ArrayList<ArrayList<String>> mappings = ExcelUtils.toArray(permFile, 2);
+            nameRegistry.loadMappings(infos, mappings, infos.get(16).get(14), infos.get(16).get(15));
+        } catch (FileNotFoundException e) {
+            System.out.println("UHOH");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("UHOH");
         }
     }
 }
