@@ -1,4 +1,3 @@
-
 package org.json.zip;
 
 import org.json.JSONException;
@@ -38,7 +37,7 @@ import org.json.JSONException;
  * map to characters or other symbols. Symbols that are used frequently are
  * given shorter codes than symbols that are used infrequently. This usually
  * produces shorter messages.
- * 
+ *
  * Initially, all of the symbols are given the same weight. The weight of a
  * symbol is incremented by the tick method. The generate method is used to
  * generate the encoding table. The table must be generated before encoding or
@@ -81,7 +80,7 @@ public class Huff implements None, PostMortem {
 
         /**
          * Make a symbol representing a character or other value.
-         * 
+         *
          * @param integer
          *            The symbol's number
          */
@@ -127,7 +126,7 @@ public class Huff implements None, PostMortem {
 
     /**
      * Construct a Huffman encoder/decoder.
-     * 
+     *
      * @param domain
      *            The number of values known to the object.
      */
@@ -136,13 +135,13 @@ public class Huff implements None, PostMortem {
         int length = domain * 2 - 1;
         this.symbols = new Symbol[length];
 
-        // Make the leaf symbols.
+// Make the leaf symbols.
 
         for (int i = 0; i < domain; i += 1) {
             symbols[i] = new Symbol(i);
         }
 
-        // SMake the links.
+// SMake the links.
 
         for (int i = domain; i < length; i += 1) {
             symbols[i] = new Symbol(none);
@@ -152,13 +151,13 @@ public class Huff implements None, PostMortem {
     /**
      * Generate the encoding/decoding table. The table determines the bit
      * sequences used by the read and write methods.
-     * 
+     *
      * @return this
      */
     public void generate() {
         if (!this.upToDate) {
 
-            // Phase One: Sort the symbols by weight into a linked list.
+// Phase One: Sort the symbols by weight into a linked list.
 
             Symbol head = this.symbols[0];
             Symbol next;
@@ -170,22 +169,22 @@ public class Huff implements None, PostMortem {
             for (int i = 1; i < this.domain; i += 1) {
                 symbol = symbols[i];
 
-                // If this symbol weights less than the head, then it becomes the new head.
+// If this symbol weights less than the head, then it becomes the new head.
 
                 if (symbol.weight < head.weight) {
                     symbol.next = head;
                     head = symbol;
                 } else {
 
-                    // To save time, we will start the search from the previous symbol instead
-                    // of the head unless the current symbol weights less than the previous symbol.
+// To save time, we will start the search from the previous symbol instead
+// of the head unless the current symbol weights less than the previous symbol.
 
                     if (symbol.weight < previous.weight) {
                         previous = head;
                     }
 
-                    // Find a connected pair (previous and next) where the symbol weighs the same
-                    // or more than previous but less than the next. Link the symbol between them.
+// Find a connected pair (previous and next) where the symbol weighs the same
+// or more than previous but less than the next. Link the symbol between them.
 
                     while (true) {
                         next = previous.next;
@@ -200,8 +199,8 @@ public class Huff implements None, PostMortem {
                 }
             }
 
-            // Phase Two: Make new symbols from the two lightest symbols until only one
-            // symbol remains. The final symbol becomes the root of the table binary tree.
+// Phase Two: Make new symbols from the two lightest symbols until only one
+// symbol remains. The final symbol becomes the root of the table binary tree.
 
             int avail = this.domain;
             Symbol first;
@@ -223,7 +222,7 @@ public class Huff implements None, PostMortem {
                     break;
                 }
 
-                // Insert the new symbol back into the sorted list.
+// Insert the new symbol back into the sorted list.
 
                 if (symbol.weight < head.weight) {
                     symbol.next = head;
@@ -244,7 +243,7 @@ public class Huff implements None, PostMortem {
 
             }
 
-            // The last remaining symbol is the root of the table.
+// The last remaining symbol is the root of the table.
 
             this.table = symbol;
             this.upToDate = true;
@@ -290,8 +289,8 @@ public class Huff implements None, PostMortem {
      */
     public boolean postMortem(PostMortem pm) {
 
-        // Go through every integer in the domain, generating its bit sequence, and
-        // then proving that that bit sequence produces the same integer.
+// Go through every integer in the domain, generating its bit sequence, and
+// then proving that that bit sequence produces the same integer.
 
         for (int integer = 0; integer < this.domain; integer += 1) {
             if (!postMortem(integer)) {
@@ -304,9 +303,9 @@ public class Huff implements None, PostMortem {
     }
 
     /**
-     * Read bits until a symbol can be identified. The weight of the read symbol
-     * will be incremented.
-     * 
+     * Read bits until a symbol can be identified. The weight of the read
+     * symbol will be incremented.
+     *
      * @param bitreader
      *            The source of bits.
      * @return The integer value of the symbol.
@@ -332,7 +331,7 @@ public class Huff implements None, PostMortem {
 
     /**
      * Increase by 1 the weight associated with a value.
-     * 
+     *
      * @param value
      *            The number of the symbol to tick
      * @return this
@@ -344,7 +343,7 @@ public class Huff implements None, PostMortem {
 
     /**
      * Increase by 1 the weight associated with a range of values.
-     * 
+     *
      * @param from
      *            The first symbol to tick
      * @param to
@@ -358,16 +357,17 @@ public class Huff implements None, PostMortem {
     }
 
     /**
-     * Recur from a symbol back, emitting bits. We recur before emitting to make
-     * the bits come out in the right order.
-     * 
+     * Recur from a symbol back, emitting bits. We recur before emitting to
+     * make the bits come out in the right order.
+     *
      * @param symbol
      *            The symbol to write.
      * @param bitwriter
      *            The bitwriter to write it to.
      * @throws JSONException
      */
-    private void write(Symbol symbol, BitWriter bitwriter) throws JSONException {
+    private void write(Symbol symbol, BitWriter bitwriter)
+            throws JSONException {
         try {
             Symbol back = symbol.back;
             if (back != null) {
@@ -387,7 +387,7 @@ public class Huff implements None, PostMortem {
     /**
      * Write the bits corresponding to a symbol. The weight of the symbol will
      * be incremented.
-     * 
+     *
      * @param value
      *            The number of the symbol to write
      * @param bitwriter

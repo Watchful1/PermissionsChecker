@@ -1,4 +1,3 @@
-
 package org.json.zip;
 
 import java.util.HashMap;
@@ -33,7 +32,8 @@ import org.json.Kim;
  * A keep is an associative data structure that maintains usage counts of each
  * of the associations in its keeping. When the keep becomes full, it purges
  * little used associations, and ages the survivors. Each key is assigned an
- * integer value. When the keep is compacted, each key can be given a new value.
+ * integer value. When the keep is compacted, each key can be given a new
+ * value.
  */
 @SuppressWarnings("all")
 class MapKeep extends Keep {
@@ -42,10 +42,9 @@ class MapKeep extends Keep {
 
     /**
      * Create a new Keep.
-     * 
      * @param bits
-     *            The capacity of the keep expressed in the number of bits
-     *            required to hold an integer.
+     *              The capacity of the keep expressed in the number of bits
+     *              required to hold an integer.
      */
     public MapKeep(int bits) {
         super(bits);
@@ -54,8 +53,8 @@ class MapKeep extends Keep {
     }
 
     /**
-     * Compact the keep. A keep may contain at most this.capacity elements. The
-     * keep contents can be reduced by deleting all elements with low use
+     * Compact the keep. A keep may contain at most this.capacity elements.
+     * The keep contents can be reduced by deleting all elements with low use
      * counts, and by reducing the use counts of the survivors.
      */
     private void compact() {
@@ -86,7 +85,7 @@ class MapKeep extends Keep {
     /**
      * Find the integer value associated with this key, or nothing if this key
      * is not in the keep.
-     * 
+     *
      * @param key
      *            An object.
      * @return An integer
@@ -118,7 +117,9 @@ class MapKeep extends Keep {
                 b = o.equals(q);
             }
             if (!b) {
-                JSONzip.log("\n[" + i + "]\n " + this.list[i] + "\n " + that.list[i] + "\n " + this.uses[i] + "\n " + that.uses[i]);
+                JSONzip.log("\n[" + i + "]\n " + this.list[i] + "\n "
+                        + that.list[i] + "\n " + this.uses[i] + "\n "
+                        + that.uses[i]);
                 return false;
             }
         }
@@ -128,9 +129,7 @@ class MapKeep extends Keep {
     /**
      * Register a value in the keep. Compact the keep if it is full. The next
      * time this value is encountered, its integer can be sent instead.
-     * 
-     * @param value
-     *            A value.
+     * @param value A value.
      */
     public void register(Object value) {
         if (JSONzip.probe) {
@@ -153,9 +152,7 @@ class MapKeep extends Keep {
 
     /**
      * Return the value associated with the integer.
-     * 
-     * @param integer
-     *            The number of an item in the keep.
+     * @param integer The number of an item in the keep.
      * @return The value.
      */
     public Object value(int integer) {

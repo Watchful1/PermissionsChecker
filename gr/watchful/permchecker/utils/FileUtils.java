@@ -2,7 +2,6 @@
 package gr.watchful.permchecker.utils;
 
 import gr.watchful.permchecker.mainClass;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -256,16 +255,11 @@ public class FileUtils {
         return bldr.toString();
     }
 
-    public static void downloadToFile(String url, File file) {
-        try {
-            file.getParentFile().mkdirs();
-            ReadableByteChannel rbc = Channels.newChannel(new URL(url).openStream());
-            FileOutputStream fos = new FileOutputStream(file);
-            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-            fos.close();
-        } catch (IOException e) {
-            System.out.println("Error downloading to:" + file.getPath());
-            System.out.println("Error: " + e.toString());
-        }
+    public static void downloadToFile(URL url, File file) throws IOException {
+        file.getParentFile().mkdirs();
+        ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+        FileOutputStream fos = new FileOutputStream(file);
+        fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+        fos.close();
     }
 }

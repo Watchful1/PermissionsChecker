@@ -1,5 +1,5 @@
-
 package org.json.zip;
+
 
 /*
  Copyright (c) 2013 JSON.org
@@ -28,7 +28,7 @@ package org.json.zip;
 /**
  * A keep is a data structure that associates strings (or substrings) with
  * numbers. This allows the sending of small integers instead of strings.
- * 
+ *
  * @author JSON.org
  * @version 2013-04-18
  */
@@ -47,7 +47,7 @@ abstract class Keep implements None, PostMortem {
 
     /**
      * When an item ages, its use count is reduced by at least half.
-     * 
+     *
      * @param use
      *            The current use count of an item.
      * @return The new use count for that item.
@@ -77,9 +77,7 @@ abstract class Keep implements None, PostMortem {
 
     /**
      * Get the value associated with an integer.
-     * 
-     * @param integer
-     *            The number of an item in the keep.
+     * @param integer The number of an item in the keep.
      * @return The value.
      */
     abstract public Object value(int integer);

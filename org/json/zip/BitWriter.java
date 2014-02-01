@@ -1,4 +1,3 @@
-
 package org.json.zip;
 
 import java.io.IOException;
@@ -15,14 +14,14 @@ public interface BitWriter {
 
     /**
      * Write a 1 bit.
-     * 
+     *
      * @throws IOException
      */
     public void one() throws IOException;
 
     /**
      * Pad the rest of the block with zeros and flush.
-     * 
+     *
      * @param factor
      *            The size in bits of the block to pad. This will typically be
      *            8, 16, 32, 64, 128, 256, etc.
@@ -34,7 +33,7 @@ public interface BitWriter {
 
     /**
      * Write some bits. Up to 32 bits can be written at a time.
-     * 
+     *
      * @param bits
      *            The bits to be written.
      * @param width
@@ -45,7 +44,7 @@ public interface BitWriter {
 
     /**
      * Write a 0 bit.
-     * 
+     *
      * @throws IOException
      */
     public void zero() throws IOException;

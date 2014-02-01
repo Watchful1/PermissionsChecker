@@ -1,4 +1,3 @@
-
 package org.json.zip;
 
 /*
@@ -30,16 +29,16 @@ package org.json.zip;
  * processors. Testing that JSONzip can compress an object and reproduce a
  * corresponding object is not sufficient. Complete testing requires that the
  * same internal data structures were constructed on both ends. If those
- * structures are not equivalent, then it is likely that the implementations are
- * not correct, even if convention tests are passed.
- * 
+ * structures are not equivalent, then it is likely that the implementations
+ * are not correct, even if convention tests are passed.
+ *
  * PostMortem allows for testing of deep structures without breaking
  * encapsulation.
  */
 public interface PostMortem {
     /**
      * Determine if two objects are equivalent.
-     * 
+     *
      * @param pm
      *            Another object of the same type.
      * @return true if they match.

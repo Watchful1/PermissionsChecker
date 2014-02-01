@@ -1,4 +1,3 @@
-
 package org.json.zip;
 
 import java.io.UnsupportedEncodingException;
@@ -34,7 +33,7 @@ import org.json.Kim;
 
 /**
  * JSONzip is a compression scheme for JSON text.
- * 
+ *
  * @author JSON.org
  * @version 2013-04-18
  */
@@ -49,7 +48,7 @@ public class Decompressor extends JSONzip {
     /**
      * Create a new compressor. It may be used for an entire session or
      * subsession.
-     * 
+     *
      * @param bitreader
      *            The bitreader that this decompressor will read from.
      */
@@ -60,7 +59,7 @@ public class Decompressor extends JSONzip {
 
     /**
      * Read one bit.
-     * 
+     *
      * @return true if 1, false if 0.
      * @throws JSONException
      */
@@ -81,13 +80,14 @@ public class Decompressor extends JSONzip {
     /**
      * Read enough bits to obtain an integer from the keep, and increase that
      * integer's weight.
-     * 
+     *
      * @param keep
      * @param bitreader
      * @return
      * @throws JSONException
      */
-    private Object getAndTick(Keep keep, BitReader bitreader) throws JSONException {
+    private Object getAndTick(Keep keep, BitReader bitreader)
+            throws JSONException {
         try {
             int width = keep.bitsize();
             int integer = bitreader.read(width);
@@ -109,7 +109,7 @@ public class Decompressor extends JSONzip {
     /**
      * The pad method skips the bits that padded a stream to fit some
      * allocation. pad(8) will skip over the remainder of a byte.
-     * 
+     *
      * @param factor
      * @return true if all of the padding bits were zero.
      * @throws JSONException
@@ -124,7 +124,7 @@ public class Decompressor extends JSONzip {
 
     /**
      * Read an integer, specifying its width in bits.
-     * 
+     *
      * @param width
      *            0 to 32.
      * @return An unsigned integer.
@@ -144,7 +144,7 @@ public class Decompressor extends JSONzip {
 
     /**
      * Read a JSONArray.
-     * 
+     *
      * @param stringy
      *            true if the first element is a string.
      * @return
@@ -170,28 +170,28 @@ public class Decompressor extends JSONzip {
 
     /**
      * Read a JSON value. The type of value is determined by the next 3 bits.
-     * 
+     *
      * @return
      * @throws JSONException
      */
     private Object readJSON() throws JSONException {
         switch (read(3)) {
-            case zipObject:
-                return readObject();
-            case zipArrayString:
-                return readArray(true);
-            case zipArrayValue:
-                return readArray(false);
-            case zipEmptyObject:
-                return new JSONObject();
-            case zipEmptyArray:
-                return new JSONArray();
-            case zipTrue:
-                return Boolean.TRUE;
-            case zipFalse:
-                return Boolean.FALSE;
-            default:
-                return JSONObject.NULL;
+        case zipObject:
+            return readObject();
+        case zipArrayString:
+            return readArray(true);
+        case zipArrayValue:
+            return readArray(false);
+        case zipEmptyObject:
+            return new JSONObject();
+        case zipEmptyArray:
+            return new JSONArray();
+        case zipTrue:
+            return Boolean.TRUE;
+        case zipFalse:
+            return Boolean.FALSE;
+        default:
+            return JSONObject.NULL;
         }
     }
 
@@ -249,7 +249,8 @@ public class Decompressor extends JSONzip {
                 kim = (Kim) getAndTick(this.substringkeep, this.bitreader);
                 thru = kim.copy(bytes, from);
                 if (previousFrom != none) {
-                    this.substringkeep.registerOne(new Kim(bytes, previousFrom, previousThru + 1));
+                    this.substringkeep.registerOne(new Kim(bytes, previousFrom,
+                            previousThru + 1));
                 }
                 previousFrom = from;
                 previousThru = thru;
@@ -264,7 +265,8 @@ public class Decompressor extends JSONzip {
                     bytes[thru] = (byte) c;
                     thru += 1;
                     if (previousFrom != none) {
-                        this.substringkeep.registerOne(new Kim(bytes, previousFrom, previousThru + 1));
+                        this.substringkeep.registerOne(new Kim(bytes,
+                                previousFrom, previousThru + 1));
                         previousFrom = none;
                     }
                 }
@@ -285,33 +287,34 @@ public class Decompressor extends JSONzip {
 
     private Object readValue() throws JSONException {
         switch (read(2)) {
-            case 0:
-                return new Integer(read(!bit() ? 4 : !bit() ? 7 : 14));
-            case 1:
-                byte[] bytes = new byte[256];
-                int length = 0;
-                while (true) {
-                    int c = read(4);
-                    if (c == endOfNumber) {
-                        break;
-                    }
-                    bytes[length] = bcd[c];
-                    length += 1;
+        case 0:
+            return new Integer(read(!bit() ? 4 : !bit() ? 7 : 14));
+        case 1:
+            byte[] bytes = new byte[256];
+            int length = 0;
+            while (true) {
+                int c = read(4);
+                if (c == endOfNumber) {
+                    break;
                 }
-                Object value;
-                try {
-                    value = JSONObject.stringToValue(new String(bytes, 0, length, "US-ASCII"));
-                } catch (UnsupportedEncodingException e) {
-                    throw new JSONException(e);
-                }
-                this.values.register(value);
-                return value;
-            case 2:
-                return getAndTick(this.values, this.bitreader);
-            case 3:
-                return readJSON();
-            default:
-                throw new JSONException("Impossible.");
+                bytes[length] = bcd[c];
+                length += 1;
+            }
+            Object value;
+            try {
+                value = JSONObject.stringToValue(new String(bytes, 0, length,
+                        "US-ASCII"));
+            } catch (UnsupportedEncodingException e) {
+                throw new JSONException(e);
+            }
+            this.values.register(value);
+            return value;
+        case 2:
+            return getAndTick(this.values, this.bitreader);
+        case 3:
+            return readJSON();
+        default:
+            throw new JSONException("Impossible.");
         }
     }
 
