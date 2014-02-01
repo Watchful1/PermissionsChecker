@@ -1,3 +1,4 @@
+
 package org.json.zip;
 
 import org.json.Kim;
@@ -48,9 +49,8 @@ class TrieKeep extends Keep {
         }
 
         /**
-         * Get one of a node's 256 links. If it is a leaf node, it returns
-         * null.
-         *
+         * Get one of a node's 256 links. If it is a leaf node, it returns null.
+         * 
          * @param cell
          *            A integer between 0 and 255.
          * @return
@@ -60,9 +60,9 @@ class TrieKeep extends Keep {
         }
 
         /**
-         * Get one of a node's 256 links. If it is a leap node, it returns
-         * null. The argument is treated as an unsigned integer.
-         *
+         * Get one of a node's 256 links. If it is a leap node, it returns null.
+         * The argument is treated as an unsigned integer.
+         * 
          * @param cell
          *            A byte.
          * @return
@@ -72,8 +72,8 @@ class TrieKeep extends Keep {
         }
 
         /**
-         * Compare two nodes. Their lengths must be equal. Their links must
-         * also compare.
+         * Compare two nodes. Their lengths must be equal. Their links must also
+         * compare.
          */
         public boolean postMortem(PostMortem pm) {
             Node that = (Node) pm;
@@ -82,8 +82,7 @@ class TrieKeep extends Keep {
                 return false;
             }
             if (this.integer != that.integer) {
-                JSONzip.log("\nInteger " + this.integer + " <> " +
-                        that.integer);
+                JSONzip.log("\nInteger " + this.integer + " <> " + that.integer);
                 return false;
             }
             if (this.next == null) {
@@ -109,7 +108,7 @@ class TrieKeep extends Keep {
 
         /**
          * Set a node's link to another node.
-         *
+         * 
          * @param cell
          *            An integer between 0 and 255.
          * @param node
@@ -129,7 +128,7 @@ class TrieKeep extends Keep {
 
         /**
          * Set a node's link to another node.
-         *
+         * 
          * @param cell
          *            A byte.
          * @param node
@@ -142,7 +141,7 @@ class TrieKeep extends Keep {
         /**
          * Get one of a node's 256 links. It will not return null. If there is
          * no link, then a link is manufactured.
-         *
+         * 
          * @param cell
          *            A integer between 0 and 255.
          * @return
@@ -159,7 +158,7 @@ class TrieKeep extends Keep {
         /**
          * Get one of a node's 256 links. It will not return null. If there is
          * no link, then a link is manufactured.
-         *
+         * 
          * @param cell
          *            A byte.
          * @return
@@ -176,7 +175,7 @@ class TrieKeep extends Keep {
 
     /**
      * Create a new Keep of kims.
-     *
+     * 
      * @param bits
      *            The log2 of the capacity of the Keep. For example, if bits is
      *            12, then the keep's capacity will be 4096.
@@ -191,7 +190,7 @@ class TrieKeep extends Keep {
 
     /**
      * Get the kim associated with an integer.
-     *
+     * 
      * @param integer
      * @return
      */
@@ -211,7 +210,7 @@ class TrieKeep extends Keep {
     /**
      * Get the length of the Kim associated with an integer. This is sometimes
      * much faster than get(integer).length.
-     *
+     * 
      * @param integer
      * @return
      */
@@ -222,7 +221,7 @@ class TrieKeep extends Keep {
     /**
      * Find the integer value associated with this key, or nothing if this key
      * is not in the keep.
-     *
+     * 
      * @param key
      *            An object.
      * @return An integer
@@ -251,8 +250,7 @@ class TrieKeep extends Keep {
             return false;
         }
         if (this.capacity != that.capacity) {
-            JSONzip.log("\nCapacity " + this.capacity + " <> " +
-                    that.capacity);
+            JSONzip.log("\nCapacity " + this.capacity + " <> " + that.capacity);
             return false;
         }
         for (int i = 0; i < this.length; i += 1) {
@@ -282,8 +280,7 @@ class TrieKeep extends Keep {
             Node node = this.root;
             for (int at = from; at < len; at += 1) {
                 Node next = node.vet(kim.get(at));
-                if (next.integer == none
-                        && at - from >= (JSONzip.minSubstringLength - 1)) {
+                if (next.integer == none && at - from >= (JSONzip.minSubstringLength - 1)) {
                     next.integer = this.length;
                     this.uses[this.length] = 1;
                     this.kims[this.length] = kim;
@@ -291,8 +288,7 @@ class TrieKeep extends Keep {
                     this.thrus[this.length] = at + 1;
                     if (JSONzip.probe) {
                         try {
-                            JSONzip.log("<<" + this.length + " "
-                                    + new Kim(kim, from, at + 1) + ">> ");
+                            JSONzip.log("<<" + this.length + " " + new Kim(kim, from, at + 1) + ">> ");
                         } catch (Throwable ignore) {
                         }
                     }
@@ -341,10 +337,9 @@ class TrieKeep extends Keep {
     }
 
     /**
-     * Reserve space in the keep, compacting if necessary. A keep may contain
-     * at most -capacity- elements. The keep contents can be reduced by
-     * deleting all elements with low use counts, rebuilding the trie with the
-     * survivors.
+     * Reserve space in the keep, compacting if necessary. A keep may contain at
+     * most -capacity- elements. The keep contents can be reduced by deleting
+     * all elements with low use counts, rebuilding the trie with the survivors.
      */
     public void reserve() {
         if (this.capacity - this.length < JSONzip.substringLimit) {
@@ -370,8 +365,8 @@ class TrieKeep extends Keep {
                 from += 1;
             }
 
-// It is possible, but highly unlikely, that too many items survive.
-// If that happens, clear the keep.
+            // It is possible, but highly unlikely, that too many items survive.
+            // If that happens, clear the keep.
 
             if (this.capacity - to < JSONzip.substringLimit) {
                 this.power = 0;

@@ -1,3 +1,4 @@
+
 package org.json.zip;
 
 import java.io.IOException;
@@ -29,9 +30,9 @@ import java.io.InputStream;
 
 /**
  * This is a big endian bit reader. It reads its bits from an InputStream.
- *
+ * 
  * @version 2013-04-18
- *
+ * 
  */
 public class BitInputStream implements BitReader {
     /**
@@ -62,7 +63,7 @@ public class BitInputStream implements BitReader {
     /**
      * Make a BitReader from an InputStream. The BitReader will take bytes from
      * the InputStream and unpack them into bits.
-     *
+     * 
      * @param in
      *            An InputStream.
      */
@@ -75,7 +76,7 @@ public class BitInputStream implements BitReader {
      * bytes are obtained from the InputStream. This makes it possible to look
      * at the first byte of a stream before deciding that it should be read as
      * bits.
-     *
+     * 
      * @param in
      *            An InputStream
      * @param firstByte
@@ -89,7 +90,7 @@ public class BitInputStream implements BitReader {
 
     /**
      * Read one bit.
-     *
+     * 
      * @return true if it is a 1 bit.
      */
     public boolean bit() throws IOException {
@@ -97,11 +98,11 @@ public class BitInputStream implements BitReader {
     }
 
     /**
-     * Get the number of bits that have been read from this BitInputStream.
-     * This includes pad bits that have been skipped, but might not include
-     * bytes that have been read from the underlying InputStream that have not
-     * yet been delivered as bits.
-     *
+     * Get the number of bits that have been read from this BitInputStream. This
+     * includes pad bits that have been skipped, but might not include bytes
+     * that have been read from the underlying InputStream that have not yet
+     * been delivered as bits.
+     * 
      * @return The number of bits read so far.
      */
     public long nrBits() {
@@ -110,7 +111,7 @@ public class BitInputStream implements BitReader {
 
     /**
      * Check that the rest of the block has been padded with zeroes.
-     *
+     * 
      * @param factor
      *            The size of the block to pad. This will typically be 8, 16,
      *            32, 64, 128, 256, etc.
@@ -132,7 +133,7 @@ public class BitInputStream implements BitReader {
 
     /**
      * Read some bits.
-     *
+     * 
      * @param width
      *            The number of bits to read. (0..32)
      * @throws IOException
@@ -158,8 +159,7 @@ public class BitInputStream implements BitReader {
             if (take > this.available) {
                 take = this.available;
             }
-            result |= ((this.unread >>> (this.available - take)) & mask[take])
-                    << (width - take);
+            result |= ((this.unread >>> (this.available - take)) & mask[take]) << (width - take);
             this.nrBits += take;
             this.available -= take;
             width -= take;

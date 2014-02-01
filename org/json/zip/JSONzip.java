@@ -1,5 +1,5 @@
-package org.json.zip;
 
+package org.json.zip;
 
 /*
  Copyright (c) 2013 JSON.org
@@ -31,17 +31,16 @@ package org.json.zip;
  * improve its compression. It minimizes JSON's overhead, reducing punctuation
  * to a small number of bits. It uses Huffman encoding to reduce the average
  * size of characters. It uses caches (or Keeps) to keep recently seen strings
- * and values, so repetitive content (such as object keys) can be
- * substantially reduced. It uses a character encoding called Kim (Keep it
- * minimal) that is smaller than UTF-8 for most East European, African, and
- * Asian scripts.
- *
+ * and values, so repetitive content (such as object keys) can be substantially
+ * reduced. It uses a character encoding called Kim (Keep it minimal) that is
+ * smaller than UTF-8 for most East European, African, and Asian scripts.
+ * 
  * JSONzip tends to reduce most content by about half. If there is a lot of
  * recurring information, the reduction can be much more dramatic.
- *
- * FOR EVALUATION PURPOSES ONLY. THIS PACKAGE HAS NOT YET BEEN TESTED
- * ADEQUATELY FOR PRODUCTION USE.
- *
+ * 
+ * FOR EVALUATION PURPOSES ONLY. THIS PACKAGE HAS NOT YET BEEN TESTED ADEQUATELY
+ * FOR PRODUCTION USE.
+ * 
  * @author JSON.org
  * @version 2013-04-18
  */
@@ -49,17 +48,12 @@ public abstract class JSONzip implements None, PostMortem {
     /**
      * Powers of 2.
      */
-    public static final int[] twos = {
-        1, 2, 4, 8, 16, 32, 64, 128, 256, 512,
-        1024, 2048, 4096, 8192, 16384, 32768, 65536
-    };
+    public static final int[] twos = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536 };
 
     /**
      * The characters in JSON numbers can be reduced to 4 bits each.
      */
-    public static final byte[] bcd = {
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-', '+', 'E'
-    };
+    public static final byte[] bcd = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-', '+', 'E' };
 
     /**
      * The number of integers that can be encoded in 4 bits.
@@ -103,8 +97,7 @@ public abstract class JSONzip implements None, PostMortem {
     public static final boolean probe = false;
 
     /**
-     * The maximum number of substrings added to the substrings keep per
-     * string.
+     * The maximum number of substrings added to the substrings keep per string.
      */
     public static final int substringLimit = 40;
 
@@ -189,10 +182,10 @@ public abstract class JSONzip implements None, PostMortem {
         this.substringkeep = new TrieKeep(12);
         this.values = new MapKeep(10);
 
-// Increase the weights of the ASCII letters, digits, and special characters
-// because they are highly likely to occur more frequently. The weight of each
-// character will increase as it is used. The Huffman encoder will tend to
-// use fewer bits to encode heavier characters.
+        // Increase the weights of the ASCII letters, digits, and special characters
+        // because they are highly likely to occur more frequently. The weight of each
+        // character will increase as it is used. The Huffman encoder will tend to
+        // use fewer bits to encode heavier characters.
 
         this.namehuff.tick(' ', '}');
         this.namehuff.tick('a', 'z');
@@ -221,7 +214,7 @@ public abstract class JSONzip implements None, PostMortem {
 
     /**
      * Write an integer to the console.
-     *
+     * 
      * @param integer
      */
     static void log(int integer) {
@@ -230,7 +223,7 @@ public abstract class JSONzip implements None, PostMortem {
 
     /**
      * Write two integers, separated by ':' to the console.
-     *
+     * 
      * @param integer
      * @param width
      */
@@ -240,7 +233,7 @@ public abstract class JSONzip implements None, PostMortem {
 
     /**
      * Write a string to the console.
-     *
+     * 
      * @param string
      */
     static void log(String string) {
@@ -249,7 +242,7 @@ public abstract class JSONzip implements None, PostMortem {
 
     /**
      * Write a character or its code to the console.
-     *
+     * 
      * @param integer
      * @param width
      */
@@ -266,16 +259,11 @@ public abstract class JSONzip implements None, PostMortem {
      * suitable for any other purpose. It is used to compare a Compressor and a
      * Decompressor, verifying that the data structures that were built during
      * zipping and unzipping were the same.
-     *
+     * 
      * @return true if the structures match.
      */
     public boolean postMortem(PostMortem pm) {
         JSONzip that = (JSONzip) pm;
-        return this.namehuff.postMortem(that.namehuff)
-                && this.namekeep.postMortem(that.namekeep)
-                && this.stringkeep.postMortem(that.stringkeep)
-                && this.substringhuff.postMortem(that.substringhuff)
-                && this.substringkeep.postMortem(that.substringkeep)
-                && this.values.postMortem(that.values);
+        return this.namehuff.postMortem(that.namehuff) && this.namekeep.postMortem(that.namekeep) && this.stringkeep.postMortem(that.stringkeep) && this.substringhuff.postMortem(that.substringhuff) && this.substringkeep.postMortem(that.substringkeep) && this.values.postMortem(that.values);
     }
 }
