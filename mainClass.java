@@ -376,7 +376,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		knownMods.clear();
 		
 		ArrayList<Mod> mods;
-		for(int i=unknownMods.getSize(); i>=0; i--) {
+		for(int i=unknownMods.getSize()-1; i>=0; i--) {
 			mods = processModFile(unknownMods.elementAt(i));
 			if(mods != null) {
 				knownMods.addElement(unknownMods.elementAt(i));
@@ -388,9 +388,12 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			mods = null;
 		}
 		
-		for(int i=badMods.getSize(); i>=0; i--) {
+		for(int i=badMods.getSize()-1; i>=0; i--) {
 			ModInfo temp = nameRegistry.getMod(badMods.get(i).shortName);
 			if(temp != null && temp.publicPolicy == ModInfo.OPEN) {
+				goodMods.addElement(badMods.get(i));
+				badMods.remove(i);
+				
 				System.out.println(temp.modName+" is good");
 			}
 		}
