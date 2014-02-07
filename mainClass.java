@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -43,6 +44,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	private DefaultListModel<Mod> goodMods;
 	private DefaultListModel<Mod> badMods;
 	private DefaultListModel<ModFile> unknownMods;
+	private DefaultListModel<ModFile> knownMods;
 	private NamedScrollingListPanel<Mod> good;
 	private NamedScrollingListPanel<Mod> bad;
 	private NamedScrollingListPanel<ModFile> unknown;
@@ -59,6 +61,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		goodMods = new DefaultListModel<Mod>();
 		badMods = new DefaultListModel<Mod>();
 		unknownMods = new DefaultListModel<ModFile>();
+		knownMods = new DefaultListModel<ModFile>();
 
 		nameRegistry = new ModNameRegistry();
 		
@@ -284,7 +287,8 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	}
 
 	private void discoverMods(File minecraftFolder) {
-		ModFinder.discoverAllMods(minecraftFolder, unknownMods, badMods, nameRegistry);
+		//ModFinder.discoverAllMods(minecraftFolder, unknownMods, badMods, nameRegistry);
+		ModFinder.discoverModFiles(minecraftFolder, unknownMods);
 	}
 
 	public void selectionChanged(NamedSelectionEvent event) {
@@ -300,7 +304,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			CardLayout cardLayout = (CardLayout)(cards.getLayout());
 			cardLayout.show(cards, "MODEDITOR");
 			
-			modEditor.setMod(nameRegistry.getMod(good.getSelected().shortName));
+			modEditor.setMod(nameRegistry.getMod(good.getSelected().shortName), good.getSelected().shortName);
 		}
 		if(list.equals("Bad")) {
 			good.clearSelection();
@@ -309,7 +313,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			CardLayout cardLayout = (CardLayout)(cards.getLayout());
 			cardLayout.show(cards, "MODEDITOR");
 
-			modEditor.setMod(nameRegistry.getMod(bad.getSelected().shortName));
+			modEditor.setMod(nameRegistry.getMod(bad.getSelected().shortName), bad.getSelected().shortName);
 		}
 		if(list.equals("Unknown")) {
 			good.clearSelection();
@@ -364,11 +368,51 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	}
 	
 	public void recheckMods() {
-		for(int i=0; i<badMods.getSize(); i++) {
+		goodMods.clear();
+		badMods.clear();
+		for(int i=0; i<knownMods.getSize(); i++) {
+			unknownMods.addElement(knownMods.elementAt(i));
+		}
+		knownMods.clear();
+		
+		ArrayList<Mod> mods;
+		for(int i=unknownMods.getSize(); i>=0; i--) {
+			mods = processModFile(unknownMods.elementAt(i));
+			if(mods != null) {
+				knownMods.addElement(unknownMods.elementAt(i));
+				unknownMods.remove(i);
+				for(Mod mod : mods) {
+					badMods.addElement(mod);
+				}
+			}
+			mods = null;
+		}
+		
+		for(int i=badMods.getSize(); i>=0; i--) {
 			ModInfo temp = nameRegistry.getMod(badMods.get(i).shortName);
 			if(temp != null && temp.publicPolicy == ModInfo.OPEN) {
 				System.out.println(temp.modName+" is good");
 			}
+		}
+	}
+	
+	private static ArrayList<Mod> processModFile(ModFile modFile) {
+		String result = null;
+		HashSet<String> identifiedIDs = new HashSet<String>();
+		ArrayList<Mod> out = new ArrayList<Mod>();
+		for(int i=0; i<modFile.IDs.getSize(); i++) {
+			result = nameRegistry.checkID(modFile.IDs.get(i));
+			if(result != null) {
+				identifiedIDs.add(result);
+			}
+		}
+		if(identifiedIDs.isEmpty()) {
+			return null;
+		} else {
+			for(String ID : identifiedIDs) {
+				out.add(new Mod(modFile, ID));
+			}
+			return out;
 		}
 	}
 }

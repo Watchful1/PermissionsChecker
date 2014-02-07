@@ -32,7 +32,7 @@ public class ModFinder {
 		mods = modsIn;
 		nameRegistry = nameRegistryIn;
 		
-		getMods(new File(minecraftFolder.getAbsolutePath() + File.separator + "mods"));
+		getMods(new File(minecraftFolder.getAbsolutePath() + File.separator + "mods"), unknownModFilesIn);
 		compileModNames(modFiles);
 		for(int i=0; i<mods.getSize(); i++) {
 			System.out.println(mods.get(i));
@@ -50,12 +50,23 @@ public class ModFinder {
 		return null;
 	}
 	
-	private static void getMods(File folder) {
+	public static void discoverModFiles(File minecraftFolder, DefaultListModel<ModFile> unknownModFilesIn) {
+		getMods(new File(minecraftFolder+"\\mods"), unknownModFilesIn);
+		getMods(new File(minecraftFolder+"\\coremods"), unknownModFilesIn);
+		getMods(new File(minecraftFolder.getParentFile()+"\\instmods"), unknownModFilesIn);
+	}
+	
+	private static void getMods(File folder, DefaultListModel<ModFile> modFiles) {
+		if(!folder.exists()) {
+			System.out.println(folder+" doesn't exist");
+			return;
+		}
 		ModFile temp;
 		for(File file : folder.listFiles()) {
+			System.out.println(file.getName());
 			try {
 				if(file.isDirectory()) {
-					getMods(file);
+					getMods(file, modFiles);
 				} else {
 					temp = processFile(file);
 					if(temp != null) modFiles.addElement(temp);

@@ -1,5 +1,6 @@
 package gr.watchful.permchecker.panels;
 
+import gr.watchful.permchecker.datastructures.Mod;
 import gr.watchful.permchecker.datastructures.ModInfo;
 import gr.watchful.permchecker.panels.LabelField;
 
@@ -32,7 +33,10 @@ public class ModEditor extends JPanel {
 		
 	}
 	
-	public void setMod(ModInfo mod) {
+	public void setMod(ModInfo mod, String shortName) {
+		if(mod == null) {
+			mod = new ModInfo(shortName);
+		}
 		name.setText(mod.modName);
 		author.setText(mod.modAuthor);
 		link.setText(mod.modUrl);
