@@ -14,11 +14,15 @@ public class ModNameRegistry {
 	public static String imageExtension;
 	
 	private HashMap<String, String> shortNameMappings;
+	private HashMap<String, String> customShortNameMappings;
 	private HashMap<String, ModInfo> modInfoMappings;
+	private HashMap<String, ModInfo> customModInfoMappings;
 	
 	public ModNameRegistry() {
 		shortNameMappings = new HashMap<String, String>();
+		customShortNameMappings = new HashMap<String, String>();
 		modInfoMappings = new HashMap<String, ModInfo>();
+		customModInfoMappings = new HashMap<String, ModInfo>();
 	}
 	
 	public void loadMappings(ArrayList<ArrayList<String>> infos, ArrayList<ArrayList<String>> mappings, String baseUrl, String extension) {
@@ -56,6 +60,9 @@ public class ModNameRegistry {
 				case "Open":
 					info.publicPolicy = ModInfo.OPEN;
 					break;
+				case "Notify":
+					info.publicPolicy = ModInfo.NOTIFY;
+					break;
 				case "Request":
 					info.publicPolicy = ModInfo.REQUEST;
 					break;
@@ -73,9 +80,12 @@ public class ModNameRegistry {
 					break;
 				}
 				
-				switch(row.get(4)){//set the public policy
+				switch(row.get(4)){//set the private policy
 				case "Open":
 					info.privatePolicy = ModInfo.OPEN;
+					break;
+				case "Notify":
+					info.privatePolicy = ModInfo.NOTIFY;
 					break;
 				case "Request":
 					info.privatePolicy = ModInfo.REQUEST;
@@ -123,19 +133,39 @@ public class ModNameRegistry {
 		}
 	}
 	
+	public void addShortName(String shortName, String modID) {
+		customShortNameMappings.put(modID, shortName);
+	}
+	
+	public void addModInfo(String shortName, ModInfo modInfo) {
+		customModInfoMappings.put(shortName, modInfo);
+	}
+	
+	public HashMap<String, String> getCustomMappings() {
+		return customShortNameMappings;
+	}
+	
+	public HashMap<String, ModInfo> getCustomInfos() {
+		return customModInfoMappings;
+	}
+	
 	public String checkID(String modID) {
-		if(shortNameMappings.containsKey(modID)) {
-			return shortNameMappings.get(modID);
+		if(customShortNameMappings.containsKey(modID)) {
+			return customShortNameMappings.get(modID);
 		} else {
-			return null;
+			return shortNameMappings.get(modID);
 		}
 	}
 	
 	public ModInfo getMod(String shortName) {
-		if(modInfoMappings.containsKey(shortName)) {
-			return modInfoMappings.get(shortName);
+		if(customModInfoMappings.containsKey(shortName)) {
+			return customModInfoMappings.get(shortName);
 		} else {
-			return null;
+			return modInfoMappings.get(shortName);
 		}
+	}
+	
+	public static String buildShortName(String name) {
+		return name.toLowerCase().replaceAll("[^A-Za-z]","");
 	}
 }

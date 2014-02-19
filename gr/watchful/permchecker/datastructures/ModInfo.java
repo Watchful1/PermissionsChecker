@@ -2,13 +2,14 @@ package gr.watchful.permchecker.datastructures;
 
 public class ModInfo {
 	public static final int OPEN = 0;
-	public static final int REQUEST = 1;
-	public static final int CLOSED = 2;
-	public static final int FTB = 3;
-	public static final int UNKNOWN = 4;
+	public static final int NOTIFY = 1;
+	public static final int REQUEST = 2;
+	public static final int CLOSED = 3;
+	public static final int FTB = 4;
+	public static final int UNKNOWN = 5;
 
-	public static final int FTB_GRANTED = 5;
-	public static final int FTB_UNKOWN = 6;
+	public static final int FTB_GRANTED = 6;
+	public static final int FTB_UNKOWN = 7;
 	
 	public String shortName;
 	public String modName;

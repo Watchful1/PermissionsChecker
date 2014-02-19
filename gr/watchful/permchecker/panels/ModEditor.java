@@ -1,6 +1,5 @@
 package gr.watchful.permchecker.panels;
 
-import gr.watchful.permchecker.datastructures.Mod;
 import gr.watchful.permchecker.datastructures.ModInfo;
 import gr.watchful.permchecker.panels.LabelField;
 

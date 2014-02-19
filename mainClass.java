@@ -1,7 +1,7 @@
 import gr.watchful.permchecker.datastructures.Mod;
 import gr.watchful.permchecker.datastructures.ModFile;
 import gr.watchful.permchecker.datastructures.ModInfo;
-import gr.watchful.permchecker.datastructures.ToolSettings;
+import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
 import gr.watchful.permchecker.modhandling.ModFinder;
@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 
 import javax.imageio.ImageIO;
@@ -55,7 +56,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	private ModEditor modEditor;
 	private ModFileEditor modFileEditor;
 	private static ModNameRegistry nameRegistry;
-	private static ToolSettings settings;
+	private static Globals globals;
 
 	public mainClass() {
 		goodMods = new DefaultListModel<Mod>();
@@ -63,9 +64,10 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		unknownMods = new DefaultListModel<ModFile>();
 		knownMods = new DefaultListModel<ModFile>();
 
-		nameRegistry = new ModNameRegistry();
+		globals = Globals.getInstance();
 		
-		settings = new ToolSettings();
+		nameRegistry = globals.nameRegistry;
+		
 
         /**
          * Check which OS the system is running, and make the appropriate directories if necessary
@@ -115,7 +117,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		}
 
 		this.setTitle("Permissions Checker"); // Set the window title
-		this.setPreferredSize(new Dimension(600, 300)); // and the initial size
+		this.setPreferredSize(new Dimension(600, 600)); // and the initial size
 		
 		//updateListings();
 
@@ -130,7 +132,8 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			//also allow selecting of multiMC instances folder
 			
 			//debug
-			//discoverMods(new File("C:\\Users\\Gregory\\Desktop\\MultiMC\\instances\\Hammercraft 4.3.0 Custom\\minecraft"));
+			updateListings();
+			discoverMods(new File("C:\\Users\\Gregory\\Desktop\\MultiMC\\instances\\Hammercraft 4.3.0 Custom\\minecraft"));
 		}
 		
 		JPanel topPanel = new JPanel();
@@ -207,15 +210,15 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		this.add(topPanel);
 
 		good = new NamedScrollingListPanel<Mod>(
-				"Good", new Dimension(100, 300), goodMods);
+				"Good", 100, goodMods);
 		good.addListener(this);
 		mainPanel.add(good);
 		bad = new NamedScrollingListPanel<Mod>(
-				"Bad", new Dimension(100, 300), badMods);
+				"Bad", 100, badMods);
 		bad.addListener(this);
 		mainPanel.add(bad);
 		unknown = new NamedScrollingListPanel<ModFile>(
-				"Unknown", new Dimension(100, 300), unknownMods);
+				"Unknown", 100, unknownMods);
 		mainPanel.add(unknown);
 		unknown.addListener(this);
 
@@ -224,6 +227,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 
 		cards = new JPanel(new CardLayout());
 		cards.setMinimumSize(new Dimension(300, 300));
+		cards.setMaximumSize(new Dimension(300, 900));
 		cards.add(newWindow);
 		cards.add(modEditWindow);
 		
@@ -360,9 +364,9 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	
 	public void updateSettings() {
 		if(packTypeToggle.isSelected()) {
-			settings.packType = ToolSettings.PRIVATE;
+			globals.packType = Globals.PRIVATE;
 		} else {
-			settings.packType = ToolSettings.PUBLIC;
+			globals.packType = Globals.PUBLIC;
 		}
 		recheckMods();
 	}
@@ -390,12 +394,29 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		
 		for(int i=badMods.getSize()-1; i>=0; i--) {
 			ModInfo temp = nameRegistry.getMod(badMods.get(i).shortName);
-			if(temp != null && temp.publicPolicy == ModInfo.OPEN) {
-				goodMods.addElement(badMods.get(i));
-				badMods.remove(i);
+			if(temp != null) {
+				if((globals.packType == Globals.PUBLIC && temp.publicPolicy == ModInfo.OPEN) || 
+						(globals.packType == Globals.PRIVATE && temp.privatePolicy == ModInfo.OPEN)) {
+					goodMods.addElement(badMods.get(i));
+					badMods.remove(i);
+				}
 				
 				System.out.println(temp.modName+" is good");
 			}
+		}
+		sortDefaultListModel(goodMods);
+		sortDefaultListModel(badMods);
+	}
+	
+	public static void sortDefaultListModel(DefaultListModel<Mod> model) {
+		ArrayList<Mod> list = new ArrayList<Mod>();
+		for(int i=0; i<model.getSize(); i++) {
+			list.add(model.get(i));
+		}
+		Collections.sort(list);
+		model.clear();
+		for(Mod mod : list) {
+			model.addElement(mod);
 		}
 	}
 	

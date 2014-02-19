@@ -12,10 +12,9 @@ public class ModFileEditor extends JPanel {
 	private NamedScrollingListPanel<String> IDs;
 	
 	public ModFileEditor(Dimension size, ModFile modFile) {
-
-		names = new NamedScrollingListPanel<String>("Names", new Dimension(100, 300), modFile.names);
+		names = new NamedScrollingListPanel<String>("Names", 100, modFile.names);
 		this.add(names);
-		IDs = new NamedScrollingListPanel<String>("IDs", new Dimension(200, 300), modFile.IDs);
+		IDs = new NamedScrollingListPanel<String>("IDs", 100, modFile.IDs);
 		this.add(IDs);
 	}
 	

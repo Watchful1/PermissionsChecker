@@ -9,6 +9,7 @@ public class ModFile {
 	private String fileName;
 	public DefaultListModel<String> IDs = new DefaultListModel<String>();
 	public DefaultListModel<String> names = new DefaultListModel<String>();
+	public ModInfo tempInfo;
 	
 	public ModFile(File fileIn) {
 		file = fileIn;

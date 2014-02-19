@@ -22,11 +22,11 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 	private String name = "";
 	private ArrayList<NamedScrollingListPanelListener> listeners;
 	
-	public NamedScrollingListPanel(String name, Dimension size, DefaultListModel<T> model) {
+	public NamedScrollingListPanel(String name, int size, DefaultListModel<T> model) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		//this.setMinimumSize(size);
-		//this.setMaximumSize(size);
-		this.setPreferredSize(size);
+		this.setMinimumSize(new Dimension(size, 50));
+		this.setMaximumSize(new Dimension(size, 5000));
+		this.setPreferredSize(new Dimension(size, 300));
 		if(name != null) {
 			this.add(new JLabel(name));
 			this.name = name;
