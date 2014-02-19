@@ -10,7 +10,13 @@ public class Mod implements Comparable<Mod> {
 	}
 	
 	public String toString() {
-		return shortName;
+		ModInfo modInfo = Globals.getInstance().nameRegistry.getMod(shortName);
+		if(modInfo == null || modInfo.modName == "Unknown") {
+			return shortName;
+		} else {
+			return modInfo.modName;
+		}
+		
 	}
 
 	@Override

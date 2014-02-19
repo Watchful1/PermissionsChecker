@@ -18,12 +18,14 @@ public class ModInfo {
 	public int publicPolicy;
 	public int privatePolicy;
 	public int FTBPolicy;
-	public String permLink;
-	public String privatePermLink;
-	public String FTBPermLink;
-	public String imageLink;
-	public String privateImageLink;
-	public String FTBImageLink;
+	public String licenseLink;
+	public String privateLicenseLink;
+	public String FTBLicenseLink;
+	public String licenseImageLink;
+	public String licensePrivateImageLink;
+	public String licenseFTBImageLink;
+	public String customImageLink;
+	public String customLicenseLink;
 	
 	public ModInfo(String shortName) {
 		this.shortName = shortName;
@@ -33,8 +35,10 @@ public class ModInfo {
 		publicPolicy = UNKNOWN;
 		privatePolicy = UNKNOWN;
 		FTBPolicy = FTB_UNKOWN;
-		permLink = "Unknown";
-		privatePermLink = "";
-		FTBPermLink = "";
+		licenseLink = "Unknown";
+		privateLicenseLink = "Unknown";
+		FTBLicenseLink = "Unknown";
+		customImageLink = "None";
+		customLicenseLink = "None";
 	}
 }

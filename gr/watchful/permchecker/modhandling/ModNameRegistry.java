@@ -37,23 +37,23 @@ public class ModNameRegistry {
 				info.modUrl = row.get(5);//set url
 				
 				if(row.get(6).equals("")) {//set perm link
-					info.permLink = info.modUrl;
+					info.licenseLink = info.modUrl;
 				} else {
-					info.permLink = row.get(6);
+					info.licenseLink = row.get(6);
 				}
 				if(row.get(7).equals("")) {//set private perm link
-					info.privatePermLink = info.permLink;
+					info.privateLicenseLink = info.licenseLink;
 				} else if(row.get(7).equals("PM")) {
-					info.privatePermLink = imageBaseUrl+"PrivateMessage"+imageExtension;
+					info.privateLicenseLink = imageBaseUrl+"PrivateMessage"+imageExtension;
 				} else {
-					info.privatePermLink = row.get(7);
+					info.privateLicenseLink = row.get(7);
 				}
 				if(row.get(8).equals("")) {//set FTB perm link
-					info.FTBPermLink = info.permLink;
+					info.FTBLicenseLink = info.licenseLink;
 				} else if(row.get(8).equals("PM")) {
-					info.FTBPermLink = imageBaseUrl+"PrivateMessage"+imageExtension;
+					info.FTBLicenseLink = imageBaseUrl+"PrivateMessage"+imageExtension;
 				} else {
-					info.FTBPermLink = row.get(8);
+					info.FTBLicenseLink = row.get(8);
 				}
 				
 				switch(row.get(3)){//set the public policy
@@ -111,16 +111,16 @@ public class ModNameRegistry {
 					info.FTBPolicy = ModInfo.FTB_UNKOWN;
 				}
 				
-				info.imageLink = imageBaseUrl+info.shortName+imageExtension;//set perm image link
+				info.licenseImageLink = imageBaseUrl+info.shortName+imageExtension;//set perm image link
 				if(row.get(7).equals("")) {//set private perm image link
-					info.privateImageLink = info.imageLink;
+					info.licensePrivateImageLink = info.licenseImageLink;
 				} else {
-					info.privateImageLink = imageBaseUrl+info.shortName+"private"+imageExtension;
+					info.licensePrivateImageLink = imageBaseUrl+info.shortName+"private"+imageExtension;
 				}
 				if(row.get(8).equals("")) {//set FTB perm image link
-					info.FTBImageLink = info.imageLink;
+					info.licenseFTBImageLink = info.licenseImageLink;
 				} else {
-					info.FTBImageLink = imageBaseUrl+info.shortName+"FTB"+imageExtension;
+					info.licenseFTBImageLink = imageBaseUrl+info.shortName+"FTB"+imageExtension;
 				}
 				
 				modInfoMappings.put(row.get(2), info);

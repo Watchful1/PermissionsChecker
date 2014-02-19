@@ -231,7 +231,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		cards.add(newWindow);
 		cards.add(modEditWindow);
 		
-		modEditor = new ModEditor(new Dimension(300,300));
+		modEditor = new ModEditor(new Dimension(300,900));
 		cards.add(modEditor,"MODEDITOR");
 		modFileEditor = new ModFileEditor(new Dimension(300,300), new ModFile(new File("/")));
 		cards.add(modFileEditor,"MODFILEEDITOR");
@@ -341,7 +341,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 				ArrayList<ArrayList<String>> infos = ExcelUtils.toArray(permFile,1);
 				infos.remove(0);//remove the first row, it contains column titles
 				ArrayList<ArrayList<String>> mappings = ExcelUtils.toArray(permFile,2);
-				nameRegistry.loadMappings(infos, mappings, infos.get(16).get(14), infos.get(16).get(15));
+				nameRegistry.loadMappings(infos, mappings, infos.get(15).get(14), infos.get(15).get(15));
 			} catch (FileNotFoundException e) {
 				System.out.println("UHOH");
 			} catch (IOException e) {
