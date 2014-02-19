@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -41,8 +40,8 @@ public class PermType extends JPanel {
 		text.setAlignmentX(Component.LEFT_ALIGNMENT);
 		text.setAlignmentY(0);
 		
-		//text.setMinimumSize(new Dimension(200, 100));
-		//text.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+		text.setMinimumSize(new Dimension(200, 100));
+		text.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
 		text.setPreferredSize(new Dimension(200, 100));
 		
 		this.add(text);

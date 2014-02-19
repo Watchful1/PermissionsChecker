@@ -57,6 +57,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	private ModFileEditor modFileEditor;
 	private static ModNameRegistry nameRegistry;
 	private static Globals globals;
+	private File modpack;
 
 	public mainClass() {
 		goodMods = new DefaultListModel<Mod>();
@@ -263,8 +264,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		chooseModpack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser fileChooser = new JFileChooser(System
-						.getProperty("user.home"));
+				JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home"));
 				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int returnVal = fileChooser.showOpenDialog(null);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -274,12 +274,26 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			}
 		});
 		menu.add(chooseModpack);
+		
+		JMenuItem writeFile = new JMenuItem("Write file");
+
+		// listen to all the menu items and then add them to the menus
+		writeFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				writeFile();
+			}
+		});
+		menu.add(writeFile);
 
 		this.setJMenuBar(menuBar);
 
 		pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
+		
+		//TODO debug
+		recheckMods();
 	}
 	
 	private static boolean isMinecraftDir(File file) {
@@ -292,6 +306,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 
 	private void discoverMods(File minecraftFolder) {
 		//ModFinder.discoverAllMods(minecraftFolder, unknownMods, badMods, nameRegistry);
+		modpack = minecraftFolder;
 		ModFinder.discoverModFiles(minecraftFolder, unknownMods);
 	}
 
@@ -438,5 +453,23 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			}
 			return out;
 		}
+	}
+	
+	private void writeFile() {
+		//TODO check for no modpack
+		File infoFile = new File(modpack+File.separator+"perms.txt");
+		System.out.println(infoFile.getAbsolutePath());
+		
+		StringBuilder bldr = new StringBuilder();
+		for(int i=0; i<goodMods.getSize(); i++) {
+			ModInfo modInfo = nameRegistry.getMod(goodMods.get(i).shortName);
+			bldr.append(modInfo.modName); bldr.append(" - ");
+			bldr.append(modInfo.modAuthor); bldr.append(" - ");
+			bldr.append(modInfo.modUrl);
+			
+			bldr.append("\n");
+		}
+		
+		FileUtils.writeFile(bldr.toString(), infoFile);
 	}
 }
