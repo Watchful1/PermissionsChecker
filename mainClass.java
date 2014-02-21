@@ -118,7 +118,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		}
 
 		this.setTitle("Permissions Checker"); // Set the window title
-		this.setPreferredSize(new Dimension(600, 600)); // and the initial size
+		this.setPreferredSize(new Dimension(800, 600)); // and the initial size
 		
 		//updateListings();
 
@@ -227,12 +227,12 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		JPanel modEditWindow = new JPanel();
 
 		cards = new JPanel(new CardLayout());
-		cards.setMinimumSize(new Dimension(300, 300));
-		cards.setMaximumSize(new Dimension(300, 900));
+		cards.setMinimumSize(new Dimension(500, 300));
+		cards.setMaximumSize(new Dimension(500, 900));
 		cards.add(newWindow);
 		cards.add(modEditWindow);
 		
-		modEditor = new ModEditor(new Dimension(300,900));
+		modEditor = new ModEditor(new Dimension(500,900));
 		cards.add(modEditor,"MODEDITOR");
 		modFileEditor = new ModFileEditor(new Dimension(300,300), new ModFile(new File("/")));
 		cards.add(modFileEditor,"MODFILEEDITOR");
@@ -465,7 +465,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			ModInfo modInfo = nameRegistry.getMod(goodMods.get(i).shortName);
 			bldr.append(modInfo.modName); bldr.append(" - ");
 			bldr.append(modInfo.modAuthor); bldr.append(" - ");
-			bldr.append(modInfo.modUrl);
+			bldr.append(modInfo.modLink);
 			
 			bldr.append("\n");
 		}

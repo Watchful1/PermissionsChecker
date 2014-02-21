@@ -11,27 +11,34 @@ public class ModInfo {
 	public static final int FTB_GRANTED = 6;
 	public static final int FTB_UNKOWN = 7;
 	
+	public boolean officialSpreadsheet;
+	
 	public String shortName;
+	
 	public String modName;
 	public String modAuthor;
-	public String modUrl;
-	public int publicPolicy;
-	public int privatePolicy;
-	public int FTBPolicy;
+	public String modLink;
+	
 	public String licenseLink;
 	public String privateLicenseLink;
 	public String FTBLicenseLink;
 	public String licenseImageLink;
 	public String licensePrivateImageLink;
 	public String licenseFTBImageLink;
+	
 	public String customImageLink;
 	public String customLicenseLink;
 	
+	public int publicPolicy;
+	public int privatePolicy;
+	public int FTBPolicy;
+	
 	public ModInfo(String shortName) {
+		officialSpreadsheet = false;
 		this.shortName = shortName;
 		modName = "Unknown";
 		modAuthor = "Unknown";
-		modUrl = "Unknown";
+		modLink = "Unknown";
 		publicPolicy = UNKNOWN;
 		privatePolicy = UNKNOWN;
 		FTBPolicy = FTB_UNKOWN;

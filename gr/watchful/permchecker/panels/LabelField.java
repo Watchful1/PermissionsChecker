@@ -25,10 +25,17 @@ public class LabelField extends JPanel {
 		textField.setMinimumSize(new Dimension(300 - label.getMinimumSize().width, 21));
 		textField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 21));
 		this.add(textField);
-		
 	}
 	
 	public void setText(String in) {
 		textField.setText(in);
+	}
+	
+	public String getText() {
+		return textField.getText();
+	}
+	
+	public void setEditable(boolean isEditable) {
+		textField.setEditable(isEditable);
 	}
 }

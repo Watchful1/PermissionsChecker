@@ -32,12 +32,13 @@ public class ModNameRegistry {
 		for(ArrayList<String> row : infos) {
 			if(row.size() > 9 && row.get(2) != null && !row.get(2).equals("")) {
 				ModInfo info = new ModInfo(row.get(2));
+				info.officialSpreadsheet = true;
 				info.modName = row.get(0);//set name
 				info.modAuthor = row.get(1);//set author
-				info.modUrl = row.get(5);//set url
+				info.modLink = row.get(5);//set url
 				
 				if(row.get(6).equals("")) {//set perm link
-					info.licenseLink = info.modUrl;
+					info.licenseLink = info.modLink;
 				} else {
 					info.licenseLink = row.get(6);
 				}
