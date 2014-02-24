@@ -26,8 +26,7 @@ public class ModInfo {
 	public String licensePrivateImageLink;
 	public String licenseFTBImageLink;
 	
-	public String customImageLink;
-	public String customLicenseLink;
+	public String customLink;
 	
 	public int publicPolicy;
 	public int privatePolicy;
@@ -45,7 +44,67 @@ public class ModInfo {
 		licenseLink = "Unknown";
 		privateLicenseLink = "Unknown";
 		FTBLicenseLink = "Unknown";
-		customImageLink = "None";
-		customLicenseLink = "None";
+		customLink = "";
+	}
+	
+	public int getCurrentPolicy() {
+		switch(Globals.getInstance().packType) {
+		case Globals.PUBLIC:
+			return publicPolicy;
+		case Globals.PRIVATE:
+			return privatePolicy;
+		default:
+			return UNKNOWN;
+		}
+	}
+	
+	public void setCurrentPolicy(int policy) {
+		switch(Globals.getInstance().packType) {
+		case Globals.PUBLIC:
+			publicPolicy = policy;
+			break;
+		case Globals.PRIVATE:
+			privatePolicy = policy;
+			break;
+		}
+	}
+	
+	public String getStringPolicy() {
+		switch(getCurrentPolicy()) {
+		case ModInfo.OPEN:
+			return "Open";
+		case ModInfo.NOTIFY:
+			return "Notify";
+		case ModInfo.REQUEST:
+			return "Request";
+		case ModInfo.CLOSED:
+			return "Closed";
+		case ModInfo.FTB:
+			return "FTB";
+		default:
+			return "Unknown";
+		}
+	}
+	
+	public String getCurrentPermLink() {
+		switch(Globals.getInstance().packType) {
+		case Globals.PUBLIC:
+			return licenseLink;
+		case Globals.PRIVATE:
+			return privateLicenseLink;
+		default:
+			return licenseLink;
+		}
+	}
+	
+	public String getCurrentImageLink() {
+		switch(Globals.getInstance().packType) {
+		case Globals.PUBLIC:
+			return licenseImageLink;
+		case Globals.PRIVATE:
+			return licensePrivateImageLink;
+		default:
+			return licenseImageLink;
+		}
 	}
 }

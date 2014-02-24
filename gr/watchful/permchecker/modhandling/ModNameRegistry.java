@@ -1,9 +1,14 @@
 package gr.watchful.permchecker.modhandling;
 
+import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModInfo;
+import gr.watchful.permchecker.datastructures.ModpackStorageObject;
+
 import java.util.ArrayList;
 
 import java.util.HashMap;
+
+import com.google.gson.Gson;
 
 /**
  * Stores and gives access to mappings for modid to shortname as well as shortname to associated modinfo object
@@ -14,15 +19,15 @@ public class ModNameRegistry {
 	public static String imageExtension;
 	
 	private HashMap<String, String> shortNameMappings;
-	private HashMap<String, String> customShortNameMappings;
 	private HashMap<String, ModInfo> modInfoMappings;
-	private HashMap<String, ModInfo> customModInfoMappings;
+	private ModpackStorageObject customMappings;
 	
 	public ModNameRegistry() {
+		customMappings = new ModpackStorageObject();
 		shortNameMappings = new HashMap<String, String>();
-		customShortNameMappings = new HashMap<String, String>();
+		customMappings.customShortNameMappings = new HashMap<String, String>();
 		modInfoMappings = new HashMap<String, ModInfo>();
-		customModInfoMappings = new HashMap<String, ModInfo>();
+		customMappings.customModInfoMappings = new HashMap<String, ModInfo>();
 	}
 	
 	public void loadMappings(ArrayList<ArrayList<String>> infos, ArrayList<ArrayList<String>> mappings, String baseUrl, String extension) {
@@ -135,32 +140,34 @@ public class ModNameRegistry {
 	}
 	
 	public void addShortName(String shortName, String modID) {
-		customShortNameMappings.put(modID, shortName);
+		customMappings.customShortNameMappings.put(modID, shortName);
+		saveCustomInfos();
 	}
 	
 	public void addModInfo(String shortName, ModInfo modInfo) {
-		customModInfoMappings.put(shortName, modInfo);
+		customMappings.customModInfoMappings.put(shortName, modInfo);
+		saveCustomInfos();
 	}
 	
 	public HashMap<String, String> getCustomMappings() {
-		return customShortNameMappings;
+		return customMappings.customShortNameMappings;
 	}
 	
 	public HashMap<String, ModInfo> getCustomInfos() {
-		return customModInfoMappings;
+		return customMappings.customModInfoMappings;
 	}
 	
 	public String checkID(String modID) {
-		if(customShortNameMappings.containsKey(modID)) {
-			return customShortNameMappings.get(modID);
+		if(customMappings.customShortNameMappings.containsKey(modID)) {
+			return customMappings.customShortNameMappings.get(modID);
 		} else {
 			return shortNameMappings.get(modID);
 		}
 	}
 	
 	public ModInfo getMod(String shortName) {
-		if(customModInfoMappings.containsKey(shortName)) {
-			return customModInfoMappings.get(shortName);
+		if(customMappings.customModInfoMappings.containsKey(shortName)) {
+			return customMappings.customModInfoMappings.get(shortName);
 		} else {
 			return modInfoMappings.get(shortName);
 		}
@@ -168,5 +175,19 @@ public class ModNameRegistry {
 	
 	public static String buildShortName(String name) {
 		return name.toLowerCase().replaceAll("[^A-Za-z]","");
+	}
+	
+	public void printCustomInfos() {
+		Gson gson = new Gson();
+		System.out.println(gson.toJson(customMappings.customShortNameMappings));
+		System.out.println(gson.toJson(customMappings.customModInfoMappings));
+	}
+	
+	public void saveCustomInfos() {
+		customMappings.saveObject(Globals.getInstance().minecraftFolder);
+	}
+	
+	public void loadCustomInfos() {
+		customMappings.loadObject(Globals.getInstance().minecraftFolder);
 	}
 }

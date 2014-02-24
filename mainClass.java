@@ -2,6 +2,7 @@ import gr.watchful.permchecker.datastructures.Mod;
 import gr.watchful.permchecker.datastructures.ModFile;
 import gr.watchful.permchecker.datastructures.ModInfo;
 import gr.watchful.permchecker.datastructures.Globals;
+import gr.watchful.permchecker.datastructures.RebuildsMods;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
 import gr.watchful.permchecker.modhandling.ModFinder;
@@ -41,7 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
 @SuppressWarnings("serial")
-public class mainClass extends JFrame implements NamedScrollingListPanelListener {
+public class mainClass extends JFrame implements NamedScrollingListPanelListener, RebuildsMods {
 	private DefaultListModel<Mod> goodMods;
 	private DefaultListModel<Mod> badMods;
 	private DefaultListModel<ModFile> unknownMods;
@@ -57,7 +58,6 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	private ModFileEditor modFileEditor;
 	private static ModNameRegistry nameRegistry;
 	private static Globals globals;
-	private File modpack;
 
 	public mainClass() {
 		goodMods = new DefaultListModel<Mod>();
@@ -66,6 +66,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		knownMods = new DefaultListModel<ModFile>();
 
 		globals = Globals.getInstance();
+		globals.main = this;
 		
 		nameRegistry = globals.nameRegistry;
 		
@@ -120,7 +121,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		this.setTitle("Permissions Checker"); // Set the window title
 		this.setPreferredSize(new Dimension(800, 600)); // and the initial size
 		
-		//updateListings();
+		updateListings();
 
 		//TODO move this stuff to a seperate method
 		File currentDir = new File(System.getProperty("user.dir"));
@@ -133,8 +134,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			//also allow selecting of multiMC instances folder
 			
 			//debug
-			updateListings();
-			discoverMods(new File("C:\\Users\\Gregory\\Desktop\\MultiMC\\instances\\Hammercraft 4.3.0 Custom\\minecraft"));
+			//discoverMods(new File("C:\\Users\\Gregory\\Desktop\\MultiMC\\instances\\Hammercraft 4.3.0 Custom\\minecraft"));
 		}
 		
 		JPanel topPanel = new JPanel();
@@ -264,7 +264,8 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		chooseModpack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home"));
+				JFileChooser fileChooser = new JFileChooser(new File("C:\\Users\\Gregory\\Desktop\\Private pack staging"));
+				//JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home")); TODO
 				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int returnVal = fileChooser.showOpenDialog(null);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -291,9 +292,6 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
-		
-		//TODO debug
-		recheckMods();
 	}
 	
 	private static boolean isMinecraftDir(File file) {
@@ -305,9 +303,10 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	}
 
 	private void discoverMods(File minecraftFolder) {
-		//ModFinder.discoverAllMods(minecraftFolder, unknownMods, badMods, nameRegistry);
-		modpack = minecraftFolder;
+		globals.minecraftFolder = minecraftFolder;
+		nameRegistry.loadCustomInfos();
 		ModFinder.discoverModFiles(minecraftFolder, unknownMods);
+		recheckMods();
 	}
 
 	public void selectionChanged(NamedSelectionEvent event) {
@@ -409,14 +408,15 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		
 		for(int i=badMods.getSize()-1; i>=0; i--) {
 			ModInfo temp = nameRegistry.getMod(badMods.get(i).shortName);
-			if(temp != null) {
-				if((globals.packType == Globals.PUBLIC && temp.publicPolicy == ModInfo.OPEN) || 
-						(globals.packType == Globals.PRIVATE && temp.privatePolicy == ModInfo.OPEN)) {
+			if(temp != null) {//TODO FTB
+				if((globals.packType == Globals.PUBLIC && (temp.publicPolicy == ModInfo.OPEN || temp.publicPolicy == ModInfo.FTB)) || 
+						(globals.packType == Globals.PRIVATE && (temp.privatePolicy == ModInfo.OPEN || temp.privatePolicy == ModInfo.FTB)) ||
+						(!temp.customLink.equals(""))) {
 					goodMods.addElement(badMods.get(i));
 					badMods.remove(i);
 				}
 				
-				System.out.println(temp.modName+" is good");
+				//System.out.println(temp.modName+" is good");
 			}
 		}
 		sortDefaultListModel(goodMods);
@@ -457,15 +457,56 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	
 	private void writeFile() {
 		//TODO check for no modpack
-		File infoFile = new File(modpack+File.separator+"perms.txt");
-		System.out.println(infoFile.getAbsolutePath());
+		File infoFile = new File(globals.minecraftFolder+File.separator+"perms.txt");
+		System.out.println("Printing to: "+infoFile.getAbsolutePath());
 		
 		StringBuilder bldr = new StringBuilder();
+		bldr.append("Permission categories and full licenses for mods marked spreadsheet are available here: http://1drv.ms/1c8mItH\n");
+		bldr.append("For any problems, please contact Watchful11 on the FTB forums.\n");
+		
+		bldr.append("This is a ");
+		bldr.append(globals.getStringType());
+		bldr.append(" pack\n\n");
+		
 		for(int i=0; i<goodMods.getSize(); i++) {
 			ModInfo modInfo = nameRegistry.getMod(goodMods.get(i).shortName);
-			bldr.append(modInfo.modName); bldr.append(" - ");
-			bldr.append(modInfo.modAuthor); bldr.append(" - ");
-			bldr.append(modInfo.modLink);
+			bldr.append("(");
+			bldr.append(modInfo.getStringPolicy());
+			bldr.append(":");
+			if(modInfo.officialSpreadsheet) bldr.append("Spreadsheet");
+			else bldr.append("Custom");
+			bldr.append(") ");
+			bldr.append(modInfo.modName); bldr.append(" by ");
+			bldr.append(modInfo.modAuthor); bldr.append(" can be found at ");
+			bldr.append(modInfo.modLink); bldr.append(".");
+			
+			if(!modInfo.officialSpreadsheet) {
+				bldr.append(" The license is, ");
+				bldr.append(modInfo.getCurrentPermLink());
+				if(modInfo.licenseLink.equals("PM")) {
+					bldr.append(", which is a private message.");
+				} else if(modInfo.licenseLink.equals(modInfo.modLink) || modInfo.licenseLink.equals("")) {
+					bldr.append(".");
+				} else {
+					bldr.append(", and can be found ");
+					bldr.append(modInfo.licenseLink);
+					bldr.append(".");
+				}
+			}
+			
+			switch(modInfo.getCurrentPolicy()) {
+			case ModInfo.NOTIFY:
+				bldr.append(" The author has been notified, ");
+				bldr.append(modInfo.customLink);
+				bldr.append(".");
+				break;
+			case ModInfo.REQUEST:
+			case ModInfo.CLOSED:
+				bldr.append(" Permission has been obtained from the author, ");
+				bldr.append(modInfo.customLink);
+				bldr.append(".");
+				break;
+			}
 			
 			bldr.append("\n");
 		}

@@ -15,6 +15,8 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import com.google.gson.Gson;
  
 public class FileUtils {
 	public static void copyFolder(File sourceFolder, File destinationFolder) {
@@ -209,4 +211,22 @@ public class FileUtils {
         fos.getChannel().transferFrom(rbc, 0, 1 << 24);
         fos.close();
     }
+	
+	public static String getJSON(Object object) {
+		Gson gson = new Gson();
+		return gson.toJson(object);
+	}
+	
+	public static Object getObject(String JSON, Object object) {
+		Gson gson = new Gson();
+		return gson.fromJson(JSON, object.getClass());
+	}
+	
+	public static void saveObject(Object object, File file) {
+		writeFile(getJSON(object), file);
+	}
+	
+	public static Object readObject(File file, Object object) {
+		return getObject(readFile(file), object);
+	}
 }

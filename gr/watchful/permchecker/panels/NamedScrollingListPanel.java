@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -56,6 +57,10 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 		for(int i=0; i<list.getModel().getSize(); i++) {
 			System.out.println(list.getModel().getElementAt(i));
 		}
+	}
+	
+	public ListModel<T> getModel() {
+		return list.getModel();
 	}
 	
 	public void clearSelection() {

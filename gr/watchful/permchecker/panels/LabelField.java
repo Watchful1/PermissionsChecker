@@ -16,9 +16,9 @@ public class LabelField extends JPanel {
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setAlignmentX(0);
 		label = new JLabel(name);
-		label.setMinimumSize(new Dimension(70, 21));
-		label.setMaximumSize(new Dimension(70, 21));
-		label.setPreferredSize(new Dimension(70, 21));
+		label.setMinimumSize(new Dimension(90, 21));
+		label.setMaximumSize(new Dimension(90, 21));
+		label.setPreferredSize(new Dimension(90, 21));
 		this.add(label);
 		
 		textField = new JTextField();
