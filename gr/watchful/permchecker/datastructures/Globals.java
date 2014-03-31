@@ -21,6 +21,7 @@ public class Globals {
 	public ModNameRegistry nameRegistry;
 	public RebuildsMods main;
 	public File minecraftFolder;
+	public Preferences preferences;
 	
 	public Globals() {
 		packType = Globals.PUBLIC;

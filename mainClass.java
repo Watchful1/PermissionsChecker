@@ -2,6 +2,7 @@ import gr.watchful.permchecker.datastructures.Mod;
 import gr.watchful.permchecker.datastructures.ModFile;
 import gr.watchful.permchecker.datastructures.ModInfo;
 import gr.watchful.permchecker.datastructures.Globals;
+import gr.watchful.permchecker.datastructures.Preferences;
 import gr.watchful.permchecker.datastructures.RebuildsMods;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
@@ -9,6 +10,7 @@ import gr.watchful.permchecker.modhandling.ModFinder;
 import gr.watchful.permchecker.modhandling.ModNameRegistry;
 import gr.watchful.permchecker.panels.ModEditor;
 import gr.watchful.permchecker.panels.ModFileEditor;
+import gr.watchful.permchecker.panels.ModPacksPanel;
 import gr.watchful.permchecker.panels.NamedScrollingListPanel;
 import gr.watchful.permchecker.utils.ExcelUtils;
 import gr.watchful.permchecker.utils.FileUtils;
@@ -39,6 +41,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 
 @SuppressWarnings("serial")
@@ -58,6 +61,8 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	private ModFileEditor modFileEditor;
 	private static ModNameRegistry nameRegistry;
 	private static Globals globals;
+	private JTabbedPane tabbedPane;
+	private ModPacksPanel modPacksPanel;
 
 	public mainClass() {
 		goodMods = new DefaultListModel<Mod>();
@@ -101,6 +106,8 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
         } else {
             System.out.println("Directory exists!");
         }
+        
+        loadPreferences();
 
         permFile = new File(appstore.getPath() + "/PermissionsChecker.xlsx");
         if (!permFile.exists()) {
@@ -208,7 +215,15 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		mainPanel.setAlignmentX(0f);
 		topPanel.add(mainPanel);
 		
-		this.add(topPanel);
+		modPacksPanel = new ModPacksPanel();
+		
+		tabbedPane = new JTabbedPane();
+		
+		tabbedPane.add("Permissions", topPanel);
+		tabbedPane.add("Modpacks", modPacksPanel);
+		//this.add(topPanel);
+		
+		this.add(tabbedPane);
 
 		good = new NamedScrollingListPanel<Mod>(
 				"Good", 100, goodMods);
@@ -286,6 +301,24 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			}
 		});
 		menu.add(writeFile);
+		
+		JMenuItem setSaveFolder = new JMenuItem("Set Save Folder");
+
+		// listen to all the menu items and then add them to the menus
+		setSaveFolder.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				//JFileChooser fileChooser = new JFileChooser(new File("C:\\Users\\Gregory\\Desktop\\Private pack staging"));
+				JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home"));
+				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int returnVal = fileChooser.showOpenDialog(null);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File result = fileChooser.getSelectedFile();
+					setSavesFolder(result);
+				}
+			}
+		});
+		menu.add(setSaveFolder);
 
 		this.setJMenuBar(menuBar);
 
@@ -512,5 +545,25 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		}
 		
 		FileUtils.writeFile(bldr.toString(), infoFile);
+	}
+	
+	public void setSavesFolder(File savesFolder) {
+		Globals.getInstance().preferences.saveFolder = savesFolder;
+		savePreferences();
+		
+		
+	}
+	
+	public void savePreferences() {
+		FileUtils.saveObject(Globals.getInstance().preferences, new File(appstore+File.separator+"preferences.conf"));
+	}
+	
+	public void loadPreferences() {
+		File prefFile = new File(appstore+File.separator+"preferences.conf");
+		if(prefFile.exists()) {
+			Globals.getInstance().preferences = (Preferences) FileUtils.readObject(new File(appstore+File.separator+"preferences.conf"), new Preferences());
+		} else {
+			Globals.getInstance().preferences = new Preferences();
+		}
 	}
 }

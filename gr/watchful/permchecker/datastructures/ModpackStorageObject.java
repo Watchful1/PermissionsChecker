@@ -14,11 +14,13 @@ public class ModpackStorageObject {
 		customModInfoMappings = new HashMap<String, ModInfo>();
 	}
 
+	@Deprecated
 	public void saveObject(File minecraftFolder) {
 		if(customShortNameMappings.isEmpty() && customModInfoMappings.isEmpty()) return;
 		FileUtils.saveObject(this, new File(minecraftFolder+File.separator+Globals.modpackDataFile));
 	}
 	
+	@Deprecated
 	public Boolean loadObject(File minecraftFolder) {
 		if(!new File(minecraftFolder+File.separator+Globals.modpackDataFile).exists()) {
 			customShortNameMappings = new HashMap<String, String>();

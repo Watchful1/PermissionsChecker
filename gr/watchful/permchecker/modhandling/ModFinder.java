@@ -199,9 +199,13 @@ public class ModFinder {
 		try {
 			file = new ZipFile(modArchive);
 			Enumeration<? extends ZipEntry> files = file.entries();
-			while (files.hasMoreElements()) {
+			while(files.hasMoreElements()) {
 				ZipEntry item = files.nextElement();
-				if (item.isDirectory() || !item.getName().endsWith("class")) {
+				if(item.getName().equals("mcmod.info")) {
+					MetadataCollection metaCollect = MetadataCollection.from(file.getInputStream(item), file.getName());
+					System.out.println(metaCollect);
+				}
+				if(item.isDirectory() || !item.getName().endsWith("class")) {
 					continue;
 				}
 				ClassReader reader = new ClassReader(file.getInputStream(item));

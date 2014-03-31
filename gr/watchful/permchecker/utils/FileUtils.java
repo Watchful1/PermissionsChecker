@@ -17,6 +17,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
  
 public class FileUtils {
 	public static void copyFolder(File sourceFolder, File destinationFolder) {
@@ -219,7 +220,13 @@ public class FileUtils {
 	
 	public static Object getObject(String JSON, Object object) {
 		Gson gson = new Gson();
-		return gson.fromJson(JSON, object.getClass());
+		Object tempObject;
+		try {
+			tempObject = gson.fromJson(JSON, object.getClass());
+		} catch (JsonSyntaxException excp) {
+			return null;
+		}
+		return tempObject;
 	}
 	
 	public static void saveObject(Object object, File file) {
