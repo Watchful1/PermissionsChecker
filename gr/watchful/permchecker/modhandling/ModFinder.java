@@ -32,7 +32,7 @@ public class ModFinder {
 		mods = modsIn;
 		nameRegistry = nameRegistryIn;
 		
-		getMods(new File(minecraftFolder.getAbsolutePath() + File.separator + "mods"));
+		getMods(new File(minecraftFolder.getAbsolutePath() + File.separator + "mods"), unknownModFilesIn);
 		compileModNames(modFiles);
 		for(int i=0; i<mods.getSize(); i++) {
 			System.out.println(mods.get(i));
@@ -50,12 +50,23 @@ public class ModFinder {
 		return null;
 	}
 	
-	private static void getMods(File folder) {
+	public static void discoverModFiles(File minecraftFolder, DefaultListModel<ModFile> unknownModFilesIn) {
+		getMods(new File(minecraftFolder+"\\mods"), unknownModFilesIn);
+		getMods(new File(minecraftFolder+"\\coremods"), unknownModFilesIn);
+		getMods(new File(minecraftFolder.getParentFile()+"\\instmods"), unknownModFilesIn);
+	}
+	
+	private static void getMods(File folder, DefaultListModel<ModFile> modFiles) {
+		if(!folder.exists()) {
+			System.out.println(folder+" doesn't exist");
+			return;
+		}
 		ModFile temp;
 		for(File file : folder.listFiles()) {
+			System.out.println(file.getName());
 			try {
 				if(file.isDirectory()) {
-					getMods(file);
+					getMods(file, modFiles);
 				} else {
 					temp = processFile(file);
 					if(temp != null) modFiles.addElement(temp);
@@ -95,7 +106,8 @@ public class ModFinder {
 		
 		@Override
 		public void visitEnd() {
-			otherMod.addName(id, name);
+			otherMod.addID(id);
+			otherMod.addName(name);
 		}
 	}
 	
@@ -133,7 +145,8 @@ public class ModFinder {
 		public void visitEnd() {
 			if(idStorage != null) {
 				//System.out.println("Mod ID is "+idStorage);
-				otherMod.addName(idStorage, nameStorage);
+				otherMod.addID(idStorage);
+				otherMod.addName(nameStorage);
 			}
 		}
 	}
@@ -151,7 +164,7 @@ public class ModFinder {
 				String superName, String[] interfaces) {
 			if(superName.equals("BaseMod")) {
 				//TODO modloader mod, add the class name
-				otherMod.addName(name,"");
+				otherMod.addID(name);
 			} else if(superName.equals("DummyModContainer") || superName.equals("cpw/mods/fml/common/DummyModContainer")) {
 				//TODO this is a forge coremod, launch a method visitor to try to find the name
 				//System.out.println(name);
@@ -186,9 +199,13 @@ public class ModFinder {
 		try {
 			file = new ZipFile(modArchive);
 			Enumeration<? extends ZipEntry> files = file.entries();
-			while (files.hasMoreElements()) {
+			while(files.hasMoreElements()) {
 				ZipEntry item = files.nextElement();
-				if (item.isDirectory() || !item.getName().endsWith("class")) {
+				if(item.getName().equals("mcmod.info")) {
+					MetadataCollection metaCollect = MetadataCollection.from(file.getInputStream(item), file.getName());
+					System.out.println(metaCollect);
+				}
+				if(item.isDirectory() || !item.getName().endsWith("class")) {
 					continue;
 				}
 				ClassReader reader = new ClassReader(file.getInputStream(item));
@@ -203,9 +220,9 @@ public class ModFinder {
 			//System.out.println("File "+otherMod.fileName()+" doesn't look like a mod");
 		} else {
 			//System.out.println(otherMod.fileName()+" has mods");
-			for(String[] name : otherMod.names) {
+			//for(String[] name : otherMod.names) {
 				//System.out.println("   "+name[0]+"  :  "+name[1]);
-			}
+			//}
 		}
 		return otherMod;
 	}
@@ -219,8 +236,8 @@ public class ModFinder {
 	private static void processModFile(ModFile modFile) {
 		String result = null;
 		HashSet<String> identifiedIDs = new HashSet<String>();
-		for(String[] nameID : modFile.names) {
-			result = nameRegistry.checkID(nameID[0]);
+		for(int i=0; i<modFile.IDs.getSize(); i++) {
+			result = nameRegistry.checkID(modFile.IDs.get(i));
 			if(result != null) {
 				identifiedIDs.add(result);
 			}

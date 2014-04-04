@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -22,11 +23,11 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 	private String name = "";
 	private ArrayList<NamedScrollingListPanelListener> listeners;
 	
-	public NamedScrollingListPanel(String name, Dimension size, DefaultListModel<T> model) {
+	public NamedScrollingListPanel(String name, int size, DefaultListModel<T> model) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		//this.setMinimumSize(size);
-		//this.setMaximumSize(size);
-		this.setPreferredSize(size);
+		this.setMinimumSize(new Dimension(size, 50));
+		this.setMaximumSize(new Dimension(size, 5000));
+		this.setPreferredSize(new Dimension(size, 300));
 		if(name != null) {
 			this.add(new JLabel(name));
 			this.name = name;
@@ -56,6 +57,10 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 		for(int i=0; i<list.getModel().getSize(); i++) {
 			System.out.println(list.getModel().getElementAt(i));
 		}
+	}
+	
+	public ListModel<T> getModel() {
+		return list.getModel();
 	}
 	
 	public void clearSelection() {

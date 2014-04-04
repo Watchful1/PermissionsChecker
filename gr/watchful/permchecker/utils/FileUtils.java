@@ -21,6 +21,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+<<<<<<< HEAD
+=======
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+ 
+>>>>>>> refs/remotes/upstream/master
 public class FileUtils {
     public static void copyFolder(File sourceFolder, File destinationFolder) {
         copyFolder(sourceFolder, destinationFolder, true);
@@ -262,4 +268,28 @@ public class FileUtils {
         fos.getChannel().transferFrom(rbc, 0, 1 << 24);
         fos.close();
     }
+	
+	public static String getJSON(Object object) {
+		Gson gson = new Gson();
+		return gson.toJson(object);
+	}
+	
+	public static Object getObject(String JSON, Object object) {
+		Gson gson = new Gson();
+		Object tempObject;
+		try {
+			tempObject = gson.fromJson(JSON, object.getClass());
+		} catch (JsonSyntaxException excp) {
+			return null;
+		}
+		return tempObject;
+	}
+	
+	public static void saveObject(Object object, File file) {
+		writeFile(getJSON(object), file);
+	}
+	
+	public static Object readObject(File file, Object object) {
+		return getObject(readFile(file), object);
+	}
 }

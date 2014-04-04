@@ -1,9 +1,14 @@
 package gr.watchful.permchecker.modhandling;
 
+import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModInfo;
+import gr.watchful.permchecker.datastructures.ModpackStorageObject;
+
 import java.util.ArrayList;
 
 import java.util.HashMap;
+
+import com.google.gson.Gson;
 
 /**
  * Stores and gives access to mappings for modid to shortname as well as shortname to associated modinfo object
@@ -15,10 +20,14 @@ public class ModNameRegistry {
 	
 	private HashMap<String, String> shortNameMappings;
 	private HashMap<String, ModInfo> modInfoMappings;
+	private ModpackStorageObject customMappings;
 	
 	public ModNameRegistry() {
+		customMappings = new ModpackStorageObject();
 		shortNameMappings = new HashMap<String, String>();
+		customMappings.customShortNameMappings = new HashMap<String, String>();
 		modInfoMappings = new HashMap<String, ModInfo>();
+		customMappings.customModInfoMappings = new HashMap<String, ModInfo>();
 	}
 	
 	public void loadMappings(ArrayList<ArrayList<String>> infos, ArrayList<ArrayList<String>> mappings, String baseUrl, String extension) {
@@ -28,33 +37,37 @@ public class ModNameRegistry {
 		for(ArrayList<String> row : infos) {
 			if(row.size() > 9 && row.get(2) != null && !row.get(2).equals("")) {
 				ModInfo info = new ModInfo(row.get(2));
+				info.officialSpreadsheet = true;
 				info.modName = row.get(0);//set name
 				info.modAuthor = row.get(1);//set author
-				info.modUrl = row.get(5);//set url
+				info.modLink = row.get(5);//set url
 				
 				if(row.get(6).equals("")) {//set perm link
-					info.permLink = info.modUrl;
+					info.licenseLink = info.modLink;
 				} else {
-					info.permLink = row.get(6);
+					info.licenseLink = row.get(6);
 				}
 				if(row.get(7).equals("")) {//set private perm link
-					info.privatePermLink = info.permLink;
+					info.privateLicenseLink = info.licenseLink;
 				} else if(row.get(7).equals("PM")) {
-					info.privatePermLink = imageBaseUrl+"PrivateMessage"+imageExtension;
+					info.privateLicenseLink = imageBaseUrl+"PrivateMessage"+imageExtension;
 				} else {
-					info.privatePermLink = row.get(7);
+					info.privateLicenseLink = row.get(7);
 				}
 				if(row.get(8).equals("")) {//set FTB perm link
-					info.FTBPermLink = info.permLink;
+					info.FTBLicenseLink = info.licenseLink;
 				} else if(row.get(8).equals("PM")) {
-					info.FTBPermLink = imageBaseUrl+"PrivateMessage"+imageExtension;
+					info.FTBLicenseLink = imageBaseUrl+"PrivateMessage"+imageExtension;
 				} else {
-					info.FTBPermLink = row.get(8);
+					info.FTBLicenseLink = row.get(8);
 				}
 				
 				switch(row.get(3)){//set the public policy
 				case "Open":
 					info.publicPolicy = ModInfo.OPEN;
+					break;
+				case "Notify":
+					info.publicPolicy = ModInfo.NOTIFY;
 					break;
 				case "Request":
 					info.publicPolicy = ModInfo.REQUEST;
@@ -69,13 +82,16 @@ public class ModNameRegistry {
 					info.publicPolicy = ModInfo.UNKNOWN;
 					break;
 				default:
-					System.out.println("Couldn't set the public policy of "+info.shortName);
+					info.publicPolicy = ModInfo.UNKNOWN;
 					break;
 				}
 				
-				switch(row.get(4)){//set the public policy
+				switch(row.get(4)){//set the private policy
 				case "Open":
 					info.privatePolicy = ModInfo.OPEN;
+					break;
+				case "Notify":
+					info.privatePolicy = ModInfo.NOTIFY;
 					break;
 				case "Request":
 					info.privatePolicy = ModInfo.REQUEST;
@@ -90,7 +106,7 @@ public class ModNameRegistry {
 					info.privatePolicy = ModInfo.UNKNOWN;
 					break;
 				default:
-					System.out.println("Couldn't set the private policy of "+info.shortName);
+					info.privatePolicy = ModInfo.UNKNOWN;
 					break;
 				}
 				
@@ -101,16 +117,16 @@ public class ModNameRegistry {
 					info.FTBPolicy = ModInfo.FTB_UNKOWN;
 				}
 				
-				info.imageLink = imageBaseUrl+info.shortName+imageExtension;//set perm image link
+				info.licenseImageLink = imageBaseUrl+info.shortName+imageExtension;//set perm image link
 				if(row.get(7).equals("")) {//set private perm image link
-					info.privateImageLink = info.imageLink;
+					info.licensePrivateImageLink = info.licenseImageLink;
 				} else {
-					info.privateImageLink = imageBaseUrl+info.shortName+"private"+imageExtension;
+					info.licensePrivateImageLink = imageBaseUrl+info.shortName+"private"+imageExtension;
 				}
 				if(row.get(8).equals("")) {//set FTB perm image link
-					info.FTBImageLink = info.imageLink;
+					info.licenseFTBImageLink = info.licenseImageLink;
 				} else {
-					info.FTBImageLink = imageBaseUrl+info.shortName+"FTB"+imageExtension;
+					info.licenseFTBImageLink = imageBaseUrl+info.shortName+"FTB"+imageExtension;
 				}
 				
 				modInfoMappings.put(row.get(2), info);
@@ -123,19 +139,55 @@ public class ModNameRegistry {
 		}
 	}
 	
+	public void addShortName(String shortName, String modID) {
+		customMappings.customShortNameMappings.put(modID, shortName);
+		saveCustomInfos();
+	}
+	
+	public void addModInfo(String shortName, ModInfo modInfo) {
+		customMappings.customModInfoMappings.put(shortName, modInfo);
+		saveCustomInfos();
+	}
+	
+	public HashMap<String, String> getCustomMappings() {
+		return customMappings.customShortNameMappings;
+	}
+	
+	public HashMap<String, ModInfo> getCustomInfos() {
+		return customMappings.customModInfoMappings;
+	}
+	
 	public String checkID(String modID) {
-		if(shortNameMappings.containsKey(modID)) {
-			return shortNameMappings.get(modID);
+		if(customMappings.customShortNameMappings.containsKey(modID)) {
+			return customMappings.customShortNameMappings.get(modID);
 		} else {
-			return null;
+			return shortNameMappings.get(modID);
 		}
 	}
 	
 	public ModInfo getMod(String shortName) {
-		if(modInfoMappings.containsKey(shortName)) {
-			return modInfoMappings.get(shortName);
+		if(customMappings.customModInfoMappings.containsKey(shortName)) {
+			return customMappings.customModInfoMappings.get(shortName);
 		} else {
-			return null;
+			return modInfoMappings.get(shortName);
 		}
+	}
+	
+	public static String buildShortName(String name) {
+		return name.toLowerCase().replaceAll("[^A-Za-z]","");
+	}
+	
+	public void printCustomInfos() {
+		Gson gson = new Gson();
+		System.out.println(gson.toJson(customMappings.customShortNameMappings));
+		System.out.println(gson.toJson(customMappings.customModInfoMappings));
+	}
+	
+	public void saveCustomInfos() {
+		customMappings.saveObject(Globals.getInstance().minecraftFolder);
+	}
+	
+	public void loadCustomInfos() {
+		customMappings.loadObject(Globals.getInstance().minecraftFolder);
 	}
 }
