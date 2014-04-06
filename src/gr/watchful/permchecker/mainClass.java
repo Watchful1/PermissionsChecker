@@ -1,3 +1,4 @@
+package gr.watchful.permchecker;
 import gr.watchful.permchecker.datastructures.Mod;
 import gr.watchful.permchecker.datastructures.ModFile;
 import gr.watchful.permchecker.datastructures.ModInfo;
@@ -54,8 +55,6 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	private NamedScrollingListPanel<Mod> bad;
 	private NamedScrollingListPanel<ModFile> unknown;
 	private JToggleButton packTypeToggle;
-	private File permFile;
-	private File appstore; //Location for the spreadsheet file
 	private JPanel cards;
 	private ModEditor modEditor;
 	private ModFileEditor modFileEditor;
@@ -63,6 +62,15 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	private static Globals globals;
 	private JTabbedPane tabbedPane;
 	private ModPacksPanel modPacksPanel;
+	/*
+	 * TODO bearbear12345's section
+	 */
+	private File permFile;
+	private File appstore; //Location for the spreadsheet file
+	private String lastselectedpath = System.getProperty("user.home");
+	/*
+	 * END bearbear12345's section
+	 */
 
 	public mainClass() {
 		goodMods = new DefaultListModel<Mod>();
@@ -91,7 +99,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
                 appstore = new File(System.getProperty("user.home") + "/Library/Application Support/PermissionsChecker");
                 break;
             case Linux:
-                appstore = new File(System.getProperty("user.home") + "/.permissionsChecker");
+                appstore = new File(System.getProperty("user.home") + "/.PermissionsChecker");
                 break;
             case Other:
                 //TODO ????
@@ -280,11 +288,12 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser fileChooser = new JFileChooser(new File("C:\\Users\\Gregory\\Desktop\\Private pack staging"));
-				//JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home")); TODO
+//				JFileChooser fileChooser = new JFileChooser(lastselectedpath); TODO Remove above line when finished
 				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int returnVal = fileChooser.showOpenDialog(null);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File result = fileChooser.getSelectedFile();
+					lastselectedpath = result.getAbsolutePath();
 					discoverMods(result);
 				}
 			}
@@ -309,11 +318,12 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				//JFileChooser fileChooser = new JFileChooser(new File("C:\\Users\\Gregory\\Desktop\\Private pack staging"));
-				JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home"));
+				JFileChooser fileChooser = new JFileChooser(lastselectedpath);
 				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int returnVal = fileChooser.showOpenDialog(null);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File result = fileChooser.getSelectedFile();
+					lastselectedpath = result.getAbsolutePath();
 					setSavesFolder(result);
 				}
 			}
@@ -379,6 +389,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	
 	public void updateListings() {
 		try {
+			//TODO bearbear12345 -> Do da' special json check for modified time (someone in the [NAS]/_NAME_/*.txt
 			FileUtils
 					.downloadToFile(
 							new URL(
