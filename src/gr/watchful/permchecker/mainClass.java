@@ -469,7 +469,7 @@ public class mainClass extends JFrame implements
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Spreadsheet downloaded!");
+		System.out.println("Spreadsheet updated!");
 	}
 
 	public void parseListings() {
@@ -495,6 +495,8 @@ public class mainClass extends JFrame implements
 					.println("A spreadsheet update has been found! Dowloading...");
 			downloadListings();
 			parseListings();
+		} else {
+			System.out.println("The spreadsheet is up to date!");
 		}
 	}
 

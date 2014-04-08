@@ -37,25 +37,18 @@ public class JSONUtils {
 	}
 
 	public static String URLToString(String url) {
-		InputStream is;
-		String jsonText = null;
+		StringBuilder responseStrBuilder = new StringBuilder();
+		String line;
 		try {
-			is = new URL(url).openStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is,
-					Charset.forName("UTF-8")));
-			jsonText = readAll(rd);
+			BufferedReader streamReader = new BufferedReader(
+					new InputStreamReader(new URL(url).openConnection()
+							.getInputStream(), "UTF-8"));
+			while ((line = streamReader.readLine()) != null) {
+				responseStrBuilder.append(line);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return jsonText;
-	}
-
-	private static String readAll(Reader rd) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		int cp;
-		while ((cp = rd.read()) != -1) {
-			sb.append((char) cp);
-		}
-		return sb.toString();
+		return responseStrBuilder.toString();
 	}
 }
