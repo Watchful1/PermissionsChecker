@@ -16,15 +16,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
- 
 public class FileUtils {
 	public static void copyFolder(File sourceFolder, File destinationFolder) {
 		copyFolder(sourceFolder, destinationFolder, true);
 	}
-	
-	public static void copyFolder(File sourceFolder, File destinationFolder, boolean overwrite) {
+
+	public static void copyFolder(File sourceFolder, File destinationFolder,
+			boolean overwrite) {
 		if (sourceFolder.isDirectory()) {
 			if (!destinationFolder.exists()) {
 				destinationFolder.mkdirs();
@@ -39,36 +37,41 @@ public class FileUtils {
 			copyFile(sourceFolder, destinationFolder, overwrite);
 		}
 	}
-	
+
 	public static void copyFile(File sourceFile, File destinationFile) {
 		copyFile(sourceFile, destinationFile, true);
 	}
 
-	public static void copyFile(File sourceFile, File destinationFile, boolean overwrite) {
+	public static void copyFile(File sourceFile, File destinationFile,
+			boolean overwrite) {
 		try {
 			if (sourceFile.exists()) {
-				if(!overwrite && destinationFile.exists()) {
-					System.out.println("Destination file exists\n"+sourceFile.getAbsolutePath());
+				if (!overwrite && destinationFile.exists()) {
+					System.out.println("Destination file exists\n"
+							+ sourceFile.getAbsolutePath());
 					return;
 				}
-				if(!destinationFile.exists()) {
+				if (!destinationFile.exists()) {
 					destinationFile.createNewFile();
 				}
 				FileChannel sourceStream = null, destinationStream = null;
 				try {
 					sourceStream = new FileInputStream(sourceFile).getChannel();
-					destinationStream = new FileOutputStream(destinationFile).getChannel();
-					destinationStream.transferFrom(sourceStream, 0, sourceStream.size());
+					destinationStream = new FileOutputStream(destinationFile)
+							.getChannel();
+					destinationStream.transferFrom(sourceStream, 0,
+							sourceStream.size());
 				} finally {
-					if(sourceStream != null) {
+					if (sourceStream != null) {
 						sourceStream.close();
 					}
-					if(destinationStream != null) {
+					if (destinationStream != null) {
 						destinationStream.close();
 					}
 				}
 			} else {
-				System.out.println("Source file does not exist\n"+sourceFile.getAbsolutePath());
+				System.out.println("Source file does not exist\n"
+						+ sourceFile.getAbsolutePath());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -89,15 +92,22 @@ public class FileUtils {
 		ZipInputStream zipInputStream = null;
 		try {
 			byte[] buf = new byte[1024];
-			zipInputStream = new ZipInputStream(new FileInputStream(zipLocation));
+			zipInputStream = new ZipInputStream(
+					new FileInputStream(zipLocation));
 			ZipEntry zipentry = zipInputStream.getNextEntry();
 			while (zipentry != null) {
 				String entryName = zipentry.getName();
 				System.out.println(entryName);
 				int n;
-				if(!zipentry.isDirectory() && !entryName.equalsIgnoreCase("minecraft") && !entryName.equalsIgnoreCase(".minecraft") && !entryName.equalsIgnoreCase("instMods")) {
-					new File(outputLocation.getAbsolutePath() + File.separator + entryName).getParentFile().mkdirs();
-					FileOutputStream fileoutputstream = new FileOutputStream(outputLocation.getAbsolutePath() + File.separator + entryName);			 
+				if (!zipentry.isDirectory()
+						&& !entryName.equalsIgnoreCase("minecraft")
+						&& !entryName.equalsIgnoreCase(".minecraft")
+						&& !entryName.equalsIgnoreCase("instMods")) {
+					new File(outputLocation.getAbsolutePath() + File.separator
+							+ entryName).getParentFile().mkdirs();
+					FileOutputStream fileoutputstream = new FileOutputStream(
+							outputLocation.getAbsolutePath() + File.separator
+									+ entryName);
 					while ((n = zipInputStream.read(buf, 0, 1024)) > -1) {
 						fileoutputstream.write(buf, 0, n);
 					}
@@ -108,50 +118,55 @@ public class FileUtils {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			//System.out.println("ping");
+			// System.out.println("ping");
 		} finally {
 			try {
 				zipInputStream.close();
-			} catch (IOException e) { }
+			} catch (IOException e) {
+			}
 		}
 		System.out.println("done");
 	}
-	
+
 	public static void zipFilesTo(File[] files, File outputLocation) {
 		ZipOutputStream zipOutputStream = null;
 		try {
-			zipOutputStream = new ZipOutputStream(new FileOutputStream(outputLocation));
+			zipOutputStream = new ZipOutputStream(new FileOutputStream(
+					outputLocation));
 			addDirectoryOrFile(zipOutputStream, files, 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
 				zipOutputStream.close();
-			} catch (IOException e) { }
+			} catch (IOException e) {
+			}
 		}
 		System.out.println("done");
 	}
-	
-	private static void addDirectoryOrFile(ZipOutputStream zipOutputStream, File[] files, int depth) throws IOException {
-		for (int i=0; i<files.length; i++) {
+
+	private static void addDirectoryOrFile(ZipOutputStream zipOutputStream,
+			File[] files, int depth) throws IOException {
+		for (int i = 0; i < files.length; i++) {
 			if (files[i].isDirectory()) {
 				System.out.println("Adding directory " + files[i].getName());
-				addDirectoryOrFile(zipOutputStream, files[i].listFiles(),depth+1);
+				addDirectoryOrFile(zipOutputStream, files[i].listFiles(),
+						depth + 1);
 				continue;
 			}
 
 			byte[] buffer = new byte[1024];
-			
+
 			String fileName = "";
 			File temp = files[i];
-			for(int j=0; j<depth; j++) {
-				for(int k=depth-j; k>0; k--) {
+			for (int j = 0; j < depth; j++) {
+				for (int k = depth - j; k > 0; k--) {
 					temp = temp.getParentFile();
 				}
-				fileName = fileName+temp.getName()+"/";
+				fileName = fileName + temp.getName() + "/";
 				temp = files[i];
 			}
-			fileName = fileName+files[i].getName();
+			fileName = fileName + files[i].getName();
 			System.out.println("Adding file " + fileName);
 
 			FileInputStream fileInputStream = new FileInputStream(files[i]);
@@ -166,74 +181,59 @@ public class FileUtils {
 			fileInputStream.close();
 		}
 	}
-	
-	public static void writeFile(String string, File location)
-	{
-		if(!location.exists()) location.getParentFile().mkdirs();
-		try{
-			// Create file 
+
+	public static void writeFile(String string, File location) {
+		if (!location.exists())
+			location.getParentFile().mkdirs();
+		try {
+			// Create file
 			FileWriter fstream = new FileWriter(location);
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(string);
-			//Close the output stream
+			// Close the output stream
 			out.close();
-		}catch (Exception e){//Catch exception if any
+		} catch (Exception e) {// Catch exception if any
 			System.err.println("Error: " + e.getMessage());
 		}
 	}
-	
-	public static String readFile(File location)
-	{
-		if(!location.exists()) return null;
+
+	public static String readFile(File location) {
+		if (!location.exists())
+			return null;
 		BufferedReader br = null;
 		StringBuilder bldr = new StringBuilder();
 		try {
 			String sCurrentLine;
 			br = new BufferedReader(new FileReader(location));
 			while ((sCurrentLine = br.readLine()) != null) {
-				bldr.append(sCurrentLine+"\n");
+				bldr.append(sCurrentLine + "\n");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (br != null)br.close();
+				if (br != null)
+					br.close();
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
 		}
 		return bldr.toString();
 	}
-	
+
 	public static void downloadToFile(URL url, File file) throws IOException {
-        file.getParentFile().mkdirs();
-        ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-        FileOutputStream fos = new FileOutputStream(file);
-        fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-        fos.close();
-    }
-	
-	public static String getJSON(Object object) {
-		Gson gson = new Gson();
-		return gson.toJson(object);
+		file.getParentFile().mkdirs();
+		ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+		FileOutputStream fos = new FileOutputStream(file);
+		fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+		fos.close();
 	}
-	
-	public static Object getObject(String JSON, Object object) {
-		Gson gson = new Gson();
-		Object tempObject;
-		try {
-			tempObject = gson.fromJson(JSON, object.getClass());
-		} catch (JsonSyntaxException excp) {
-			return null;
-		}
-		return tempObject;
-	}
-	
+
 	public static void saveObject(Object object, File file) {
-		writeFile(getJSON(object), file);
+		writeFile(JSONUtils.getJSON(object), file);
 	}
-	
+
 	public static Object readObject(File file, Object object) {
-		return getObject(readFile(file), object);
+		return JSONUtils.getObject(readFile(file), object);
 	}
 }

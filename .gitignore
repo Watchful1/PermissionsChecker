@@ -12,7 +12,6 @@ tmp/
 *.swp
 *~.nib
 local.properties
-.classpath
 .settings/
 .loadpath
 
@@ -213,3 +212,9 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+/mainClass$3.class
+/mainClass$1.class
+/mainClass$2.class
+/mainClass$4.class
+/mainClass$5.class
+/mainClass.class
