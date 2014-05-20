@@ -1,0 +1,120 @@
+buildscript {
+    repositories {
+		maven {
+            name 'Shadow'
+            url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
+        }
+		maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+		maven {
+            name = "jcenter"
+            url = "http://jcenter.bintray.com"
+        }
+        mavenCentral()
+        mavenLocal()
+    }
+
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:0.8'
+
+    }
+
+}
+
+apply plugin: 'maven'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'shadow'
+
+project.ext {
+    mainClass = 'mainClass'
+    currentYear = '2014'
+}
+
+group = 'gr.watchful'
+version = '1.0.0'
+description = "Permissions Checker"
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+shadow {
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+	//classifier = "${System.getenv().BUILD_NUMBER}"
+	destinationDir = "${buildDir}/libs/"
+	artifactSet {
+        include 'com.google.code.gson'
+		include 'com.google.guava'
+		include 'org.apache.logging.log4j'
+		include 'commons-logging'
+		include 'org.apache.commons'
+		include 'commons-codec'
+		include 'org.ow2.asm'
+	    include 'dom4j'
+        include 'org.apache.xmlbeans'
+	    include 'org.apache.poi'
+    }
+}
+task deleteOrig(type: Delete) {
+    delete "${project.tasks.jar.getArchivePath().getPath()}"
+}
+
+task fixJars(type: Copy) {
+
+    from("${buildDir}/libs/")
+	destinationDir = file("${buildDir}/libs/")
+        rename { String fileName ->
+            fileName.replace('-shadow', '')
+        }
+		rename(/(.+)-shadow(.+)/, '$1$2')
+}
+task deleteShadow(type: Delete) {
+    delete "${project.tasks.jar.getArchivePath().getPath().replace('.jar', '-shadow.jar')}"
+
+	}
+
+build.dependsOn(deleteShadow)
+deleteShadow.dependsOn(fixJars)
+fixJars.dependsOn(deleteOrig)
+deleteOrig.dependsOn(shadowJar)
+
+
+//}
+jar {
+    manifest {
+        attributes 'Main-Class': project.mainClass
+    }
+}
+
+
+repositories {
+	mavenCentral()
+}
+dependencies {
+	compile 'com.google.code.gson:gson:2.2.4'
+	compile 'org.projectlombok:lombok:1.12.6'
+	compile 'com.google.guava:guava:16.0.1'
+	compile 'org.ow2.asm:asm:5.0.2'
+	compile 'dom4j:dom4j:1.6.1'
+    compile 'org.apache.xmlbeans:xmlbeans:2.6.0'
+	compile 'org.apache.poi:poi:3.10-FINAL'
+	compile 'org.apache.poi:poi-ooxml:3.10-FINAL'
+    compile 'org.apache.poi:poi-ooxml-schemas:3.10-FINAL'
+            
+    //commons codec via poi
+	//commons-logging via poi
+	//log4j 1 via poi
+	}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'source'
+        }
+        resources {
+            srcDir 'resources'
+        }
+    }
+}
