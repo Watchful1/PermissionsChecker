@@ -13,11 +13,17 @@ import javax.swing.*;
 public class ModPacksPanel extends JPanel {
 	private DefaultListModel<ModPack> modPacksModel;
 	private NamedScrollingListPanel<ModPack> modPacksPanel;
-	private JPanel buttonPanel;
     private JPanel mainPanel;
+
+    private JPanel buttonPanel;
     private JButton saveButton;
     private JButton addPackButton;
     private JButton removePackButton;
+
+    private JPanel editorPanel;
+    private LabelField nameField;
+    private LabelField authorField;
+    private LabelField shortNameField;
 	
 	public ModPacksPanel() {
 		this.setLayout(new BorderLayout());
@@ -28,7 +34,8 @@ public class ModPacksPanel extends JPanel {
 
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-		
+
+        //buttons at the top to manage packs
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         buttonPanel.setAlignmentX(0f);
@@ -51,7 +58,6 @@ public class ModPacksPanel extends JPanel {
         });
         buttonPanel.add(addPackButton);
 
-
         removePackButton = new JButton("Remove");
         removePackButton.addActionListener(new ActionListener() {
             @Override
@@ -62,6 +68,20 @@ public class ModPacksPanel extends JPanel {
         buttonPanel.add(removePackButton);
 
         mainPanel.add(buttonPanel);
+
+        //fields in the middle to edit pack details
+        editorPanel = new JPanel();
+        editorPanel.setLayout(new BoxLayout(editorPanel, BoxLayout.Y_AXIS));
+
+        nameField = new LabelField("Name");
+        editorPanel.add(nameField);
+        authorField = new LabelField("Author");
+        editorPanel.add(authorField);
+        shortNameField = new LabelField("ShortName");
+        shortNameField.lock("This is autocomputed, changing it breaks lots of stuff");
+        editorPanel.add(shortNameField);
+
+        mainPanel.add(editorPanel);
 
         this.add(mainPanel);
 	}

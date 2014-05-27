@@ -9,19 +9,18 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class ModPack {
-	public String name;
-	public String author;
-	public String shortName;
-	public String key;
-	public String description;
-	public String recommendedVersion;
-	public String minecraftVersion;
-	public ArrayList<String> versions;
-	public ArrayList<String> modList;
-	public File icon;
-	public File splash;
-	public File zip;
-	public File server;
+	public String name;//simple
+	public String author;//simple
+	public String shortName;//difficult, need to change all files on server
+	public String key;//moderate, delete 1 local file. Leaves old code on server
+	public String description;//simple
+	public String recommendedVersion;//simple, select from available
+	public String minecraftVersion;//simple, select from available
+	public ArrayList<String> versions;//add, simple. Remove, change rec version if necessary. Move TODO
+	public ArrayList<String> modList;//autocomputed, no interface
+	public File icon;//Icon if set and size small enough. Button to select new icon, deletes old
+	public File splash;//Icon if set and size small enough. Button to select new icon, deletes old
+	public File server;//Icon if set. Button to select new icon, deletes old
 	
 	public Time lastEdited;
 	public ArrayList<String> submitters;

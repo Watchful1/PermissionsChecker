@@ -327,6 +327,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
+        System.out.println("DONE");
 	}
 	
 	private static boolean isMinecraftDir(File file) {

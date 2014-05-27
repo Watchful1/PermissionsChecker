@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 public class LabelField extends JPanel {
 	private JLabel label;
 	private JTextField textField;
+    private String lockReason;
 	
 	public LabelField(String name) {
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -34,8 +35,14 @@ public class LabelField extends JPanel {
 	public String getText() {
 		return textField.getText();
 	}
-	
-	public void setEditable(boolean isEditable) {
-		textField.setEditable(isEditable);
-	}
+
+    public void lock(String lockReason) {
+        textField.setToolTipText(lockReason);
+        textField.setEditable(false);
+    }
+
+    public void unLock() {
+        textField.setToolTipText("");
+        textField.setEditable(true);
+    }
 }

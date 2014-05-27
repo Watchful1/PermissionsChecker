@@ -65,7 +65,7 @@ public class ModInfoEditor extends JPanel {
 		
 		shortName = new LabelField("Short Name");
 		this.add(shortName);
-		shortName.setEditable(false);
+		shortName.lock("This cannot be changed for mods already in the database");
 		
 		permType = new PermType();
 		this.add(permType);
@@ -120,7 +120,8 @@ public class ModInfoEditor extends JPanel {
 	}
 	
 	public void editShortName(boolean canEdit) {
-		shortName.setEditable(canEdit);
+        if(canEdit) shortName.unLock();
+        else shortName.lock("This cannot be changed for mods already in the database");
 	}
 	
 	public String getShortName() {
@@ -129,9 +130,9 @@ public class ModInfoEditor extends JPanel {
 	
 	private void updateEditableCustom() {
 		if(permType.getType() == ModInfo.OPEN || permType.getType() == ModInfo.FTB) {//TODO non-ftb launcher
-			customLink.setEditable(false);
+			customLink.lock("Don't need a link for open permission mods");
 		} else {
-			customLink.setEditable(true);
+			customLink.unLock();
 		}
 	}
 	
