@@ -65,6 +65,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	private JTabbedPane tabbedPane;
 	private ModPacksPanel modPacksPanel;
 
+    //testing intellij git support
 	public mainClass() {
 		goodMods = new DefaultListModel<Mod>();
 		badMods = new DefaultListModel<Mod>();
