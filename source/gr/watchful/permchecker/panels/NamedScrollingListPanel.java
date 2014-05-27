@@ -2,6 +2,7 @@ package gr.watchful.permchecker.panels;
 
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
+import gr.watchful.permchecker.utils.DatastructureUtils;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setMinimumSize(new Dimension(size, 50));
 		this.setMaximumSize(new Dimension(size, 5000));
-		this.setPreferredSize(new Dimension(size, 300));
+		this.setPreferredSize(new Dimension(size, 500));
 		if(name != null) {
 			this.add(new JLabel(name));
 			this.name = name;
@@ -44,10 +45,6 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
         this.add(scrList);
 	}
 	
-	public T getSelected() {
-		return list.getSelectedValue();
-	}
-	
 	public void addListener(NamedScrollingListPanelListener listener) {
 		listeners.add(listener);
 	}
@@ -59,13 +56,43 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 		}
 	}
 	
-	public ListModel<T> getModel() {
-		return list.getModel();
+	public DefaultListModel getModel() {
+		return (DefaultListModel) list.getModel();
 	}
+
+    public T getSelected() {
+        return list.getSelectedValue();
+    }
+
+    public int getNamePos(String name) {
+        ListModel model = getModel();
+        for(int i=0; i<model.getSize(); i++) {
+            if(model.getElementAt(i).toString().equals(name)) return i;
+        }
+        return -1;
+    }
+
+    public void setSelectedName(String name) {
+        setSelected(getNamePos(name));
+    }
+
+    public void setSelected(int pos) {
+        list.setSelectedIndex(pos);
+    }
 	
 	public void clearSelection() {
 		list.clearSelection();
 	}
+
+    public void sort() {
+        DatastructureUtils.sortDefaultListModel(getModel());
+    }
+
+    public void sortKeepSelected() {
+        String name = getSelected().toString();
+        sort();
+        setSelectedName(name);
+    }
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {

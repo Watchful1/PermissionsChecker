@@ -12,6 +12,7 @@ import gr.watchful.permchecker.panels.ModEditor;
 import gr.watchful.permchecker.panels.ModFileEditor;
 import gr.watchful.permchecker.panels.ModPacksPanel;
 import gr.watchful.permchecker.panels.NamedScrollingListPanel;
+import gr.watchful.permchecker.utils.DatastructureUtils;
 import gr.watchful.permchecker.utils.ExcelUtils;
 import gr.watchful.permchecker.utils.FileUtils;
 import gr.watchful.permchecker.utils.OsTypes;
@@ -55,7 +56,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	private NamedScrollingListPanel<ModFile> unknown;
 	private JToggleButton packTypeToggle;
 	private File permFile;
-	private File appstore; //Location for the spreadsheet file
+	private File appStore; //Location for the spreadsheet file
 	private JPanel cards;
 	private ModEditor modEditor;
 	private ModFileEditor modFileEditor;
@@ -85,23 +86,23 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
         System.out.println("Searching for application storage directory...");
         switch (ostype) {
             case Windows:
-                appstore = new File(System.getenv("APPDATA") + "/PermissionsChecker");
+                appStore = new File(System.getenv("APPDATA") + "/PermissionsChecker");
                 break;
             case MacOS:
-                appstore = new File(System.getProperty("user.home") + "/Library/Application Support/PermissionsChecker");
+                appStore = new File(System.getProperty("user.home") + "/Library/Application Support/PermissionsChecker");
                 break;
             case Linux:
-                appstore = new File(System.getProperty("user.home") + "/.permissionsChecker");
+                appStore = new File(System.getProperty("user.home") + "/.permissionsChecker");
                 break;
             case Other:
                 //TODO ????
                 break;
         }
-        if (!appstore.exists()) {
-            System.out.println("Directory not found! Creating directory: " + appstore.getPath());
-            boolean result = appstore.mkdirs();
+        if (!appStore.exists()) {
+            System.out.println("Directory not found! Creating directory: " + appStore.getPath());
+            boolean result = appStore.mkdirs();
             if (result) {
-                System.out.println(appstore.getPath() + " created!");
+                System.out.println(appStore.getPath() + " created!");
             }
         } else {
             System.out.println("Directory exists!");
@@ -109,7 +110,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
         
         loadPreferences();
 
-        permFile = new File(appstore.getPath() + "/PermissionsChecker.xlsx");
+        permFile = new File(appStore.getPath() + "/PermissionsChecker.xlsx");
         if (!permFile.exists()) {
             try {
                 permFile.createNewFile();
@@ -452,20 +453,8 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 				//System.out.println(temp.modName+" is good");
 			}
 		}
-		sortDefaultListModel(goodMods);
-		sortDefaultListModel(badMods);
-	}
-	
-	public static void sortDefaultListModel(DefaultListModel<Mod> model) {
-		ArrayList<Mod> list = new ArrayList<Mod>();
-		for(int i=0; i<model.getSize(); i++) {
-			list.add(model.get(i));
-		}
-		Collections.sort(list);
-		model.clear();
-		for(Mod mod : list) {
-			model.addElement(mod);
-		}
+		DatastructureUtils.sortDefaultListModel(goodMods);
+        DatastructureUtils.sortDefaultListModel(badMods);
 	}
 	
 	private static ArrayList<Mod> processModFile(ModFile modFile) {
@@ -555,13 +544,13 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	}
 	
 	public void savePreferences() {
-		FileUtils.saveObject(Globals.getInstance().preferences, new File(appstore+File.separator+"preferences.conf"));
+		FileUtils.saveObject(Globals.getInstance().preferences, new File(appStore +File.separator+"preferences.conf"));
 	}
 	
 	public void loadPreferences() {
-		File prefFile = new File(appstore+File.separator+"preferences.conf");
+		File prefFile = new File(appStore +File.separator+"preferences.conf");
 		if(prefFile.exists()) {
-			Globals.getInstance().preferences = (Preferences) FileUtils.readObject(new File(appstore+File.separator+"preferences.conf"), new Preferences());
+			Globals.getInstance().preferences = (Preferences) FileUtils.readObject(new File(appStore +File.separator+"preferences.conf"), new Preferences());
 		} else {
 			Globals.getInstance().preferences = new Preferences();
 		}
