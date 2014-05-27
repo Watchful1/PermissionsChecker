@@ -56,7 +56,7 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 		}
 	}
 	
-	public DefaultListModel getModel() {
+	public DefaultListModel<T> getModel() {
 		return (DefaultListModel) list.getModel();
 	}
 

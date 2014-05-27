@@ -169,8 +169,8 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		packTypeToggle.setPreferredSize(temp);
 
 		try {//try as hard as possible to load the images and set them on the toggle button
-			URL leftUrl = getClass().getResource("resources/toggleLeft.png");
-			URL rightUrl = getClass().getResource("resources/toggleRight.png");
+			URL leftUrl = getClass().getResource("toggleLeft.png");
+			URL rightUrl = getClass().getResource("toggleRight.png");
 		    if(leftUrl == null || rightUrl == null) {
 		    	ImageIcon leftIcon = new ImageIcon("bin/resources/toggleLeft.png");
 		    	ImageIcon rightIcon = new ImageIcon("bin/resources/toggleRight.png");
