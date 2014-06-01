@@ -25,25 +25,12 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 
 import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JToggleButton;
+import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class mainClass extends JFrame implements NamedScrollingListPanelListener, RebuildsMods {
@@ -67,10 +54,10 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 
     //testing intellij git support
 	public mainClass() {
-		goodMods = new DefaultListModel<Mod>();
-		badMods = new DefaultListModel<Mod>();
-		unknownMods = new DefaultListModel<ModFile>();
-		knownMods = new DefaultListModel<ModFile>();
+		goodMods = new DefaultListModel<>();
+		badMods = new DefaultListModel<>();
+		unknownMods = new DefaultListModel<>();
+		knownMods = new DefaultListModel<>();
 
 		globals = Globals.getInstance();
 		globals.main = this;
@@ -114,7 +101,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
         permFile = new File(appStore.getPath() + "/PermissionsChecker.xlsx");
         if (!permFile.exists()) {
             try {
-                permFile.createNewFile();
+                if(!permFile.createNewFile()) throw(new IOException());
             } catch (IOException e) {
                 System.out.println("An error occured while creating during setup. Please try again later. If issues persist, contact the author");
             }
@@ -138,13 +125,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			discoverMods(currentDir);
 		} else if(isMinecraftDir(currentDir.getParentFile())) {
 			discoverMods(currentDir.getParentFile());
-		} else {
-			//TODO implement a selection of modpacks, maybe save modpack locations for later use
-			//also allow selecting of multiMC instances folder
-			
-			//debug
-			//discoverMods(new File("C:\\Users\\Gregory\\Desktop\\MultiMC\\instances\\Hammercraft 4.3.0 Custom\\minecraft"));
-		}
+		} //TODO implement a selection of modpacks, maybe save modpack locations for later use
 		
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
@@ -227,15 +208,15 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		
 		this.add(tabbedPane);
 
-		good = new NamedScrollingListPanel<Mod>(
+		good = new NamedScrollingListPanel<>(
 				"Good", 100, goodMods);
 		good.addListener(this);
 		mainPanel.add(good);
-		bad = new NamedScrollingListPanel<Mod>(
+		bad = new NamedScrollingListPanel<>(
 				"Bad", 100, badMods);
 		bad.addListener(this);
 		mainPanel.add(bad);
-		unknown = new NamedScrollingListPanel<ModFile>(
+		unknown = new NamedScrollingListPanel<>(
 				"Unknown", 100, unknownMods);
 		mainPanel.add(unknown);
 		unknown.addListener(this);
@@ -325,7 +306,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		this.setJMenuBar(menuBar);
 
 		pack();
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setVisible(true);
         System.out.println("DONE");
 	}
@@ -349,7 +330,8 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		System.out.println(event.getParentName()+" : "+event.getSelected());
 		updateEditor(event.getParentName(),event.getSelected());
 	}
-	
+
+    @SuppressWarnings("unused")
 	private void updateEditor(String list, int selected) {
 		if(list.equals("Good")) {
 			bad.clearSelection();
@@ -384,8 +366,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		try {
 			FileUtils
 					.downloadToFile(
-							new URL(
-									"https://skydrive.live.com/download?resid=96628E67B4C51B81!105&authkey=!AK7mlmHB0nrxmHg&ithint=file%2c.xlsx"),
+							new URL("https://skydrive.live.com/download?resid=96628E67B4C51B81!161&ithint=file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM"),
 							permFile);
 			try {
 				ArrayList<ArrayList<String>> infos = ExcelUtils.toArray(permFile,1);
@@ -397,8 +378,6 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			} catch (IOException e) {
 				System.out.println("uhoh");
 			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -439,7 +418,6 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 					badMods.addElement(mod);
 				}
 			}
-			mods = null;
 		}
 		
 		for(int i=badMods.getSize()-1; i>=0; i--) {
@@ -460,9 +438,9 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	}
 	
 	private static ArrayList<Mod> processModFile(ModFile modFile) {
-		String result = null;
-		HashSet<String> identifiedIDs = new HashSet<String>();
-		ArrayList<Mod> out = new ArrayList<Mod>();
+		String result;
+		HashSet<String> identifiedIDs = new HashSet<>();
+		ArrayList<Mod> out = new ArrayList<>();
 		for(int i=0; i<modFile.IDs.getSize(); i++) {
 			result = nameRegistry.checkID(modFile.IDs.get(i));
 			if(result != null) {
