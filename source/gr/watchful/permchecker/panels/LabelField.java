@@ -11,7 +11,6 @@ import javax.swing.JTextField;
 public class LabelField extends JPanel {
 	private JLabel label;
 	private JTextField textField;
-    private String lockReason;
 	
 	public LabelField(String name) {
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));

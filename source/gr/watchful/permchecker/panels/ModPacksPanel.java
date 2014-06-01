@@ -24,12 +24,14 @@ public class ModPacksPanel extends JPanel {
     private LabelField nameField;
     private LabelField authorField;
     private LabelField shortNameField;
+    private LabelField keyField;
+    private HTMLField descriptionField;
 	
 	public ModPacksPanel() {
 		this.setLayout(new BorderLayout());
 
-		modPacksModel = new DefaultListModel<ModPack>();
-		modPacksPanel = new NamedScrollingListPanel<ModPack>("ModPacks", 200, modPacksModel);
+		modPacksModel = new DefaultListModel<>();
+		modPacksPanel = new NamedScrollingListPanel<>("ModPacks", 200, modPacksModel);
 		this.add(modPacksPanel, BorderLayout.LINE_START);
 
         mainPanel = new JPanel();
@@ -80,6 +82,11 @@ public class ModPacksPanel extends JPanel {
         shortNameField = new LabelField("ShortName");
         shortNameField.lock("This is autocomputed, changing it breaks lots of stuff");
         editorPanel.add(shortNameField);
+        keyField = new LabelField("Pack Key");
+        editorPanel.add(keyField);
+        descriptionField = new HTMLField("Description");
+        editorPanel.add(descriptionField);
+
 
         mainPanel.add(editorPanel);
 
@@ -107,7 +114,7 @@ public class ModPacksPanel extends JPanel {
             return;
         }
         for(int i=0; i<modPacksPanel.getModel().getSize(); i++) {
-            ModPack newPack = (ModPack) modPacksPanel.getModel().get(i);
+            ModPack newPack = modPacksPanel.getModel().get(i);
             if(pack.key.equals(newPack.key)) {
                 if(found) {
                     System.out.println("Key exists. Can't save.");
