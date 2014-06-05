@@ -37,6 +37,7 @@ public class HTMLField extends JPanel {
         viewHTML = new JLabel();
         viewHTML.setVerticalAlignment(SwingConstants.TOP);
         JScrollPane scrollLabel = new JScrollPane(viewHTML);
+        scrollLabel.setMinimumSize(new Dimension(1, 150));
 
         VerticalTextIcon.addTab(tabbedPane, "View", scrollLabel);
 

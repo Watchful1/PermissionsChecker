@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
+/**
+ * Taken from http://www.jroller.com/santhosh/entry/adobe_like_tabbedpane_in_swing
+ */
 @SuppressWarnings("deprecation")
 public class VerticalTextIcon implements Icon, SwingConstants{
     private Font font = UIManager.getFont("Label.font");
