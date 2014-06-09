@@ -14,8 +14,9 @@ public class VersionEditor extends JPanel {
     private JLabel label;
     private JList<String> list;
     private DefaultListModel<String> model;
+    private RecommendedVersionEditor recommendedVersionEditor;
 
-    public VersionEditor(String name) {
+    public VersionEditor(String name, RecommendedVersionEditor recommendedVersionEditorIn) {
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.setAlignmentX(0);
 
@@ -25,8 +26,11 @@ public class VersionEditor extends JPanel {
         label.setPreferredSize(new Dimension(90, 21));
         this.add(label);
 
+        recommendedVersionEditor = recommendedVersionEditorIn;
+
         model = new DefaultListModel<>();
         list = new JList<>(model);
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
         this.add(scrollPane);
@@ -61,10 +65,14 @@ public class VersionEditor extends JPanel {
 
     private void addVersion(String newVersion) {
         model.insertElementAt(newVersion, 0);
+        recommendedVersionEditor.addVersion(newVersion);
     }
 
     private void removeSelectedVersion() {
-        if(list.getSelectedIndex() >= 0) model.removeElementAt(list.getSelectedIndex());
+        if(list.getSelectedIndex() >= 0) {
+            recommendedVersionEditor.removeVersion(list.getSelectedIndex());
+            model.removeElementAt(list.getSelectedIndex());
+        }
     }
 
     public ArrayList<String> getVersions() {
