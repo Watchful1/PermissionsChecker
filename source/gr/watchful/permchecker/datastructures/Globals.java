@@ -4,6 +4,8 @@ import java.io.File;
 
 import gr.watchful.permchecker.modhandling.ModNameRegistry;
 
+import javax.swing.*;
+
 public class Globals {
 	private static volatile Globals instance = null;
 	
@@ -22,6 +24,7 @@ public class Globals {
 	public RebuildsMods main;
 	public File minecraftFolder;
 	public Preferences preferences;
+    public JFrame mainFrame;
 	
 	public Globals() {
 		packType = Globals.PUBLIC;

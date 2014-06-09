@@ -60,7 +60,8 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		knownMods = new DefaultListModel<>();
 
 		globals = Globals.getInstance();
-		globals.main = this;
+        globals.main = this;
+        globals.mainFrame = this;
 		
 		nameRegistry = globals.nameRegistry;
 		

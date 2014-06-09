@@ -26,7 +26,7 @@ public class ModPacksPanel extends JPanel {
     private LabelField shortNameField;
     private LabelField keyField;
     private HTMLField descriptionField;
-    private versionEditor versionEditor;
+    private VersionEditor VersionEditor;
 	
 	public ModPacksPanel() {
 		this.setLayout(new BorderLayout());
@@ -88,8 +88,8 @@ public class ModPacksPanel extends JPanel {
         editorPanel.add(keyField);
         descriptionField = new HTMLField("Description");
         editorPanel.add(descriptionField);
-        versionEditor = new versionEditor("Version");
-        editorPanel.add(versionEditor);
+        VersionEditor = new VersionEditor("Version");
+        editorPanel.add(VersionEditor);
 
         mainPanel.add(editorPanel);
 
