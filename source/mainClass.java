@@ -1,3 +1,4 @@
+import com.sun.xml.internal.bind.v2.TODO;
 import gr.watchful.permchecker.datastructures.Mod;
 import gr.watchful.permchecker.datastructures.ModFile;
 import gr.watchful.permchecker.datastructures.ModInfo;
@@ -263,8 +264,8 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		chooseModpack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser fileChooser = new JFileChooser(new File("C:\\Users\\Gregory\\Desktop\\Private pack staging"));
-				//JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home")); TODO
+				//JFileChooser fileChooser = new JFileChooser(new File("C:\\Users\\Gregory\\Desktop\\Private pack staging"));
+				JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home"));
 				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int returnVal = fileChooser.showOpenDialog(null);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
