@@ -50,7 +50,7 @@ public class VersionEditor extends JPanel {
                         addVersion(result);
                     } else {
                         JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
-                                "Version must only include numbers and digits");
+                                "Version must only include numbers and periods");
                     }
                 }
             }
