@@ -28,6 +28,7 @@ public class ModPacksPanel extends JPanel {
     private HTMLField descriptionField;
     private RecommendedVersionEditor recommendedVersionEditor;
     private VersionEditor versionEditor;
+    private FileSelecter iconSelector;
 	
 	public ModPacksPanel() {
 		this.setLayout(new BorderLayout());
@@ -93,6 +94,8 @@ public class ModPacksPanel extends JPanel {
         editorPanel.add(recommendedVersionEditor);
         versionEditor = new VersionEditor("Version", recommendedVersionEditor);
         editorPanel.add(versionEditor);
+        iconSelector = new FileSelecter("Icon");
+        editorPanel.add(iconSelector);
 
         mainPanel.add(editorPanel);
 
