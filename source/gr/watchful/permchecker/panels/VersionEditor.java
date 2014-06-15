@@ -7,7 +7,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class VersionEditor extends JPanel {
@@ -46,7 +45,14 @@ public class VersionEditor extends JPanel {
                         Globals.getInstance().mainFrame,
                         "", "New Version",
                         JOptionPane.PLAIN_MESSAGE);
-                if(result != null) addVersion(result);
+                if(result != null) {
+                    if(result.matches("\\d(\\.\\d+)*")) {
+                        addVersion(result);
+                    } else {
+                        JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+                                "Version must only include numbers and digits");
+                    }
+                }
             }
         });
         buttonPanel.add(addButton);
