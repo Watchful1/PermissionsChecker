@@ -29,6 +29,8 @@ public class ModPacksPanel extends JPanel {
     private RecommendedVersionEditor recommendedVersionEditor;
     private VersionEditor versionEditor;
     private FileSelecter iconSelector;
+    private FileSelecter splashSelector;
+    private FileSelecter serverSelector;
 	
 	public ModPacksPanel() {
 		this.setLayout(new BorderLayout());
@@ -94,8 +96,12 @@ public class ModPacksPanel extends JPanel {
         editorPanel.add(recommendedVersionEditor);
         versionEditor = new VersionEditor("Version", recommendedVersionEditor);
         editorPanel.add(versionEditor);
-        iconSelector = new FileSelecter("Icon");
+        iconSelector = new FileSelecter("Icon", 150, "png");
         editorPanel.add(iconSelector);
+        splashSelector = new FileSelecter("Splash", 150, "png");
+        editorPanel.add(splashSelector);
+        serverSelector = new FileSelecter("Server", -1, "zip");
+        editorPanel.add(serverSelector);
 
         mainPanel.add(editorPanel);
 
