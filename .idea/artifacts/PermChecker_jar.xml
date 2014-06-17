@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="PermChecker:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/PermChecker_jar</output-path>
+    <output-path>$PROJECT_DIR$/../../../Dropbox/Public</output-path>
     <root id="archive" name="PermChecker.jar">
       <element id="module-output" name="PermChecker" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.2.4/a60a5e993c98c864010053cb901b7eab25306568/gson-2.2.4.jar" path-in-jar="/" />

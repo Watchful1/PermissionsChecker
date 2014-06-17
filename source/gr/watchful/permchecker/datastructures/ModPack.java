@@ -29,7 +29,7 @@ public class ModPack {
 	public ModpackStorageObject customPerms;
 	
 	public ModPack() {
-        name = "";
+        name = "Unnamed";
         author = "";
         shortName = "";
         key = "";
@@ -45,8 +45,12 @@ public class ModPack {
 	}
 	
 	public Boolean saveThisObject() {
+        if(Globals.getInstance().preferences == null) System.out.println("Prefs null");
+        if(Globals.getInstance().preferences.saveFolder == null) System.out.println("Folder null");
+        System.out.println(Globals.getInstance().saveFolder);
 		if(Globals.getInstance().preferences.saveFolder == null) return false;
 		else {
+            System.out.println(Globals.getInstance().preferences.saveFolder);
 			saveObject(new File(Globals.getInstance().preferences.saveFolder+File.separator+shortName+".json"), this);
 			return true;
 		}

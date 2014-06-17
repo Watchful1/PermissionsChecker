@@ -25,13 +25,15 @@ public class Globals {
 	public File minecraftFolder;
 	public Preferences preferences;
     public JFrame mainFrame;
+    public File saveFolder;
 	
 	public Globals() {
 		packType = Globals.PUBLIC;
 		launcherType = Globals.FTBLAUNCHER;
 		nameRegistry = new ModNameRegistry();
 		minecraftFolder = null;
-	}
+        preferences = new Preferences();
+    }
 	
 	public static Globals getInstance() {
 		if(instance == null) {

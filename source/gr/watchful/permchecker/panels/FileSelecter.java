@@ -58,6 +58,7 @@ public class FileSelecter extends JPanel {
 
     public void setFile(File fileIn) {
         file = fileIn;
+        if(file == null || !file.exists()) return;
         int i = file.getName().lastIndexOf('.');
         String ext = "file";
         if(i >= 0) {

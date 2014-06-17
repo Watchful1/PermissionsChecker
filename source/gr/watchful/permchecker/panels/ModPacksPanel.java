@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModPack;
 
 import javax.swing.*;
@@ -120,37 +121,74 @@ public class ModPacksPanel extends JPanel {
 	
 	public void saveCurrentPack() {
         boolean found = false;
-        ModPack pack = modPacksPanel.getSelected();
-        if(pack.name == null || pack.name.equals("")) {
-            System.out.println("Blank Name, can't save");
+
+        if(shortNameField.getText().equals("")) {
+            shortNameField.setText(ModPack.generateShortName(nameField.getText()));
         }
-        if(pack.key == null || pack.key.equals("")) {
+
+        if(shortNameField.getText() == null || shortNameField.getText().equals("")) {
+            System.out.println("Blank ShortName, can't save");
+        }
+        if(keyField.getText() == null || keyField.getText().equals("")) {
             System.out.println("Blank Key, can't save");
             return;
         }
         for(int i=0; i<modPacksPanel.getModel().getSize(); i++) {
             ModPack newPack = modPacksPanel.getModel().get(i);
-            if(pack.key.equals(newPack.key)) {
+            if(keyField.getText().equals(newPack.key)) {
                 if(found) {
                     System.out.println("Key exists. Can't save.");
                     return;
                 } else found = true;
-            } else if(pack.shortName.equals(newPack.shortName)) {
+            } else if(shortNameField.getText().equals(newPack.shortName)) {
                 if(found) {
-                    System.out.println("Name exists. Can't save.");
+                    System.out.println("ShortName exists. Can't save.");
                     return;
                 } else found = true;
             }
         }
+
+        ModPack pack = modPacksPanel.getSelected();
+        pack.name = nameField.getText();
+        pack.author = authorField.getText();
+        pack.shortName = shortNameField.getText(); // TODO detect changes here
+        pack.key = keyField.getText(); // TODO detect changes here
+        pack.description = descriptionField.getText();
+        pack.versions = versionEditor.getVersions();
+        pack.recommendedVersion = recommendedVersionEditor.getRecommendedVersion();
+        pack.icon = iconSelector.getFile();
+        pack.splash = splashSelector.getFile();
+        pack.server = serverSelector.getFile();
+
         modPacksPanel.sortKeepSelected();
+
+
+
 		if(!modPacksPanel.getSelected().saveThisObject()) System.out.println("Couldn't save pack");
 	}
 
     public void addPack() {
-
+        ModPack newPack = new ModPack();
+        modPacksModel.addElement(newPack);
+        modPacksPanel.setSelected(0);
+        modPacksPanel.sortKeepSelected();
+        setPack(newPack);
     }
 
     public void removeCurrentPack() {
 
+    }
+
+    public void setPack(ModPack pack) {
+        nameField.setText(pack.name);
+        authorField.setText(pack.author);
+        shortNameField.setText(pack.shortName);
+        keyField.setText(pack.key);
+        descriptionField.setText(pack.description);
+        versionEditor.setVersions(pack.versions);
+        recommendedVersionEditor.setRecommendedVersion(pack.recommendedVersion);
+        iconSelector.setFile(pack.icon);
+        splashSelector.setFile(pack.splash);
+        serverSelector.setFile(pack.server);
     }
 }

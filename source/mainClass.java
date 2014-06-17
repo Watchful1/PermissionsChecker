@@ -535,6 +535,8 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			Globals.getInstance().preferences = (Preferences) FileUtils.readObject(new File(appStore +File.separator+"preferences.conf"), new Preferences());
 		} else {
 			Globals.getInstance().preferences = new Preferences();
+            //TODO THIS IS HARDCODED!!!
+            Globals.getInstance().preferences.saveFolder = new File("C:\\Users\\Gregory\\AppData\\Roaming\\PermissionsChecker\\packs");
 		}
 	}
 }
