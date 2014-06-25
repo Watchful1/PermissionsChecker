@@ -77,7 +77,8 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
     }
 
     public void setSelected(int pos) {
-        list.setSelectedIndex(pos);
+        if(pos < 0 || pos > list.getModel().getSize()) System.out.println("Name not found, couldn't select");
+        else list.setSelectedIndex(pos);
     }
 	
 	public void clearSelection() {

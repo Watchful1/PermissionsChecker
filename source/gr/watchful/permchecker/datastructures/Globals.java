@@ -25,7 +25,7 @@ public class Globals {
 	public File minecraftFolder;
 	public Preferences preferences;
     public JFrame mainFrame;
-    public File saveFolder;
+    public File appStore;
 	
 	public Globals() {
 		packType = Globals.PUBLIC;

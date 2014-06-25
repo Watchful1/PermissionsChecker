@@ -44,7 +44,6 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	private NamedScrollingListPanel<ModFile> unknown;
 	private JToggleButton packTypeToggle;
 	private File permFile;
-	private File appStore; //Location for the spreadsheet file
 	private JPanel cards;
 	private ModEditor modEditor;
 	private ModFileEditor modFileEditor;
@@ -76,23 +75,23 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
         System.out.println("Searching for application storage directory...");
         switch (ostype) {
             case Windows:
-                appStore = new File(System.getenv("APPDATA") + "/PermissionsChecker");
+                Globals.getInstance().appStore = new File(System.getenv("APPDATA") + "/PermissionsChecker");
                 break;
             case MacOS:
-                appStore = new File(System.getProperty("user.home") + "/Library/Application Support/PermissionsChecker");
+                Globals.getInstance().appStore = new File(System.getProperty("user.home") + "/Library/Application Support/PermissionsChecker");
                 break;
             case Linux:
-                appStore = new File(System.getProperty("user.home") + "/.permissionsChecker");
+                Globals.getInstance().appStore = new File(System.getProperty("user.home") + "/.permissionsChecker");
                 break;
             case Other:
                 //TODO ????
                 break;
         }
-        if (!appStore.exists()) {
-            System.out.println("Directory not found! Creating directory: " + appStore.getPath());
-            boolean result = appStore.mkdirs();
+        if (!Globals.getInstance().appStore.exists()) {
+            System.out.println("Directory not found! Creating directory: " + Globals.getInstance().appStore.getPath());
+            boolean result = Globals.getInstance().appStore.mkdirs();
             if (result) {
-                System.out.println(appStore.getPath() + " created!");
+                System.out.println(Globals.getInstance().appStore.getPath() + " created!");
             }
         } else {
             System.out.println("Directory exists!");
@@ -100,7 +99,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
         
         loadPreferences();
 
-        permFile = new File(appStore.getPath() + "/PermissionsChecker.xlsx");
+        permFile = new File(Globals.getInstance().appStore.getPath() + "/PermissionsChecker.xlsx");
         if (!permFile.exists()) {
             try {
                 if(!permFile.createNewFile()) throw(new IOException());
@@ -203,9 +202,9 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		modPacksPanel = new ModPacksPanel();
 		
 		tabbedPane = new JTabbedPane();
-		
+
+        tabbedPane.add("Modpacks", modPacksPanel);
 		tabbedPane.add("Permissions", topPanel);
-		tabbedPane.add("Modpacks", modPacksPanel);
 		//this.add(topPanel);
 		
 		this.add(tabbedPane);
@@ -458,7 +457,7 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 			return out;
 		}
 	}
-	
+
 	private void writeFile() {
 		//TODO check for no modpack
 		File infoFile = new File(globals.minecraftFolder+File.separator+"perms.txt");
@@ -526,13 +525,13 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 	}
 	
 	public void savePreferences() {
-		FileUtils.saveObject(Globals.getInstance().preferences, new File(appStore +File.separator+"preferences.conf"));
+		FileUtils.saveObject(Globals.getInstance().preferences, new File(Globals.getInstance().appStore +File.separator+"preferences.conf"));
 	}
 	
 	public void loadPreferences() {
-		File prefFile = new File(appStore +File.separator+"preferences.conf");
+		File prefFile = new File(Globals.getInstance().appStore +File.separator+"preferences.conf");
 		if(prefFile.exists()) {
-			Globals.getInstance().preferences = (Preferences) FileUtils.readObject(new File(appStore +File.separator+"preferences.conf"), new Preferences());
+			Globals.getInstance().preferences = (Preferences) FileUtils.readObject(new File(Globals.getInstance().appStore +File.separator+"preferences.conf"), new Preferences());
 		} else {
 			Globals.getInstance().preferences = new Preferences();
             //TODO THIS IS HARDCODED!!!
