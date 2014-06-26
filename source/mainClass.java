@@ -9,10 +9,7 @@ import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
 import gr.watchful.permchecker.modhandling.ModFinder;
 import gr.watchful.permchecker.modhandling.ModNameRegistry;
-import gr.watchful.permchecker.panels.ModEditor;
-import gr.watchful.permchecker.panels.ModFileEditor;
-import gr.watchful.permchecker.panels.ModPacksPanel;
-import gr.watchful.permchecker.panels.NamedScrollingListPanel;
+import gr.watchful.permchecker.panels.*;
 import gr.watchful.permchecker.utils.DatastructureUtils;
 import gr.watchful.permchecker.utils.ExcelUtils;
 import gr.watchful.permchecker.utils.FileUtils;
@@ -204,7 +201,16 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		tabbedPane = new JTabbedPane();
 
         tabbedPane.add("Modpacks", modPacksPanel);
+        UpdatePanel updatePanel = new UpdatePanel();
+        tabbedPane.add("Update", updatePanel);
+
+
+
 		tabbedPane.add("Permissions", topPanel);
+
+
+
+
 		//this.add(topPanel);
 		
 		this.add(tabbedPane);
@@ -292,7 +298,6 @@ public class mainClass extends JFrame implements NamedScrollingListPanelListener
 		setSaveFolder.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//JFileChooser fileChooser = new JFileChooser(new File("C:\\Users\\Gregory\\Desktop\\Private pack staging"));
 				JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home"));
 				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int returnVal = fileChooser.showOpenDialog(null);

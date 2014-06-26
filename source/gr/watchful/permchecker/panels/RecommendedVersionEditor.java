@@ -5,9 +5,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Vector;
 
-/**
- * Created by Gregory on 6/9/2014.
- */
 public class RecommendedVersionEditor extends JPanel {
     private JLabel label;
     private JComboBox<String> chooser;

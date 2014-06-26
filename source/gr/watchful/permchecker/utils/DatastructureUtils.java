@@ -7,9 +7,6 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
-/**
- * Created by Gregory on 5/10/2014.
- */
 public class DatastructureUtils {
     public static void sortDefaultListModel(DefaultListModel model) {
         ArrayList<Object> list = new ArrayList<>();

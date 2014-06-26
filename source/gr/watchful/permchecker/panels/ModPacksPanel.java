@@ -91,15 +91,6 @@ public class ModPacksPanel extends JPanel {
         });
         buttonPanel.add(removePackButton);
 
-        updatePackButton = new JButton("Update");
-        updatePackButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                updatePack();
-            }
-        });
-        buttonPanel.add(updatePackButton);
-
         mainPanel.add(buttonPanel);
 
         //fields in the middle to edit pack details
@@ -215,41 +206,5 @@ public class ModPacksPanel extends JPanel {
         iconSelector.setFile(pack.icon);
         splashSelector.setFile(pack.splash);
         serverSelector.setFile(pack.server);
-    }
-
-    public void updatePack() {
-        JDialog dialog = new JDialog(Globals.getInstance().mainFrame);
-        dialog.setModal(true);
-        dialog.setMinimumSize(new Dimension(300, 200));
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-
-        LabelField packName = new LabelField("Pack Name");
-        packName.lock("");
-        packName.setAlignmentX(CENTER_ALIGNMENT);
-        mainPanel.add(packName);
-
-        FileSelecter zip = new FileSelecter("Zip", -1, "zip");
-        zip.setAlignmentX(CENTER_ALIGNMENT);
-        mainPanel.add(zip);
-
-        LabelField version = new LabelField("Version");
-        version.setAlignmentX(CENTER_ALIGNMENT);
-        mainPanel.add(version);
-
-        JButton confirmButton = new JButton("Confirm");
-        JButton cancelButton = new JButton("Cancel");
-
-        JPanel buttonPanel = new JPanel() ;
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        buttonPanel.setAlignmentX(CENTER_ALIGNMENT);
-        buttonPanel.add(confirmButton);
-        buttonPanel.add(Box.createRigidArea(new Dimension(10,0)));
-        buttonPanel.add(cancelButton);
-
-        mainPanel.add(buttonPanel);
-
-        dialog.add(mainPanel);
-        dialog.setVisible(true);
     }
 }
