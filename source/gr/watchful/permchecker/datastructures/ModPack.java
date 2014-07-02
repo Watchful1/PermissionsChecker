@@ -21,6 +21,7 @@ public class ModPack {
 	public File icon;//Icon if set and size small enough. Button to select new icon, deletes old
 	public File splash;//Icon if set and size small enough. Button to select new icon, deletes old
 	public File server;//Icon if set. Button to select new icon, deletes old
+    //TODO public vs private pack type
 	
 	public Time lastEdited;
 	public ArrayList<String> submitters;

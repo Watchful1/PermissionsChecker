@@ -18,7 +18,7 @@ public class Globals {
 	
 	public static final String modpackDataFile = "customPack.json";
 	
-	public int packType;
+	public int packType; // TODO this should be pack specific
 	public int launcherType;
 	public ModNameRegistry nameRegistry;
 	public RebuildsMods main;

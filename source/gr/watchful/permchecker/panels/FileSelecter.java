@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.nio.file.Files;
 
+//yes I know this is spelled wrong
 public class FileSelecter extends JPanel {
     private JLabel label;
     private JLabel status;
