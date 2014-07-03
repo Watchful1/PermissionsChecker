@@ -7,13 +7,15 @@ import java.io.File;
  */
 public class Preferences {
 	public File saveFolder;
+    public File workingFolder;
 
     public Preferences() {
-        System.out.println("New Prefs");
     }
 
-    public void setSaveFolder(File folder) {
-        System.out.println("Setting save folder");
-        saveFolder = folder;
+    public void initPreferences(File appStore) {
+        System.out.println("Initialized new preferences");
+
+        saveFolder = new File(appStore+File.separator+"packs");
+        saveFolder = new File(appStore+File.separator+"working");
     }
 }
