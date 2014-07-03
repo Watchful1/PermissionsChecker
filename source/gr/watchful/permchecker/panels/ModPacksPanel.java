@@ -58,24 +58,6 @@ public class ModPacksPanel extends JPanel {
         });
 		buttonPanel.add(saveButton);
 
-        addPackButton = new JButton("Add");
-        addPackButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                //addPack();
-            }
-        });
-        buttonPanel.add(addPackButton);
-
-        removePackButton = new JButton("Remove");
-        removePackButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                removeCurrentPack();
-            }
-        });
-        buttonPanel.add(removePackButton);
-
         mainPanel.add(buttonPanel);
 
         //fields in the middle to edit pack details
@@ -116,7 +98,18 @@ public class ModPacksPanel extends JPanel {
         boolean found = false;
 
         if(shortNameField.getText().equals("")) {
-            shortNameField.setText(ModPack.generateShortName(nameField.getText()));
+            String shortName = ModPack.generateShortName(nameField.getText());
+            for(int i=0; i<modPacksList.getModel().getSize(); i++) {
+                if(shortName.equals(modPacksList.getModel().get(i).shortName)) {
+                    System.out.println("ShortName exists. Create new.");
+                    String result = (String) JOptionPane.showInputDialog(
+                        Globals.getInstance().mainFrame, "Shortname exists, pick new shortname",
+                            "New Shortname", JOptionPane.PLAIN_MESSAGE, null, null, shortName);
+                    shortName = result;
+                    i=0;
+                }
+            }
+            shortNameField.setText(shortName);
         }
 
         if(shortNameField.getText() == null || shortNameField.getText().equals("")) {
@@ -131,11 +124,6 @@ public class ModPacksPanel extends JPanel {
             if(keyField.getText().equals(newPack.key)) {
                 if(found) {
                     System.out.println("Key exists. Can't save.");
-                    return;
-                } else found = true;
-            } else if(shortNameField.getText().equals(newPack.shortName)) {
-                if(found) {
-                    System.out.println("ShortName exists. Can't save.");
                     return;
                 } else found = true;
             }
@@ -157,10 +145,6 @@ public class ModPacksPanel extends JPanel {
 
 		if(!modPacksList.getSelected().saveThisObject()) System.out.println("Couldn't save pack");
 	}
-
-    public void removeCurrentPack() {
-
-    }
 
     public void setPack(ModPack pack) {
         nameField.setText(pack.name);

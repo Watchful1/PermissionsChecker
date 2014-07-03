@@ -43,12 +43,16 @@ public class mainClass extends JFrame {
 		this.setPreferredSize(new Dimension(800, 600)); // and the initial size
 
 
-        modPacksPanel = new ModPacksPanel(modPacksList);
+
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
         modPacksModel = new DefaultListModel<>();
         loadPacks(Globals.getInstance().preferences.saveFolder);
 
         modPacksList = new NamedScrollingListPanel<>("ModPacks", 200, modPacksModel);
+        modPacksList.setAlignmentX(Component.LEFT_ALIGNMENT);
+        modPacksPanel = new ModPacksPanel(modPacksList);
         modPacksList.addListener(new NamedScrollingListPanelListener() {
             @Override
             public void selectionChanged(NamedSelectionEvent event) {
@@ -58,7 +62,9 @@ public class mainClass extends JFrame {
                 oldSelection = modPacksList.getSelected();
             }
         });
-        this.add(modPacksList, BorderLayout.LINE_START);
+        leftPanel.add(modPacksList);
+
+        this.add(leftPanel, BorderLayout.LINE_START);
 		
 		tabbedPane = new JTabbedPane();
 
@@ -75,14 +81,23 @@ public class mainClass extends JFrame {
 		JMenu menu = new JMenu("Temp"); // with the submenus
 		menuBar.add(menu);
 
-		JMenuItem updatePerms = new JMenuItem("Update Permissions");
-		updatePerms.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				Globals.getInstance().updateListings();
-			}
-		});
-		menu.add(updatePerms);
+        JMenuItem updatePerms = new JMenuItem("Update Permissions");
+        updatePerms.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                Globals.getInstance().updateListings();
+            }
+        });
+        menu.add(updatePerms);
+
+        JMenuItem newPack = new JMenuItem("Add pack");
+        newPack.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                addPack();
+            }
+        });
+        menu.add(newPack);
 
 		this.setJMenuBar(menuBar);
 

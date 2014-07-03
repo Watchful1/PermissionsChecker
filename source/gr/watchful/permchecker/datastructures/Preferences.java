@@ -16,6 +16,6 @@ public class Preferences {
         System.out.println("Initialized new preferences");
 
         saveFolder = new File(appStore+File.separator+"packs");
-        saveFolder = new File(appStore+File.separator+"working");
+        workingFolder = new File(appStore+File.separator+"working");
     }
 }

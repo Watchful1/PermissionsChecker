@@ -4,7 +4,7 @@ import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
 import gr.watchful.permchecker.utils.DatastructureUtils;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -25,20 +25,23 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 	private ArrayList<NamedScrollingListPanelListener> listeners;
 	
 	public NamedScrollingListPanel(String name, int size, DefaultListModel<T> model) {
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setMinimumSize(new Dimension(size, 50));
-		this.setMaximumSize(new Dimension(size, 5000));
+		this.setMaximumSize(new Dimension(size, Integer.MAX_VALUE));
 		this.setPreferredSize(new Dimension(size, 500));
 		if(name != null) {
-			this.add(new JLabel(name));
+            JLabel nameLabel = new JLabel(name);
+            nameLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
+			this.add(nameLabel);
+
 			this.name = name;
 		}
 		
-		list = new JList<T>(model);
+		list = new JList<>(model);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.addListSelectionListener(this);
 		
-		listeners = new ArrayList<NamedScrollingListPanelListener>();
+		listeners = new ArrayList<>();
 		
 		JScrollPane scrList = new JScrollPane();
         scrList.getViewport().setView(list);
