@@ -14,8 +14,6 @@ import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class ModPacksPanel extends JPanel {
-	private DefaultListModel<ModPack> modPacksModel;
-	private NamedScrollingListPanel<ModPack> modPacksPanel;
     private JPanel mainPanel;
 
     private JPanel buttonPanel;
@@ -36,25 +34,12 @@ public class ModPacksPanel extends JPanel {
     private FileSelecter splashSelector;
     private FileSelecter serverSelector;
 
-    private ModPack oldSelection;
+    private NamedScrollingListPanel<ModPack> modPacksList;
 	
-	public ModPacksPanel() {
+	public ModPacksPanel(NamedScrollingListPanel<ModPack> modPacksListIn) {
 		this.setLayout(new BorderLayout());
 
-		modPacksModel = new DefaultListModel<>();
-        loadPacks(Globals.getInstance().preferences.saveFolder);
-
-		modPacksPanel = new NamedScrollingListPanel<>("ModPacks", 200, modPacksModel);
-        modPacksPanel.addListener(new NamedScrollingListPanelListener() {
-            @Override
-            public void selectionChanged(NamedSelectionEvent event) {
-                if(oldSelection == modPacksPanel.getSelected()) return;
-                savePack(oldSelection);
-                setPack(modPacksPanel.getSelected());
-                oldSelection = modPacksPanel.getSelected();
-            }
-        });
-		this.add(modPacksPanel, BorderLayout.LINE_START);
+        modPacksList = modPacksListIn;
 
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -68,7 +53,7 @@ public class ModPacksPanel extends JPanel {
 		saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                savePack(modPacksPanel.getSelected());
+                savePack(modPacksList.getSelected());
             }
         });
 		buttonPanel.add(saveButton);
@@ -77,7 +62,7 @@ public class ModPacksPanel extends JPanel {
         addPackButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                addPack();
+                //addPack();
             }
         });
         buttonPanel.add(addPackButton);
@@ -125,16 +110,6 @@ public class ModPacksPanel extends JPanel {
         this.add(mainPanel);
 	}
 	
-	public void loadPacks(File folder) {
-		if(!folder.exists() || !folder.isDirectory()) return;
-		for(File pack : folder.listFiles()) {
-			ModPack temp = ModPack.loadObject(pack);
-			if(temp != null) {
-				modPacksModel.addElement(temp);
-			}
-		}
-	}
-	
 	public void savePack(ModPack packIn) {
         if(packIn == null) return;
 
@@ -151,8 +126,8 @@ public class ModPacksPanel extends JPanel {
             System.out.println("Blank Key, can't save");
             return;
         }
-        for(int i=0; i<modPacksPanel.getModel().getSize(); i++) {
-            ModPack newPack = modPacksPanel.getModel().get(i);
+        for(int i=0; i<modPacksList.getModel().getSize(); i++) {
+            ModPack newPack = modPacksList.getModel().get(i);
             if(keyField.getText().equals(newPack.key)) {
                 if(found) {
                     System.out.println("Key exists. Can't save.");
@@ -178,18 +153,10 @@ public class ModPacksPanel extends JPanel {
         pack.splash = splashSelector.getFile();
         pack.server = serverSelector.getFile();
 
-        modPacksPanel.sortKeepSelected();
+        modPacksList.sortKeepSelected();
 
-		if(!modPacksPanel.getSelected().saveThisObject()) System.out.println("Couldn't save pack");
+		if(!modPacksList.getSelected().saveThisObject()) System.out.println("Couldn't save pack");
 	}
-
-    public void addPack() {
-        ModPack newPack = new ModPack();
-        modPacksModel.addElement(newPack);
-        modPacksPanel.setSelected(0);
-        modPacksPanel.sortKeepSelected();
-        setPack(newPack);
-    }
 
     public void removeCurrentPack() {
 

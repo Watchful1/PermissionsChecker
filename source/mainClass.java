@@ -1,10 +1,5 @@
 import com.sun.xml.internal.bind.v2.TODO;
-import gr.watchful.permchecker.datastructures.Mod;
-import gr.watchful.permchecker.datastructures.ModFile;
-import gr.watchful.permchecker.datastructures.ModInfo;
-import gr.watchful.permchecker.datastructures.Globals;
-import gr.watchful.permchecker.datastructures.Preferences;
-import gr.watchful.permchecker.datastructures.RebuildsMods;
+import gr.watchful.permchecker.datastructures.*;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
 import gr.watchful.permchecker.modhandling.ModFinder;
@@ -15,9 +10,7 @@ import gr.watchful.permchecker.utils.ExcelUtils;
 import gr.watchful.permchecker.utils.FileUtils;
 import gr.watchful.permchecker.utils.OsTypes;
 
-import java.awt.CardLayout;
-import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -38,6 +31,9 @@ public class mainClass extends JFrame {
 	private JTabbedPane tabbedPane;
 	private ModPacksPanel modPacksPanel;
     private PermissionsPanel permissionsPanel;
+    public DefaultListModel<ModPack> modPacksModel;
+    public NamedScrollingListPanel<ModPack> modPacksList;
+    private ModPack oldSelection;
 
 	public mainClass() {
 		globals = Globals.getInstance();
@@ -108,8 +104,22 @@ public class mainClass extends JFrame {
             permissionsPanel.discoverMods(currentDir.getParentFile());
 		} //TODO implement a selection of modpacks, maybe save modpack locations for later use
 
-		
-		modPacksPanel = new ModPacksPanel();
+        modPacksPanel = new ModPacksPanel(modPacksList);
+
+        modPacksModel = new DefaultListModel<>();
+        loadPacks(Globals.getInstance().preferences.saveFolder);
+
+        modPacksList = new NamedScrollingListPanel<>("ModPacks", 200, modPacksModel);
+        modPacksList.addListener(new NamedScrollingListPanelListener() {
+            @Override
+            public void selectionChanged(NamedSelectionEvent event) {
+                if(oldSelection == modPacksList.getSelected()) return;
+                modPacksPanel.savePack(oldSelection);
+                modPacksPanel.setPack(modPacksList.getSelected());
+                oldSelection = modPacksList.getSelected();
+            }
+        });
+        this.add(modPacksList, BorderLayout.LINE_START);
 		
 		tabbedPane = new JTabbedPane();
 
@@ -240,4 +250,22 @@ public class mainClass extends JFrame {
             Globals.getInstance().preferences.saveFolder = new File("C:\\Users\\Gregory\\AppData\\Roaming\\PermissionsChecker\\packs");
 		}
 	}
+
+    public void loadPacks(File folder) {
+        if(!folder.exists() || !folder.isDirectory()) return;
+        for(File pack : folder.listFiles()) {
+            ModPack temp = ModPack.loadObject(pack);
+            if(temp != null) {
+                modPacksModel.addElement(temp);
+            }
+        }
+    }
+
+    public void addPack() {
+        ModPack newPack = new ModPack();
+        modPacksModel.addElement(newPack);
+        modPacksList.setSelected(0);
+        modPacksList.sortKeepSelected();
+        modPacksPanel.setPack(newPack);
+    }
 }
