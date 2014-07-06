@@ -42,8 +42,6 @@ public class mainClass extends JFrame {
 		this.setTitle("Permissions Checker"); // Set the window title
 		this.setPreferredSize(new Dimension(800, 600)); // and the initial size
 
-
-
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
@@ -90,14 +88,14 @@ public class mainClass extends JFrame {
         });
         menu.add(updatePerms);
 
-        JMenuItem newPack = new JMenuItem("Add pack");
-        newPack.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                addPack();
-            }
-        });
-        menu.add(newPack);
+		JMenuItem newPack = new JMenuItem("Add pack");
+		newPack.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				addPack();
+			}
+		});
+		menu.add(newPack);
 
 		this.setJMenuBar(menuBar);
 

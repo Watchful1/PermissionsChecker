@@ -28,6 +28,7 @@ public class ModPacksPanel extends JPanel {
     private LabelField shortNameField;
     private LabelField keyField;
     private HTMLField descriptionField;
+	private MinecraftVersionSelecter minecraftVersionSelecter;
     private RecommendedVersionEditor recommendedVersionEditor;
     private VersionEditor versionEditor;
     private FileSelecter iconSelector;
@@ -76,8 +77,12 @@ public class ModPacksPanel extends JPanel {
         editorPanel.add(keyField);
         descriptionField = new HTMLField("Description");
         editorPanel.add(descriptionField);
-        recommendedVersionEditor = new RecommendedVersionEditor("Recommended");
-        editorPanel.add(recommendedVersionEditor);
+		minecraftVersionSelecter = new MinecraftVersionSelecter("Minecraft");
+		minecraftVersionSelecter.setVersions(Globals.getInstance().preferences.minecraftVersions);
+		minecraftVersionSelecter.setVersion(Globals.getInstance().preferences.defaultMinecraftVersion);
+		editorPanel.add(minecraftVersionSelecter);
+		recommendedVersionEditor = new RecommendedVersionEditor("Recommended");
+		editorPanel.add(recommendedVersionEditor);
         versionEditor = new VersionEditor("Version", recommendedVersionEditor);
         editorPanel.add(versionEditor);
         iconSelector = new FileSelecter("Icon", 150, "png");
@@ -135,6 +140,7 @@ public class ModPacksPanel extends JPanel {
         pack.shortName = shortNameField.getText(); // TODO detect changes here
         pack.key = keyField.getText(); // TODO detect changes here
         pack.description = descriptionField.getText();
+		pack.minecraftVersion = minecraftVersionSelecter.getVersion();
         pack.versions = versionEditor.getVersions();
         pack.recommendedVersion = recommendedVersionEditor.getRecommendedVersion();
         pack.icon = iconSelector.getFile();
@@ -152,6 +158,7 @@ public class ModPacksPanel extends JPanel {
         shortNameField.setText(pack.shortName);
         keyField.setText(pack.key);
         descriptionField.setText(pack.description);
+		minecraftVersionSelecter.setVersion(pack.minecraftVersion);
         versionEditor.setVersions(pack.versions);
         recommendedVersionEditor.setRecommendedVersion(pack.recommendedVersion);
         iconSelector.setFile(pack.icon);
