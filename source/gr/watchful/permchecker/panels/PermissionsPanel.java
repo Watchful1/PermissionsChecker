@@ -235,8 +235,6 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
                     goodMods.addElement(badMods.get(i));
                     badMods.remove(i);
                 }
-
-                //System.out.println(temp.modName+" is good");
             }
         }
         DatastructureUtils.sortDefaultListModel(goodMods);

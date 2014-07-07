@@ -18,9 +18,6 @@ public class ModPacksPanel extends JPanel {
 
     private JPanel buttonPanel;
     private JButton saveButton;
-    private JButton addPackButton;
-    private JButton removePackButton;
-    private JButton updatePackButton;
 
     private JPanel editorPanel;
     private LabelField nameField;
@@ -100,6 +97,23 @@ public class ModPacksPanel extends JPanel {
 	public void savePack(ModPack packIn) {
         if(packIn == null) return;
 
+		ModPack pack = packIn;
+
+		boolean changed = false;
+		if(!pack.name.equals(nameField.getText())) changed = true;
+		if(!pack.author.equals(authorField.getText())) changed = true;
+		if(!pack.shortName.equals(shortNameField.getText())) changed = true;
+		if(!pack.key.equals(keyField.getText())) changed = true;
+		if(!pack.description.equals(descriptionField.getText())) changed = true;
+		if(!pack.minecraftVersion.equals(minecraftVersionSelecter.getVersion())) changed = true;
+		if(!pack.versions.equals(versionEditor.getVersions())) changed = true;
+		if(!pack.recommendedVersion.equals(recommendedVersionEditor.getRecommendedVersion())) changed = true;
+		//if(!pack.icon.equals(iconSelector.getFile())) changed = true;
+		//if(!pack.splash.equals(splashSelector.getFile())) changed = true;
+		//if(!pack.server.equals(serverSelector.getFile())) changed = true;
+		// TODO need to work out how to do icons, splashes and server files
+		if(!changed) return;
+
         boolean found = false;
 
         if(shortNameField.getText().equals("")) {
@@ -134,7 +148,6 @@ public class ModPacksPanel extends JPanel {
             }
         }
 
-        ModPack pack = packIn;
         pack.name = nameField.getText();
         pack.author = authorField.getText();
         pack.shortName = shortNameField.getText(); // TODO detect changes here
@@ -149,6 +162,7 @@ public class ModPacksPanel extends JPanel {
 
         modPacksList.sortKeepSelected();
 
+		System.out.println("Saving changed pack");
 		if(!modPacksList.getSelected().saveThisObject()) System.out.println("Couldn't save pack");
 	}
 

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-public class ModPack {
+public class ModPack implements Comparable {
 	public String name;//simple
 	public String author;//simple
 	public String shortName;//difficult, need to change all files on server
@@ -42,15 +42,12 @@ public class ModPack {
 	}
 	
 	public String toString() {
-		return name;
+		return shortName;
 	}
 	
 	public Boolean saveThisObject() {
-        if(Globals.getInstance().preferences == null) System.out.println("Prefs null");
-        if(Globals.getInstance().preferences.saveFolder == null) System.out.println("Folder null");
 		if(Globals.getInstance().preferences.saveFolder == null) return false;
 		else {
-            System.out.println(Globals.getInstance().preferences.saveFolder);
 			saveObject(new File(Globals.getInstance().preferences.saveFolder+File.separator+shortName+".json"), this);
 			return true;
 		}
@@ -83,4 +80,17 @@ public class ModPack {
         for( int i = 0; i < len; i++ ) sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
         return sb.toString();
     }
+
+	public boolean equals(Object object) {
+		if(!object.getClass().equals(ModPack.class)) return false;
+		return shortName.equals(((ModPack) object).shortName);
+	}
+
+	public int compareTo(Object otherObject) {
+		if(otherObject.getClass().equals(ModPack.class)) {
+			return ((ModPack) otherObject).shortName.compareTo(shortName);
+		} else {
+			return otherObject.toString().compareTo(toString());
+		}
+	}
 }

@@ -1,6 +1,6 @@
 package gr.watchful.permchecker.datastructures;
 
-public class Mod {
+public class Mod implements Comparable {
 	public String shortName;
 	public ModFile modFile;
 	
@@ -17,5 +17,13 @@ public class Mod {
 			return modInfo.modName;
 		}
 		
+	}
+
+	public int compareTo(Object otherObject) {
+		if(otherObject.getClass().equals(Mod.class)) {
+			return ((Mod) otherObject).shortName.compareTo(shortName);
+		} else {
+			return otherObject.toString().compareTo(toString());
+		}
 	}
 }

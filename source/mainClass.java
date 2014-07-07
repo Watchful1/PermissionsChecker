@@ -50,16 +50,21 @@ public class mainClass extends JFrame {
 
         modPacksList = new NamedScrollingListPanel<>("ModPacks", 200, modPacksModel);
         modPacksList.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         modPacksPanel = new ModPacksPanel(modPacksList);
+		updatePanel = new UpdatePanel();
+
         modPacksList.addListener(new NamedScrollingListPanelListener() {
             @Override
             public void selectionChanged(NamedSelectionEvent event) {
-                if(oldSelection == modPacksList.getSelected()) return;
+                if(oldSelection != null && oldSelection.equals(modPacksList.getSelected())) return;
                 modPacksPanel.savePack(oldSelection);
-                modPacksPanel.setPack(modPacksList.getSelected());
+				modPacksPanel.setPack(modPacksList.getSelected());
+				updatePanel.setPack(modPacksList.getSelected());
                 oldSelection = modPacksList.getSelected();
             }
         });
+		modPacksList.setSelected(0);
         leftPanel.add(modPacksList);
 
         this.add(leftPanel, BorderLayout.LINE_START);
@@ -67,7 +72,6 @@ public class mainClass extends JFrame {
 		tabbedPane = new JTabbedPane();
 
         tabbedPane.add("Info", modPacksPanel);
-        updatePanel = new UpdatePanel();
         tabbedPane.add("Update", updatePanel);
         permissionsPanel = new PermissionsPanel();
 		tabbedPane.add("Permissions", permissionsPanel);

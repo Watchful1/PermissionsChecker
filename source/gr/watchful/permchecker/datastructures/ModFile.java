@@ -4,7 +4,7 @@ import java.io.File;
 
 import javax.swing.DefaultListModel;
 
-public class ModFile {
+public class ModFile implements Comparable {
 	public File file;
 	private String fileName;
 	public DefaultListModel<String> IDs = new DefaultListModel<String>();
@@ -39,4 +39,12 @@ public class ModFile {
     {
         versions.addElement(version);
     }
+
+	public int compareTo(Object otherObject) {
+		if(otherObject.getClass().equals(ModFile.class)) {
+			return ((ModFile) otherObject).fileName.compareTo(fileName);
+		} else {
+			return otherObject.toString().compareTo(toString());
+		}
+	}
 }

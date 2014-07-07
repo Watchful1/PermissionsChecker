@@ -3,6 +3,7 @@ package gr.watchful.permchecker.panels;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
 import gr.watchful.permchecker.utils.DatastructureUtils;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 @SuppressWarnings("serial")
-public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionListener {
+public class NamedScrollingListPanel<T extends Comparable> extends JPanel implements ListSelectionListener {
 	private JList<T> list;
 	private String name = "";
 	private ArrayList<NamedScrollingListPanelListener> listeners;
@@ -37,7 +38,7 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 			this.name = name;
 		}
 		
-		list = new JList<>(model);
+		list = new JList<T>(model);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.addListSelectionListener(this);
 		
@@ -60,7 +61,7 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 	}
 	
 	public DefaultListModel<T> getModel() {
-		return (DefaultListModel) list.getModel();
+		return (DefaultListModel<T>) list.getModel();
 	}
 
     public T getSelected() {
@@ -89,7 +90,7 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 	}
 
     public void sort() {
-        DatastructureUtils.sortDefaultListModel(getModel());
+        DatastructureUtils.sortDefaultListModel((DefaultListModel<Comparable>) getModel());
     }
 
     public void sortKeepSelected() {
