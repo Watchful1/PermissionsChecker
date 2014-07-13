@@ -2,14 +2,12 @@ package gr.watchful.permchecker.datastructures;
 
 import java.io.File;
 
-import javax.swing.DefaultListModel;
-
 public class ModFile implements Comparable {
 	public File file;
 	private String fileName;
-	public DefaultListModel<String> IDs = new DefaultListModel<String>();
-	public DefaultListModel<String> names = new DefaultListModel<String>();
-	public DefaultListModel<String> versions = new DefaultListModel<String>();
+	public SortedListModel<String> IDs = new SortedListModel<String>();
+	public SortedListModel<String> names = new SortedListModel<String>();
+	public SortedListModel<String> versions = new SortedListModel<String>();
 
 	public ModInfo tempInfo;
 	

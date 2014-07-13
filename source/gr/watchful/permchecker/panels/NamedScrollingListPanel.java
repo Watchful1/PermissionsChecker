@@ -1,15 +1,14 @@
 package gr.watchful.permchecker.panels;
 
+import gr.watchful.permchecker.datastructures.SimpleObjectComparator;
+import gr.watchful.permchecker.datastructures.SortedListModel;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
-import gr.watchful.permchecker.utils.DatastructureUtils;
-import org.apache.poi.ss.formula.functions.T;
 
 import java.awt.*;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -19,13 +18,14 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+
 @SuppressWarnings("serial")
-public class NamedScrollingListPanel<T extends Comparable> extends JPanel implements ListSelectionListener {
+public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionListener {
 	private JList<T> list;
 	private String name = "";
 	private ArrayList<NamedScrollingListPanelListener> listeners;
 	
-	public NamedScrollingListPanel(String name, int size, DefaultListModel<T> model) {
+	public NamedScrollingListPanel(String name, int size, SortedListModel<T> model) {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setMinimumSize(new Dimension(size, 50));
 		this.setMaximumSize(new Dimension(size, Integer.MAX_VALUE));
@@ -53,15 +53,16 @@ public class NamedScrollingListPanel<T extends Comparable> extends JPanel implem
 		listeners.add(listener);
 	}
 	
-	public void setModel(DefaultListModel<T> model) {
+	public void setModel(SortedListModel<T> model) {
 		list.setModel(model);
 		for(int i=0; i<list.getModel().getSize(); i++) {
 			System.out.println(list.getModel().getElementAt(i));
 		}
 	}
 	
-	public DefaultListModel<T> getModel() {
-		return (DefaultListModel<T>) list.getModel();
+	public SortedListModel<T> getModel()
+	{
+		return (SortedListModel<T>) list.getModel();
 	}
 
     public T getSelected() {
@@ -90,7 +91,7 @@ public class NamedScrollingListPanel<T extends Comparable> extends JPanel implem
 	}
 
     public void sort() {
-        DatastructureUtils.sortDefaultListModel((DefaultListModel<Comparable>) getModel());
+        getModel().sort(new SimpleObjectComparator());
     }
 
     public void sortKeepSelected() {

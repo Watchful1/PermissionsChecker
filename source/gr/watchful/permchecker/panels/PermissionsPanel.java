@@ -4,7 +4,6 @@ import gr.watchful.permchecker.datastructures.*;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
 import gr.watchful.permchecker.modhandling.ModFinder;
-import gr.watchful.permchecker.utils.DatastructureUtils;
 import gr.watchful.permchecker.utils.FileUtils;
 
 import javax.imageio.ImageIO;
@@ -24,10 +23,10 @@ import java.util.HashSet;
  */
 @SuppressWarnings("serial")
 public class PermissionsPanel extends JPanel implements NamedScrollingListPanelListener, RebuildsMods {
-    private DefaultListModel<Mod> goodMods;
-    private DefaultListModel<Mod> badMods;
-    private DefaultListModel<ModFile> unknownMods;
-    private DefaultListModel<ModFile> knownMods;
+    private SortedListModel<Mod> goodMods;
+    private SortedListModel<Mod> badMods;
+    private SortedListModel<ModFile> unknownMods;
+    private SortedListModel<ModFile> knownMods;
     private NamedScrollingListPanel<Mod> good;
     private NamedScrollingListPanel<Mod> bad;
     private NamedScrollingListPanel<ModFile> unknown;
@@ -37,10 +36,10 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
     private ModFileEditor modFileEditor;
 
     public PermissionsPanel() {
-        goodMods = new DefaultListModel<>();
-        badMods = new DefaultListModel<>();
-        unknownMods = new DefaultListModel<>();
-        knownMods = new DefaultListModel<>();
+        goodMods = new SortedListModel<>();
+        badMods = new SortedListModel<>();
+        unknownMods = new SortedListModel<>();
+        knownMods = new SortedListModel<>();
 
         Globals.getInstance().main = this;
 
@@ -210,15 +209,15 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
         goodMods.clear();
         badMods.clear();
         for(int i=0; i<knownMods.getSize(); i++) {
-            unknownMods.addElement(knownMods.elementAt(i));
+            unknownMods.addElement(knownMods.get(i));
         }
         knownMods.clear();
 
         ArrayList<Mod> mods;
         for(int i=unknownMods.getSize()-1; i>=0; i--) {
-            mods = processModFile(unknownMods.elementAt(i));
+            mods = processModFile(unknownMods.get(i));
             if(mods != null) {
-                knownMods.addElement(unknownMods.elementAt(i));
+                knownMods.addElement(unknownMods.get(i));
                 unknownMods.remove(i);
                 for(Mod mod : mods) {
                     badMods.addElement(mod);
@@ -237,8 +236,8 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
                 }
             }
         }
-        DatastructureUtils.sortDefaultListModel(goodMods);
-        DatastructureUtils.sortDefaultListModel(badMods);
+        goodMods.sort(new SimpleObjectComparator());
+        badMods.sort(new SimpleObjectComparator());
     }
 
     public void writeFile() {

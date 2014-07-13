@@ -1,6 +1,7 @@
 package gr.watchful.permchecker.panels;
 
 import gr.watchful.permchecker.datastructures.Globals;
+import gr.watchful.permchecker.datastructures.SortedListModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +13,7 @@ import java.util.Collections;
 public class VersionEditor extends JPanel {
     private JLabel label;
     private JList<String> list;
-    private DefaultListModel<String> model;
+    private SortedListModel<String> model;
     private RecommendedVersionEditor recommendedVersionEditor;
 
     public VersionEditor(String name, RecommendedVersionEditor recommendedVersionEditorIn) {
@@ -27,8 +28,8 @@ public class VersionEditor extends JPanel {
 
         recommendedVersionEditor = recommendedVersionEditorIn;
 
-        model = new DefaultListModel<>();
-        list = new JList<>(model);
+        model = new SortedListModel<>();
+        list = new JList(model);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
@@ -70,21 +71,19 @@ public class VersionEditor extends JPanel {
     }
 
     private void addVersion(String newVersion) {
-        model.insertElementAt(newVersion, 0);
+        model.add(0, newVersion);
         recommendedVersionEditor.addVersion(newVersion);
     }
 
     private void removeSelectedVersion() {
         if(list.getSelectedIndex() >= 0) {
             recommendedVersionEditor.removeVersion(list.getSelectedIndex());
-            model.removeElementAt(list.getSelectedIndex());
+            model.remove(list.getSelectedIndex());
         }
     }
 
     public ArrayList<String> getVersions() {
-        ArrayList returnList = new ArrayList();
-        Collections.addAll(returnList, model.toArray());
-        return returnList;
+        return model.getArrayList();
     }
 
     public void setVersions(ArrayList<String> versions) {

@@ -1,26 +1,13 @@
-import com.sun.xml.internal.bind.v2.TODO;
 import gr.watchful.permchecker.datastructures.*;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
-import gr.watchful.permchecker.modhandling.ModFinder;
-import gr.watchful.permchecker.modhandling.ModNameRegistry;
 import gr.watchful.permchecker.panels.*;
-import gr.watchful.permchecker.utils.DatastructureUtils;
-import gr.watchful.permchecker.utils.ExcelUtils;
-import gr.watchful.permchecker.utils.FileUtils;
-import gr.watchful.permchecker.utils.OsTypes;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
@@ -29,7 +16,7 @@ public class mainClass extends JFrame {
 	private ModPacksPanel modPacksPanel;
     private UpdatePanel updatePanel;
     private PermissionsPanel permissionsPanel;
-    public DefaultListModel<ModPack> modPacksModel;
+    public SortedListModel<ModPack> modPacksModel;
     public NamedScrollingListPanel<ModPack> modPacksList;
     private ModPack oldSelection;
 
@@ -45,7 +32,7 @@ public class mainClass extends JFrame {
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
-        modPacksModel = new DefaultListModel<>();
+        modPacksModel = new SortedListModel<>();
         loadPacks(Globals.getInstance().preferences.saveFolder);
 
         modPacksList = new NamedScrollingListPanel<>("ModPacks", 200, modPacksModel);
@@ -62,6 +49,7 @@ public class mainClass extends JFrame {
 				modPacksPanel.setPack(modPacksList.getSelected());
 				updatePanel.setPack(modPacksList.getSelected());
                 oldSelection = modPacksList.getSelected();
+				modPacksList.revalidate();
             }
         });
 		modPacksList.setSelected(0);
@@ -121,6 +109,7 @@ public class mainClass extends JFrame {
                 modPacksModel.addElement(temp);
             }
         }
+		modPacksModel.sort(new SimpleObjectComparator());
     }
 
     public void addPack() {

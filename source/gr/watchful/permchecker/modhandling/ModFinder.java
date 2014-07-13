@@ -11,8 +11,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import javax.swing.DefaultListModel;
-
+import gr.watchful.permchecker.datastructures.SortedListModel;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -22,12 +21,12 @@ import org.objectweb.asm.Opcodes;
 public class ModFinder {
 	private static ModNameRegistry nameRegistry;
 	private static ModFile otherMod;
-	private static DefaultListModel<ModFile> modFiles;
-	private static DefaultListModel<ModFile> unknownModFiles;
-	private static DefaultListModel<Mod> mods;
+	private static SortedListModel<ModFile> modFiles;
+	private static SortedListModel<ModFile> unknownModFiles;
+	private static SortedListModel<Mod> mods;
 
-	public static Mod[] discoverAllMods(File minecraftFolder, DefaultListModel<ModFile> unknownModFilesIn, DefaultListModel<Mod> modsIn, ModNameRegistry nameRegistryIn) {
-		modFiles = new DefaultListModel<ModFile>();
+	public static Mod[] discoverAllMods(File minecraftFolder, SortedListModel<ModFile> unknownModFilesIn, SortedListModel<Mod> modsIn, ModNameRegistry nameRegistryIn) {
+		modFiles = new SortedListModel<ModFile>();
 		unknownModFiles = unknownModFilesIn;
 		mods = modsIn;
 		nameRegistry = nameRegistryIn;
@@ -41,7 +40,7 @@ public class ModFinder {
 		for(int i=0; i<unknownModFiles.getSize(); i++) {
 			System.out.println("Couldn't identify a mod in "+unknownModFiles.get(i).fileName());
 			//System.out.print("     ");
-			for(int j=0; j<unknownModFiles.get(i).names.size(); j++) {
+			for(int j=0; j<unknownModFiles.get(i).names.getSize(); j++) {
 				//System.out.print(unknownModFiles.get(i).names.get(j)[0]+", ");
 			}
 			//System.out.print("\n");
@@ -50,13 +49,13 @@ public class ModFinder {
 		return null;
 	}
 	
-	public static void discoverModFiles(File minecraftFolder, DefaultListModel<ModFile> unknownModFilesIn) {
+	public static void discoverModFiles(File minecraftFolder, SortedListModel<ModFile> unknownModFilesIn) {
 		getMods(new File(minecraftFolder+"\\mods"), unknownModFilesIn);
 		getMods(new File(minecraftFolder+"\\coremods"), unknownModFilesIn);
 		getMods(new File(minecraftFolder.getParentFile()+"\\instmods"), unknownModFilesIn);
 	}
 	
-	private static void getMods(File folder, DefaultListModel<ModFile> modFiles) {
+	private static void getMods(File folder, SortedListModel<ModFile> modFiles) {
 		if(!folder.exists()) {
 			System.out.println(folder+" doesn't exist");
 			return;
@@ -238,7 +237,7 @@ public class ModFinder {
 		return otherMod;
 	}
 	
-	private static void compileModNames(DefaultListModel<ModFile> modFiles) {
+	private static void compileModNames(SortedListModel<ModFile> modFiles) {
 		for(int i=0; i<modFiles.getSize(); i++) {
 			processModFile(modFiles.get(i));
 		}

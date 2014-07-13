@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-public class ModPack implements Comparable {
+public class ModPack {
 	public String name;//simple
 	public String author;//simple
 	public String shortName;//difficult, need to change all files on server
@@ -42,7 +42,7 @@ public class ModPack implements Comparable {
 	}
 	
 	public String toString() {
-		return shortName;
+		return name;
 	}
 	
 	public Boolean saveThisObject() {
