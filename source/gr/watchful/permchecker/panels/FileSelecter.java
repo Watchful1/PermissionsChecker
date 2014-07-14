@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.nio.file.Files;
+import java.util.ArrayList;
 
 //yes I know this is spelled wrong
 public class FileSelecter extends JPanel {
@@ -19,6 +20,8 @@ public class FileSelecter extends JPanel {
     private File file;
     private int maxKilobytes;
     private String allowedType;
+
+	private ArrayList<ActionListener> listeners;
 
     public FileSelecter(String name, int maxKilobytesIn, String allowedTypeIn) {
         maxKilobytes = maxKilobytesIn;
@@ -55,6 +58,8 @@ public class FileSelecter extends JPanel {
             }
         });
         this.add(selectButton);
+
+		listeners = new ArrayList<>();
     }
 
     public void setFile(File fileIn) {
@@ -77,11 +82,22 @@ public class FileSelecter extends JPanel {
                 status.setForeground(Color.BLACK);
             }
         }
+		notifyListeners();
     }
 
     public File getFile() {
         return file;
     }
+
+	public void addListener(ActionListener listener) {
+		listeners.add(listener);
+	}
+
+	private void notifyListeners() {
+		for(ActionListener listener : listeners) {
+			listener.actionPerformed(new ActionEvent(this, 0, ""));
+		}
+	}
 
     public static String getSizeName(long bytes) {
         if(bytes < 1024) return Math.round(bytes) + " bytes";
