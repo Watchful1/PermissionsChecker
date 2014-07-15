@@ -14,9 +14,9 @@ public class VersionEditor extends JPanel {
     private JLabel label;
     private JList<String> list;
     private SortedListModel<String> model;
-    private RecommendedVersionEditor recommendedVersionEditor;
+	private int recommendedIndex;
 
-    public VersionEditor(String name, RecommendedVersionEditor recommendedVersionEditorIn) {
+    public VersionEditor(String name) {
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.setAlignmentX(0);
 
@@ -26,13 +26,13 @@ public class VersionEditor extends JPanel {
         label.setPreferredSize(new Dimension(90, 21));
         this.add(label);
 
-        recommendedVersionEditor = recommendedVersionEditorIn;
+		recommendedIndex = -1;
 
         model = new SortedListModel<>();
         list = new JList(model);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(list);
-        scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+        scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
         this.add(scrollPane);
 
         JPanel buttonPanel = new JPanel();
@@ -44,8 +44,7 @@ public class VersionEditor extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 String result = (String) JOptionPane.showInputDialog(
                         Globals.getInstance().mainFrame,
-                        "", "New Version",
-                        JOptionPane.PLAIN_MESSAGE);
+                        "", "New Version", JOptionPane.PLAIN_MESSAGE);
                 if(result != null) {
                     if(result.matches("\\d(\\.\\d+)*")) {
                         addVersion(result);
@@ -57,6 +56,7 @@ public class VersionEditor extends JPanel {
             }
         });
         buttonPanel.add(addButton);
+
         JButton removeButton = new JButton("-");
         removeButton.setMaximumSize(new Dimension(42, 30));
         removeButton.addActionListener(new ActionListener() {
@@ -67,23 +67,34 @@ public class VersionEditor extends JPanel {
         });
         buttonPanel.add(removeButton);
 
+		JButton recommendButton = new JButton("*");
+		recommendButton.setMaximumSize(new Dimension(42, 30));
+		recommendButton.setToolTipText("Set recommended version");
+		recommendButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setRecommendedVersion(list.getSelectedValue());
+			}
+		});
+		buttonPanel.add(recommendButton);
+
         this.add(buttonPanel);
     }
 
     private void addVersion(String newVersion) {
         model.add(0, newVersion);
-        recommendedVersionEditor.addVersion(newVersion);
     }
 
     private void removeSelectedVersion() {
         if(list.getSelectedIndex() >= 0) {
-            recommendedVersionEditor.removeVersion(list.getSelectedIndex());
             model.remove(list.getSelectedIndex());
         }
     }
 
     public ArrayList<String> getVersions() {
-        return model.getArrayList();
+		ArrayList<String> temp = model.getArrayList();
+		if(recommendedIndex != -1) temp.set(recommendedIndex, temp.get(recommendedIndex).replaceAll("\\*",""));
+        return temp;
     }
 
     public void setVersions(ArrayList<String> versions) {
@@ -92,4 +103,23 @@ public class VersionEditor extends JPanel {
             model.addElement(version);
         }
     }
+
+	public void setRecommendedVersion(String recommendedVersion) {
+		int index = model.getIndexByString(recommendedVersion);
+		if(index == -1) {
+			System.out.println("Can't find version "+recommendedVersion);
+			return;
+		}
+		if(index == recommendedIndex) return;
+		if(recommendedIndex != -1) {
+			model.setElement(model.get(recommendedIndex).replaceAll("\\s\\*",""), recommendedIndex);
+		}
+		model.setElement(model.get(index)+" *", index);
+		recommendedIndex = index;
+		list.repaint();
+	}
+
+	public String getRecommendedVersion() {
+		return model.get(recommendedIndex).replaceAll("\\s\\*1","");
+	}
 }

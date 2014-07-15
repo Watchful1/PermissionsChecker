@@ -12,8 +12,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
-//yes I know this is spelled wrong
-public class FileSelecter extends JPanel {
+public class FileSelector extends JPanel {
     private JLabel label;
     private JLabel status;
     private JButton selectButton;
@@ -23,7 +22,7 @@ public class FileSelecter extends JPanel {
 
 	private ArrayList<ActionListener> listeners;
 
-    public FileSelecter(String name, int maxKilobytesIn, String allowedTypeIn) {
+    public FileSelector(String name, int maxKilobytesIn, String allowedTypeIn) {
         maxKilobytes = maxKilobytesIn;
         allowedType = allowedTypeIn;
 

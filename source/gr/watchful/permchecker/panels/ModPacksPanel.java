@@ -3,12 +3,9 @@ package gr.watchful.permchecker.panels;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModPack;
-import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
-import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
 
 import javax.swing.*;
 
@@ -26,11 +23,10 @@ public class ModPacksPanel extends JPanel {
     private LabelField keyField;
     private HTMLField descriptionField;
 	private MinecraftVersionSelecter minecraftVersionSelecter;
-    private RecommendedVersionEditor recommendedVersionEditor;
     private VersionEditor versionEditor;
-    private FileSelecter iconSelector;
-    private FileSelecter splashSelector;
-    private FileSelecter serverSelector;
+    private FileSelector iconSelector;
+    private FileSelector splashSelector;
+    private FileSelector serverSelector;
 
     private NamedScrollingListPanel<ModPack> modPacksList;
 	
@@ -78,15 +74,13 @@ public class ModPacksPanel extends JPanel {
 		minecraftVersionSelecter.setVersions(Globals.getInstance().preferences.minecraftVersions);
 		minecraftVersionSelecter.setVersion(Globals.getInstance().preferences.defaultMinecraftVersion);
 		editorPanel.add(minecraftVersionSelecter);
-		recommendedVersionEditor = new RecommendedVersionEditor("Recommended");
-		editorPanel.add(recommendedVersionEditor);
-        versionEditor = new VersionEditor("Version", recommendedVersionEditor);
+        versionEditor = new VersionEditor("Version");
         editorPanel.add(versionEditor);
-        iconSelector = new FileSelecter("Icon", 150, "png");
+        iconSelector = new FileSelector("Icon", 150, "png");
         editorPanel.add(iconSelector);
-        splashSelector = new FileSelecter("Splash", 150, "png");
+        splashSelector = new FileSelector("Splash", 150, "png");
         editorPanel.add(splashSelector);
-        serverSelector = new FileSelecter("Server", -1, "zip");
+        serverSelector = new FileSelector("Server", -1, "zip");
         editorPanel.add(serverSelector);
 
         mainPanel.add(editorPanel);
@@ -107,7 +101,7 @@ public class ModPacksPanel extends JPanel {
 		if(!pack.description.equals(descriptionField.getText())) changed = true;
 		if(!pack.minecraftVersion.equals(minecraftVersionSelecter.getVersion())) changed = true;
 		if(!pack.versions.equals(versionEditor.getVersions())) changed = true;
-		if(!pack.recommendedVersion.equals(recommendedVersionEditor.getRecommendedVersion())) changed = true;
+		if(!pack.recommendedVersion.equals(versionEditor.getRecommendedVersion())) changed = true;
 		//if(!pack.icon.equals(iconSelector.getFile())) changed = true;
 		//if(!pack.splash.equals(splashSelector.getFile())) changed = true;
 		//if(!pack.server.equals(serverSelector.getFile())) changed = true;
@@ -155,7 +149,7 @@ public class ModPacksPanel extends JPanel {
         pack.description = descriptionField.getText();
 		pack.minecraftVersion = minecraftVersionSelecter.getVersion();
         pack.versions = versionEditor.getVersions();
-        pack.recommendedVersion = recommendedVersionEditor.getRecommendedVersion();
+        pack.recommendedVersion = versionEditor.getRecommendedVersion();
         pack.icon = iconSelector.getFile();
         pack.splash = splashSelector.getFile();
         pack.server = serverSelector.getFile();
@@ -173,8 +167,8 @@ public class ModPacksPanel extends JPanel {
         keyField.setText(pack.key);
         descriptionField.setText(pack.description);
 		minecraftVersionSelecter.setVersion(pack.minecraftVersion);
-        versionEditor.setVersions(pack.versions);
-        recommendedVersionEditor.setRecommendedVersion(pack.recommendedVersion);
+		versionEditor.setVersions(pack.versions);
+		versionEditor.setRecommendedVersion(pack.recommendedVersion);
         iconSelector.setFile(pack.icon);
         splashSelector.setFile(pack.splash);
         serverSelector.setFile(pack.server);

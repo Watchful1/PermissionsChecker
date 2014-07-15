@@ -22,6 +22,10 @@ public class SortedListModel<T> extends AbstractListModel {
 		fireIntervalAdded(this, list.size() - 1, list.size() - 1);
 	}
 
+	public void setElement(T element, int index) {
+		list.set(index, element);
+	}
+
 	public void remove(int index) {
 		list.remove(index);
 		fireIntervalRemoved(this, index, index);
@@ -49,6 +53,13 @@ public class SortedListModel<T> extends AbstractListModel {
 
 	public T get(int index) {
 		return (T) getElementAt(index);
+	}
+
+	public int getIndexByString(T object) {
+		for(int i=0; i<list.size(); i++) {
+			if(list.get(i).toString().equals(object.toString())) return i;
+		}
+		return -1;
 	}
 
 	public ArrayList<T> getArrayList() {
