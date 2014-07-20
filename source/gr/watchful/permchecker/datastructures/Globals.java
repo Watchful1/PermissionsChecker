@@ -23,8 +23,9 @@ public class Globals {
     public RebuildsMods main;
     public JFrame mainFrame;
 
-    public static final String permUrl = "https://skydrive.live.com/download?resid=96628E67B4C51B81!161&ithint=" +
+    public static final String permUrl = "https://onedrive.live.com/download?resid=96628E67B4C51B81!161&ithint=" +
             "file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
+	public static final String forgeUrl = "http://144.118.200.123/ss/api/GetForgePackJSON/";
 
 
     // TODO all variables below here should be moved or deleted

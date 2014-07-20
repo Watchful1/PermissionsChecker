@@ -1,5 +1,6 @@
 package gr.watchful.permchecker.panels;
 
+import gr.watchful.permchecker.datastructures.ForgeType;
 import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModPack;
 import gr.watchful.permchecker.utils.FileUtils;
@@ -72,9 +73,6 @@ public class UpdatePanel extends JPanel implements ActionListener {
 	 * Add libs. This can be just the JSON, or the json and libraries folder
 	 *  - Needs pack folder. From globals
 	 *  - Needs forge version. Pass modpack
-	 * Add version file in bin?
-	 *  - Needs pack folder. From globals
-	 *  - Needs minecraft version. Pass modpack
 	 * Build xml
 	 *  - Needs export folder. From globals
 	 *  - Needs modpack. Pass modpack
@@ -87,7 +85,28 @@ public class UpdatePanel extends JPanel implements ActionListener {
 	 * Trigger pack json save
 	 */
 	public void exportPack() {
-
+		boolean success = true;
+		if(pack.forgeType.equals(ForgeType.VERSION)) {
+			success = FileUtils.addForge(Globals.getInstance().preferences.workingFolder, pack.ForgeVersion);
+		} else {
+			success = FileUtils.addForge(Globals.getInstance().preferences.workingFolder, pack.forgeType);
+		}
+		if(!success) {
+			System.out.println("pack.json add failed");
+			return;
+		}
+		String xml = FileUtils.buildXML(pack);
+		if(!FileUtils.writeFile(xml, new File(
+				Globals.getInstance().preferences.exportFolder+File.separator+"static"+
+				File.separator+pack.key+".xml"))) {
+			System.out.println("xml export failed");
+			return;
+		}
+		FileUtils.zipFilesTo(Globals.getInstance().preferences.workingFolder.listFiles(),
+				new File(Globals.getInstance().preferences.exportFolder+File.separator+
+				"privatepacks"+File.separator+pack.shortName+File.separator+
+				pack.recommendedVersion.replaceAll("\\.","_")+
+				File.separator+pack.shortName+".zip"));
 	}
 
 	@Override

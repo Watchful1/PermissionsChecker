@@ -1,13 +1,6 @@
 package gr.watchful.permchecker.utils;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
@@ -18,12 +11,23 @@ import java.util.zip.ZipOutputStream;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
- 
+import gr.watchful.permchecker.datastructures.ForgeType;
+import gr.watchful.permchecker.datastructures.Globals;
+import gr.watchful.permchecker.datastructures.ModPack;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 public class FileUtils {
 	public static void copyFolder(File sourceFolder, File destinationFolder) {
 		copyFolder(sourceFolder, destinationFolder, true);
 	}
-	
+
 	public static void copyFolder(File sourceFolder, File destinationFolder, boolean overwrite) {
 		if (sourceFolder.isDirectory()) {
 			if (!destinationFolder.exists()) {
@@ -118,6 +122,7 @@ public class FileUtils {
 	}
 	
 	public static void zipFilesTo(File[] files, File outputLocation) {
+		outputLocation.getParentFile().mkdirs();
 		ZipOutputStream zipOutputStream = null;
 		try {
 			zipOutputStream = new ZipOutputStream(new FileOutputStream(outputLocation));
@@ -167,8 +172,7 @@ public class FileUtils {
 		}
 	}
 	
-	public static void writeFile(String string, File location)
-	{
+	public static boolean writeFile(String string, File location) {
 		if(!location.exists()) location.getParentFile().mkdirs();
 		try{
 			// Create file 
@@ -177,13 +181,14 @@ public class FileUtils {
 			out.write(string);
 			//Close the output stream
 			out.close();
-		}catch (Exception e){//Catch exception if any
+		} catch (Exception e){//Catch exception if any
 			System.err.println("Error: " + e.getMessage());
+			return false;
 		}
+		return true;
 	}
 	
-	public static String readFile(File location)
-	{
+	public static String readFile(File location) {
 		if(!location.exists()) return null;
 		BufferedReader br = null;
 		StringBuilder bldr = new StringBuilder();
@@ -235,5 +240,82 @@ public class FileUtils {
 	
 	public static Object readObject(File file, Object object) {
 		return getObject(readFile(file), object);
+	}
+
+	public static boolean addForge(File minecraftFolder, ForgeType forgeType) {
+		return addForge(minecraftFolder, 0, forgeType, "");
+	}
+
+	public static boolean addForge(File minecraftFolder, int forgeVersion) {
+		return addForge(minecraftFolder, forgeVersion, ForgeType.VERSION, "");
+	}
+
+	private static boolean addForge(File minecraftFolder, int forgeVersion, ForgeType forgeType, String mcVersion) {
+		String forgeUrl = Globals.forgeUrl;
+		if(forgeType.equals(ForgeType.RECOMMENDED) || forgeType.equals(ForgeType.LATEST)) {
+			if (mcVersion != null && !mcVersion.equals("")) forgeUrl = forgeUrl.concat(mcVersion).concat("-");
+			if (forgeType.equals(ForgeType.RECOMMENDED)) forgeUrl = forgeUrl.concat("recommended");
+			else forgeUrl = forgeUrl.concat("latest");
+		} else forgeUrl = forgeUrl.concat(Integer.toString(forgeVersion));
+		try {
+			System.out.println("URL: "+forgeUrl);
+			downloadToFile(new URL(forgeUrl), new File(minecraftFolder+File.separator+"pack.json"));
+		} catch (IOException e) {
+			return false;
+		}
+		return true;
+	}
+
+	public static String buildXML(ModPack modPack) {
+		Document doc = null;
+		try {
+			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		Element rootElement = doc.createElement("modpacks");
+		doc.appendChild(rootElement);
+
+		Element modpack = doc.createElement("modpack");
+
+		modpack.setAttribute("name", modPack.name);
+		modpack.setAttribute("author", modPack.author);
+		modpack.setAttribute("version", modPack.recommendedVersion);
+		modpack.setAttribute("repoVersion", modPack.recommendedVersion.replace(".", "_"));
+		modpack.setAttribute("logo", modPack.getIconName());
+		modpack.setAttribute("url", modPack.getZipName());
+		modpack.setAttribute("image", modPack.getSplashName());
+		modpack.setAttribute("dir", modPack.shortName);
+		modpack.setAttribute("mcVersion", modPack.minecraftVersion);
+		if (false) {//modPack.getRecomendedServer().exists()) {
+			modpack.setAttribute("serverPack", modPack.getServerName());
+		} else {
+			modpack.setAttribute("serverPack", "");
+		}
+		modpack.setAttribute("description", modPack.description);
+		modpack.setAttribute("mods", modPack.getModList());
+		modpack.setAttribute("oldVersions", modPack.getStringVersions());
+
+		rootElement.appendChild(modpack);
+
+		// write the content into xml file
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = null;
+		try {
+			transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+			DOMSource source = new DOMSource(doc);
+			StringWriter writer = new StringWriter();
+			transformer.transform(new DOMSource(doc), new StreamResult(writer));
+			return writer.getBuffer().toString();
+		} catch (TransformerConfigurationException e) {
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		}
+
+		return "";
 	}
 }

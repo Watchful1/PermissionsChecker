@@ -18,6 +18,8 @@ public class ModPack {
 	public String minecraftVersion;//simple, select from available
 	public ArrayList<String> versions;//add, simple. Remove, change rec version if necessary. Move TODO
 	public ArrayList<String> modList;//autocomputed, no interface
+	public ForgeType forgeType;
+	public int ForgeVersion;
 	public File icon;//Icon if set and size small enough. Button to select new icon, deletes old
 	public File splash;//Icon if set and size small enough. Button to select new icon, deletes old
 	public File server;//Icon if set. Button to select new icon, deletes old
@@ -39,6 +41,8 @@ public class ModPack {
         minecraftVersion = "";
         versions = new ArrayList<>();
         modList = new ArrayList<>();
+		forgeType = ForgeType.RECOMMENDED;
+		ForgeVersion = 0;
 	}
 	
 	public String toString() {
@@ -92,5 +96,36 @@ public class ModPack {
 		} else {
 			return otherObject.toString().compareTo(toString());
 		}
+	}
+
+	public String getIconName() {
+		return shortName+"Icon"+".png";
+	}
+
+	public String getSplashName() {
+		return shortName+"Splash"+".png";
+	}
+
+	public String getZipName() {
+		return shortName+".zip";
+	}
+
+	public String getServerName() {
+		return shortName+".zip";
+	}
+
+	public String getModList() {
+		return "";
+	}
+
+	public String getStringVersions() {
+		if(versions.size() == 0) return "";
+		StringBuilder bldr = new StringBuilder();
+		bldr.append(versions.get(0));
+		for(int i=1; i<versions.size(); i++) {
+			bldr.append(";");
+			bldr.append(versions.get(i));
+		}
+		return bldr.toString();
 	}
 }

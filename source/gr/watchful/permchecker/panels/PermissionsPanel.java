@@ -46,65 +46,17 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        buttonPanel.setAlignmentX(0f);
-        buttonPanel.add(new JLabel("Public"));
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+		buttonPanel.setAlignmentX(0f);
 
-        packTypeToggle = new JToggleButton();
-        packTypeToggle.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                updateToggleIcons();
-                updateSettings();
-            }
-        });
+		JButton parsePackButton = new JButton("Parse");
+		parsePackButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
 
-        Dimension temp = new Dimension(92,28);
-        packTypeToggle.setMaximumSize(temp);
-        packTypeToggle.setMinimumSize(temp);
-        packTypeToggle.setPreferredSize(temp);
-
-        try {//try as hard as possible to load the images and set them on the toggle button
-            URL leftUrl = getClass().getResource("toggleLeft.png");
-            URL rightUrl = getClass().getResource("toggleRight.png");
-            if(leftUrl == null || rightUrl == null) {
-                ImageIcon leftIcon = new ImageIcon("bin/resources/toggleLeft.png");
-                ImageIcon rightIcon = new ImageIcon("bin/resources/toggleRight.png");
-                if(leftIcon.getIconWidth() == -1 || rightIcon.getIconWidth() == -1) {
-                    packTypeToggle.setText("Switch");
-                } else {
-                    packTypeToggle.setIcon(leftIcon);
-                    packTypeToggle.setSelectedIcon(rightIcon);
-                }
-            } else {
-                Image leftImg = ImageIO.read(leftUrl);
-                Image rightImg = ImageIO.read(rightUrl);
-                if(leftImg == null || rightImg == null) {
-                    packTypeToggle.setText("Switch");
-                } else {
-                    packTypeToggle.setIcon(new ImageIcon(leftImg));
-                    packTypeToggle.setSelectedIcon(new ImageIcon(rightImg));
-                }
-            }
-        } catch (IOException ex) {
-            packTypeToggle.setText("Switch");
-        }
-
-        if(packTypeToggle.getIcon() != null) {
-            Dimension temp2 = new Dimension(packTypeToggle.getIcon().getIconWidth()+2,packTypeToggle.getIcon().getIconHeight()+2);
-            packTypeToggle.setMaximumSize(temp2);
-            packTypeToggle.setMinimumSize(temp2);
-            packTypeToggle.setPreferredSize(temp2);
-
-            packTypeToggle.setBorderPainted(false);
-            packTypeToggle.setContentAreaFilled(false);
-            packTypeToggle.setOpaque(false);
-            packTypeToggle.setFocusPainted(false);
-        }
-
-        buttonPanel.add(packTypeToggle);
-
-        buttonPanel.add(new JLabel("Private"));
+			}
+		});
+		buttonPanel.add(parsePackButton);
 
         this.add(buttonPanel);
 

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class Preferences {
 	public File saveFolder;
     public File workingFolder;
+	public File exportFolder;
 	public ArrayList<String> minecraftVersions;
 	public String defaultMinecraftVersion;
 
@@ -20,6 +21,7 @@ public class Preferences {
 
         saveFolder = new File(appStore+File.separator+"packs");
         workingFolder = new File(appStore+File.separator+"working");
+		exportFolder = new File(appStore+File.separator+"export");
 
 		minecraftVersions = new ArrayList<>();
 		minecraftVersions.add("1.7.10");

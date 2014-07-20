@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import gr.watchful.permchecker.datastructures.ForgeType;
 import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModPack;
 
@@ -24,6 +25,7 @@ public class ModPacksPanel extends JPanel {
     private HTMLField descriptionField;
 	private MinecraftVersionSelecter minecraftVersionSelecter;
     private VersionEditor versionEditor;
+	private ForgeEditor forgeEditor;
     private FileSelector iconSelector;
     private FileSelector splashSelector;
     private FileSelector serverSelector;
@@ -76,6 +78,8 @@ public class ModPacksPanel extends JPanel {
 		editorPanel.add(minecraftVersionSelecter);
         versionEditor = new VersionEditor("Version");
         editorPanel.add(versionEditor);
+		forgeEditor = new ForgeEditor("Forge");
+		editorPanel.add(forgeEditor);
         iconSelector = new FileSelector("Icon", 150, "png");
         editorPanel.add(iconSelector);
         splashSelector = new FileSelector("Splash", 150, "png");
@@ -102,6 +106,8 @@ public class ModPacksPanel extends JPanel {
 		if(!pack.minecraftVersion.equals(minecraftVersionSelecter.getVersion())) changed = true;
 		if(!pack.versions.equals(versionEditor.getVersions())) changed = true;
 		if(!pack.recommendedVersion.equals(versionEditor.getRecommendedVersion())) changed = true;
+		if(!pack.forgeType.equals(forgeEditor.getForgeType())) changed = true;
+		if(!(pack.ForgeVersion == forgeEditor.getForgeVersion())) changed = true;
 		//if(!pack.icon.equals(iconSelector.getFile())) changed = true;
 		//if(!pack.splash.equals(splashSelector.getFile())) changed = true;
 		//if(!pack.server.equals(serverSelector.getFile())) changed = true;
@@ -150,6 +156,8 @@ public class ModPacksPanel extends JPanel {
 		pack.minecraftVersion = minecraftVersionSelecter.getVersion();
         pack.versions = versionEditor.getVersions();
         pack.recommendedVersion = versionEditor.getRecommendedVersion();
+		pack.forgeType = forgeEditor.getForgeType();
+		pack.ForgeVersion = forgeEditor.getForgeVersion();
         pack.icon = iconSelector.getFile();
         pack.splash = splashSelector.getFile();
         pack.server = serverSelector.getFile();
@@ -169,6 +177,8 @@ public class ModPacksPanel extends JPanel {
 		minecraftVersionSelecter.setVersion(pack.minecraftVersion);
 		versionEditor.setVersions(pack.versions);
 		versionEditor.setRecommendedVersion(pack.recommendedVersion);
+		forgeEditor.setForgeType(pack.forgeType);
+		forgeEditor.setForgeVersion(pack.ForgeVersion);
         iconSelector.setFile(pack.icon);
         splashSelector.setFile(pack.splash);
         serverSelector.setFile(pack.server);

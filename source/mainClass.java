@@ -27,7 +27,7 @@ public class mainClass extends JFrame {
         Globals.getInstance().updateListings();
 
 		this.setTitle("Permissions Checker"); // Set the window title
-		this.setPreferredSize(new Dimension(800, 600)); // and the initial size
+		this.setPreferredSize(new Dimension(1000, 600)); // and the initial size
 
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
