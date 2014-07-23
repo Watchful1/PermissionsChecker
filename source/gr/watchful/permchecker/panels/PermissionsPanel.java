@@ -34,12 +34,15 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
     private JPanel cards;
     private ModEditor modEditor;
     private ModFileEditor modFileEditor;
+	private ModFinder modFinder;
 
     public PermissionsPanel() {
         goodMods = new SortedListModel<>();
         badMods = new SortedListModel<>();
         unknownMods = new SortedListModel<>();
         knownMods = new SortedListModel<>();
+
+		modFinder = new ModFinder();
 
         Globals.getInstance().main = this;
 
@@ -101,7 +104,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
     public void discoverMods(File minecraftFolder) {
         Globals.getInstance().minecraftFolder = minecraftFolder;
         Globals.getInstance().nameRegistry.loadCustomInfos();
-        ModFinder.discoverModFiles(minecraftFolder, unknownMods);
+        modFinder.discoverModFiles(minecraftFolder);
         recheckMods();
     }
 

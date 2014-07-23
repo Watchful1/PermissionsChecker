@@ -42,10 +42,7 @@ public class MetadataCollection
 
     public static MetadataCollection from(InputStream inputStream, String sourceName)
     {
-        if (inputStream == null)
-        {
-            return new MetadataCollection();
-        }
+        if (inputStream == null) return null;
 
         InputStreamReader reader = new InputStreamReader(inputStream);
         try
@@ -73,15 +70,9 @@ public class MetadataCollection
             collection.parseModMetadataList();
             return collection;
         }
-        catch (JsonParseException e)
-        {
-            //FMLLog.log(Level.ERROR, e, "The mcmod.info file in %s cannot be parsed as valid JSON. It will be ignored", sourceName);
-            return new MetadataCollection();
-        }
-        catch (Exception e)
-        {
-        	return new MetadataCollection();
-        }
+        catch (Exception e) {
+			return null;
+		}
     }
 
 

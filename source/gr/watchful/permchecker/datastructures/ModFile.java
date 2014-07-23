@@ -1,10 +1,13 @@
 package gr.watchful.permchecker.datastructures;
 
+import gr.watchful.permchecker.modhandling.MetadataCollection;
+
 import java.io.File;
 
-public class ModFile implements Comparable {
+public class ModFile {
 	public File file;
-	private String fileName;
+	public MetadataCollection mcmod;
+
 	public SortedListModel<String> IDs = new SortedListModel<String>();
 	public SortedListModel<String> names = new SortedListModel<String>();
 	public SortedListModel<String> versions = new SortedListModel<String>();
@@ -13,7 +16,6 @@ public class ModFile implements Comparable {
 	
 	public ModFile(File fileIn) {
 		file = fileIn;
-		fileName = file.getName();
 	}
 	
 	public String fileName() {
@@ -25,24 +27,15 @@ public class ModFile implements Comparable {
 	}
 	
 	public void addID(String ID) {
-		System.out.println("----- Adding ID "+ID+" -----");
 		IDs.addElement(ID);
 	}
 	
 	public String toString() {
-		return fileName;
+		return file.getName();
 	}
 
     public void addVersion (String version)
     {
         versions.addElement(version);
     }
-
-	public int compareTo(Object otherObject) {
-		if(otherObject.getClass().equals(ModFile.class)) {
-			return ((ModFile) otherObject).fileName.compareTo(fileName);
-		} else {
-			return otherObject.toString().compareTo(toString());
-		}
-	}
 }

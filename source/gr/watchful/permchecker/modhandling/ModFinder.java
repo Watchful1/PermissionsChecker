@@ -1,10 +1,12 @@
 package gr.watchful.permchecker.modhandling;
 
+import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.Mod;
 import gr.watchful.permchecker.datastructures.ModFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.zip.ZipEntry;
@@ -19,169 +21,78 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class ModFinder {
-	private static ModNameRegistry nameRegistry;
-	private static ModFile otherMod;
-	private static SortedListModel<ModFile> modFiles;
+	private ModNameRegistry nameRegistry;
+	private static SortedListModel<ModFile> modFiles1;
 	private static SortedListModel<ModFile> unknownModFiles;
 	private static SortedListModel<Mod> mods;
 
-	public static Mod[] discoverAllMods(File minecraftFolder, SortedListModel<ModFile> unknownModFilesIn, SortedListModel<Mod> modsIn, ModNameRegistry nameRegistryIn) {
-		modFiles = new SortedListModel<ModFile>();
-		unknownModFiles = unknownModFilesIn;
-		mods = modsIn;
-		nameRegistry = nameRegistryIn;
-		
-		getMods(new File(minecraftFolder.getAbsolutePath() + File.separator + "mods"), unknownModFilesIn);
-		compileModNames(modFiles);
-		for(int i=0; i<mods.getSize(); i++) {
-			System.out.println(mods.get(i));
-		}
-		System.out.println("\nUnknown mods\n");
-		for(int i=0; i<unknownModFiles.getSize(); i++) {
-			System.out.println("Couldn't identify a mod in "+unknownModFiles.get(i).fileName());
-			//System.out.print("     ");
-			for(int j=0; j<unknownModFiles.get(i).names.getSize(); j++) {
-				//System.out.print(unknownModFiles.get(i).names.get(j)[0]+", ");
-			}
-			//System.out.print("\n");
-		}
-		
-		return null;
+	// We need a central place to add ID's to when we can't return what we want
+	private ModFile otherMod;
+
+	public ModFinder() {
+		nameRegistry = Globals.getInstance().nameRegistry;
 	}
-	
-	public static void discoverModFiles(File minecraftFolder, SortedListModel<ModFile> unknownModFilesIn) {
-		getMods(new File(minecraftFolder+"\\mods"), unknownModFilesIn);
-		getMods(new File(minecraftFolder+"\\coremods"), unknownModFilesIn);
-		getMods(new File(minecraftFolder.getParentFile()+"\\instmods"), unknownModFilesIn);
-	}
-	
-	private static void getMods(File folder, SortedListModel<ModFile> modFiles) {
-		if(!folder.exists()) {
-			System.out.println(folder+" doesn't exist");
-			return;
-		}
+
+	public ArrayList<ModFile> discoverModFiles(File folder) {
+		ArrayList<ModFile> modFiles = new ArrayList<>();
+
+		if(folder == null || !folder.exists()) return modFiles;
+
 		ModFile temp;
 		for(File file : folder.listFiles()) {
-			System.out.println(file.getName());
-			try {
-				if(file.isDirectory()) {
-					getMods(file, modFiles);
-				} else {
+			if(file.isDirectory())  modFiles.addAll(discoverModFiles(file));
+			else {
+				try {
 					temp = processFile(file);
-					if(temp != null) modFiles.addElement(temp);
+					if (temp != null) modFiles.add(temp);
+				} catch (IOException | ClassNotFoundException e) {
+					modFiles.add(new ModFile(file));
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			}
-		}
-	}
-	
-	public static class ModAnnotationVisitor extends AnnotationVisitor {
-		String name;
-		String id;
-		String version;
-		
-		public ModAnnotationVisitor() {
-			super(Opcodes.ASM4);
-			name = "";
-			id = "";
-			version = "";
-		}
-		
-		@Override
-		public void visit(String key, Object value) {
-			//TODO forgemod, in annotation mod
-			if(key.equals("modid")) {
-				id = value.toString();
-			} else if(key.equals("name")) {
-				name = value.toString();
-			}else if(key.equals("version")) {
-			    version = value.toString();
-			}
-		}
-		
-		@Override
-		public void visitEnum(String name, String desc, String value) {
-			
-		}
-		
-		@Override
-		public void visitEnd() {
-			otherMod.addID(id);
-			otherMod.addName(name);
-			otherMod.addVersion(version);
-		}
-	}
-	
-	public static class ModMethodVisitor extends MethodVisitor {
-		String temp;
-		String idStorage;
-		String nameStorage;
-		String versionStorage;
-		
-		public ModMethodVisitor() {
-			super(Opcodes.ASM4);
-			temp = null;
-			idStorage = null;
-			nameStorage = "";
-			versionStorage = "";
-		}
-		
-		@Override
-		public void visitFieldInsn(int opc, String owner, String name, String desc) {
-			//TODO finding name in forge coremod
-			if(name.equals("modId")) {
-				//System.out.println("   "+owner+" : "+name+" : "+desc);
-				idStorage = temp;
-			} else if(name.equals("name")) {
-				//System.out.println("   "+owner+" : "+name+" : "+desc);
-				nameStorage = temp;
-			} else if(name.equals("version")) {
-                //System.out.println("   "+owner+" : "+name+" : "+desc);
-                versionStorage = temp;
-            }
 		}
 
-		@Override
-		public void visitLdcInsn(Object cst) {
-			temp = cst.toString();
-			//System.out.println("   "+cst);
-		}
-		
-		@Override
-		public void visitEnd() {
-			if(idStorage != null) {
-				//System.out.println("Mod ID is "+idStorage);
-				otherMod.addID(idStorage);
-				otherMod.addName(nameStorage);
-				otherMod.addVersion(versionStorage);
-			}
-		}
+		return modFiles;
 	}
 
-	public static class ModClassVisitor extends ClassVisitor {
+	public ModFile processFile(File modArchive) throws IOException, ClassNotFoundException {
+		otherMod = new ModFile(modArchive);
+
+		ZipFile file = new ZipFile(modArchive);
+		Enumeration<? extends ZipEntry> files = file.entries();
+		while(files.hasMoreElements()) {
+			ZipEntry item = files.nextElement();
+			if(item.getName().equals("mcmod.info")) {
+				otherMod.mcmod = MetadataCollection.from(file.getInputStream(item), file.getName());
+			}
+			if(item.isDirectory() || !item.getName().endsWith("class")) continue;
+
+			ClassReader reader = new ClassReader(file.getInputStream(item));
+			reader.accept(new ModClassVisitor(), 0);
+		}
+		file.close();
+		return otherMod;
+	}
+
+	public class ModClassVisitor extends ClassVisitor {
 		boolean tmp;
-		
+
 		public ModClassVisitor() {
 			super(Opcodes.ASM4);
 			tmp = false;
 		}
-		
+
 		@Override
 		public void visit(int version, int access, String name, String signature,
-				String superName, String[] interfaces) {
+						  String superName, String[] interfaces) {
 			if(superName.equals("BaseMod")) {
 				//TODO modloader mod, add the class name
 				otherMod.addID(name);
 			} else if(superName.equals("DummyModContainer") || superName.equals("cpw/mods/fml/common/DummyModContainer")) {
 				//TODO this is a forge coremod, launch a method visitor to try to find the name
-				//System.out.println(name);
 				tmp = true;
 			}
 		}
-		
+
 		@Override
 		public AnnotationVisitor visitAnnotation(String name, boolean runtime) {
 			if (name.equals("Lcpw/mods/fml/common/Mod;")) {
@@ -190,10 +101,10 @@ public class ModFinder {
 				return new AnnotationVisitor(Opcodes.ASM4) {};
 			}
 		}
-		
+
 		@Override
 		public  MethodVisitor visitMethod(int access, String name, String desc,
-				String signature, String[] exceptions) {
+										  String signature, String[] exceptions) {
 			if (tmp) {
 				return new ModMethodVisitor();
 			}
@@ -201,49 +112,92 @@ public class ModFinder {
 			return null;
 		}
 	}
-	
-	public static ModFile processFile(File modArchive) throws IOException, ClassNotFoundException {
-		otherMod = null;
-		otherMod = new ModFile(modArchive);
-		ZipFile file = null;
-		try {
-			file = new ZipFile(modArchive);
-			Enumeration<? extends ZipEntry> files = file.entries();
-			while(files.hasMoreElements()) {
-				ZipEntry item = files.nextElement();
-				if(item.getName().equals("mcmod.info")) {
-					MetadataCollection metaCollect = MetadataCollection.from(file.getInputStream(item), file.getName());
-					System.out.println(metaCollect);
-				}
-				if(item.isDirectory() || !item.getName().endsWith("class")) {
-					continue;
-				}
-				ClassReader reader = new ClassReader(file.getInputStream(item));
-				reader.accept(new ModClassVisitor(), 0);
+
+	public class ModAnnotationVisitor extends AnnotationVisitor {
+		String name;
+		String id;
+		String version;
+
+		public ModAnnotationVisitor() {
+			super(Opcodes.ASM4);
+			name = "";
+			id = "";
+			version = "";
+		}
+
+		@Override
+		public void visit(String key, Object value) {
+			//TODO forgemod, in annotation mod
+			if(key.equals("modid")) {
+				id = value.toString();
+			} else if(key.equals("name")) {
+				name = value.toString();
+			}else if(key.equals("version")) {
+				version = value.toString();
 			}
-			file.close();
-		} catch(ZipException zipException) {
+		}
+
+		@Override
+		public void visitEnum(String name, String desc, String value) {
 
 		}
 
-		if(otherMod.names.isEmpty()) {
-			//System.out.println("File "+otherMod.fileName()+" doesn't look like a mod");
-		} else {
-			//System.out.println(otherMod.fileName()+" has mods");
-			//for(String[] name : otherMod.names) {
-				//System.out.println("   "+name[0]+"  :  "+name[1]);
-			//}
+		@Override
+		public void visitEnd() {
+			otherMod.addID(id);
+			otherMod.addName(name);
+			otherMod.addVersion(version);
 		}
-		return otherMod;
+	}
+
+	public class ModMethodVisitor extends MethodVisitor {
+		String temp;
+		String idStorage;
+		String nameStorage;
+		String versionStorage;
+
+		public ModMethodVisitor() {
+			super(Opcodes.ASM4);
+			temp = null;
+			idStorage = null;
+			nameStorage = "";
+			versionStorage = "";
+		}
+
+		@Override
+		public void visitFieldInsn(int opc, String owner, String name, String desc) {
+			//TODO finding name in forge coremod
+			if(name.equals("modId")) {
+				idStorage = temp;
+			} else if(name.equals("name")) {
+				nameStorage = temp;
+			} else if(name.equals("version")) {
+				versionStorage = temp;
+			}
+		}
+
+		@Override
+		public void visitLdcInsn(Object cst) {
+			temp = cst.toString();
+		}
+
+		@Override
+		public void visitEnd() {
+			if(idStorage != null) {
+				otherMod.addID(idStorage);
+				otherMod.addName(nameStorage);
+				otherMod.addVersion(versionStorage);
+			}
+		}
 	}
 	
-	private static void compileModNames(SortedListModel<ModFile> modFiles) {
+	private void compileModNames(SortedListModel<ModFile> modFiles) {
 		for(int i=0; i<modFiles.getSize(); i++) {
 			processModFile(modFiles.get(i));
 		}
 	}
 	
-	private static void processModFile(ModFile modFile) {
+	private void processModFile(ModFile modFile) {
 		String result = null;
 		HashSet<String> identifiedIDs = new HashSet<String>();
 		for(int i=0; i<modFile.IDs.getSize(); i++) {
