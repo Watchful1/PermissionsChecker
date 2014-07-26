@@ -27,27 +27,9 @@ public class Globals {
             "file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
 	public static final String forgeUrl = "http://144.118.200.123/ss/api/GetForgePackJSON/";
 
-
-    // TODO all variables below here should be moved or deleted
-
-	public static final int PUBLIC = 0;
-	public static final int PRIVATE = 1;
-	public static final int FTB = 2;
-
-	public static final int ANYLAUNCHER = 3;
-	public static final int FTBLAUNCHER = 4;
-	
-	public static final String modpackDataFile = "customPack.json";
-	
-	public int packType;
-	public int launcherType;
-	public File minecraftFolder;
 	
 	public Globals() {
-		packType = Globals.PUBLIC;
-		launcherType = Globals.FTBLAUNCHER;
 		nameRegistry = new ModNameRegistry();
-		minecraftFolder = null;
         preferences = new Preferences();
     }
 	
@@ -143,16 +125,4 @@ public class Globals {
         nameRegistry.loadMappings(infos, mappings, infos.get(15).get(14), infos.get(15).get(15));
         return true;
     }
-
-    // TODO should be in modpack
-	public String getStringType() {
-		switch(packType) {
-		case PUBLIC:
-			return "public";
-		case PRIVATE:
-			return "private";
-		default:
-			return "public";
-		}
-	}
 }

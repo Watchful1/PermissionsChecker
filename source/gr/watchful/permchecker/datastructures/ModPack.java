@@ -28,8 +28,9 @@ public class ModPack {
 	public Time lastEdited;
 	public ArrayList<String> submitters;
 	public String submitURL;
-	
-	public ModpackStorageObject customPerms;
+
+	public HashMap<String, String> shortNameMappings;
+	public HashMap<String, ModInfo> modInfoMappings;
 	
 	public ModPack() {
         name = "Unnamed";
@@ -127,5 +128,13 @@ public class ModPack {
 			bldr.append(versions.get(i));
 		}
 		return bldr.toString();
+	}
+
+	public void addShortName(String shortName, String modID) {
+		shortNameMappings.put(modID, shortName);
+	}
+
+	public void addModInfo(String shortName, ModInfo modInfo) {
+		modInfoMappings.put(shortName, modInfo);
 	}
 }

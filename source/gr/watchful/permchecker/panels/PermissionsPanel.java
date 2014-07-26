@@ -30,7 +30,6 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
     private NamedScrollingListPanel<Mod> good;
     private NamedScrollingListPanel<Mod> bad;
     private NamedScrollingListPanel<ModFile> unknown;
-    private JToggleButton packTypeToggle;
     private JPanel cards;
     private ModEditor modEditor;
     private ModFileEditor modFileEditor;
@@ -102,8 +101,6 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
     }
 
     public void discoverMods(File minecraftFolder) {
-        Globals.getInstance().minecraftFolder = minecraftFolder;
-        Globals.getInstance().nameRegistry.loadCustomInfos();
         modFinder.discoverModFiles(minecraftFolder);
         recheckMods();
     }
@@ -141,23 +138,6 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 
             modFileEditor.setModFile(unknown.getSelected());
         }
-    }
-
-    private void updateToggleIcons() {
-        if(packTypeToggle.isSelected()) {
-            packTypeToggle.setPressedIcon(packTypeToggle.getIcon());
-        } else {
-            packTypeToggle.setPressedIcon(packTypeToggle.getSelectedIcon());
-        }
-    }
-
-    public void updateSettings() {
-        if(packTypeToggle.isSelected()) {
-            Globals.getInstance().packType = Globals.PRIVATE;
-        } else {
-            Globals.getInstance().packType = Globals.PUBLIC;
-        }
-        recheckMods();
     }
 
     public void recheckMods() {

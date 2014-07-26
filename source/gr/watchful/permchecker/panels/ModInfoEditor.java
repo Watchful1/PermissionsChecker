@@ -108,15 +108,13 @@ public class ModInfoEditor extends JPanel {
 		}
 		
 		modInfo.customLink = customLink.getText();
-		nameRegistry.addModInfo(getShortName()/*ModNameRegistry.buildShortName(modInfo.modName)*/, modInfo);
+		nameRegistry.addModInfo(getShortName(), modInfo);
 		
 		updateEditableCustom();
 		
 		notifySaveListeners(modInfo);
 		
 		Globals.getInstance().main.recheckMods();
-		
-		nameRegistry.printCustomInfos();
 	}
 	
 	public void editShortName(boolean canEdit) {

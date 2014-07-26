@@ -1,8 +1,6 @@
 package gr.watchful.permchecker.modhandling;
 
-import gr.watchful.permchecker.datastructures.Globals;
-import gr.watchful.permchecker.datastructures.Mod;
-import gr.watchful.permchecker.datastructures.ModFile;
+import gr.watchful.permchecker.datastructures.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +11,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import gr.watchful.permchecker.datastructures.SortedListModel;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -191,27 +188,31 @@ public class ModFinder {
 		}
 	}
 	
-	private void compileModNames(SortedListModel<ModFile> modFiles) {
-		for(int i=0; i<modFiles.getSize(); i++) {
-			processModFile(modFiles.get(i));
+	public ModStorage compileModNames(ArrayList<ModFile> modFiles, ModPack modPack) {
+		ModStorage modStorage = new ModStorage();
+		ArrayList<Mod> mods;
+		for(ModFile modfile : modFiles) {
+			mods = processModFile(modfile, modPack);
+			if(mods.isEmpty()) modStorage.modFiles.add(modfile);
+			else {
+
+			}
 		}
+		return modStorage;
 	}
 	
-	private void processModFile(ModFile modFile) {
-		String result = null;
-		HashSet<String> identifiedIDs = new HashSet<String>();
+	private ArrayList<Mod> processModFile(ModFile modFile, ModPack modPack) {
+		ArrayList<Mod> mods = new ArrayList<>();
+
+		String result;
+		HashSet<String> identifiedIDs = new HashSet<>();
 		for(int i=0; i<modFile.IDs.getSize(); i++) {
-			result = nameRegistry.checkID(modFile.IDs.get(i));
-			if(result != null) {
-				identifiedIDs.add(result);
-			}
+			result = nameRegistry.checkID(modFile.IDs.get(i), modPack);
+			if(result != null) identifiedIDs.add(result);
 		}
-		if(identifiedIDs.isEmpty()) {
-			unknownModFiles.addElement(modFile);
-		} else {
-			for(String ID : identifiedIDs) {
-				mods.addElement(new Mod(modFile, ID));
-			}
+		for(String ID : identifiedIDs) {
+			mods.add(new Mod(modFile, ID));
 		}
+		return mods;
 	}
 }
