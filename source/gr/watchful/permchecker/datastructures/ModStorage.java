@@ -4,12 +4,10 @@ import java.util.ArrayList;
 
 public class ModStorage {
 	public ArrayList<ModFile> modFiles;
-	public ArrayList<Mod> goodMods;
-	public ArrayList<Mod> badMods;
+	public ArrayList<Mod> mods;
 
 	public ModStorage() {
 		modFiles = new ArrayList<>();
-		goodMods = new ArrayList<>();
-		badMods = new ArrayList<>();
+		mods = new ArrayList<>();
 	}
 }

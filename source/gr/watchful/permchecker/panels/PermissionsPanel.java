@@ -6,14 +6,11 @@ import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
 import gr.watchful.permchecker.modhandling.ModFinder;
 import gr.watchful.permchecker.utils.FileUtils;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -26,7 +23,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
     private SortedListModel<Mod> goodMods;
     private SortedListModel<Mod> badMods;
     private SortedListModel<ModFile> unknownMods;
-    private SortedListModel<ModFile> knownMods;
+    private ArrayList<ModFile> knownModFiles;
     private NamedScrollingListPanel<Mod> good;
     private NamedScrollingListPanel<Mod> bad;
     private NamedScrollingListPanel<ModFile> unknown;
@@ -34,60 +31,35 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
     private ModEditor modEditor;
     private ModFileEditor modFileEditor;
 	private ModFinder modFinder;
+	private ModPack modPack;
 
     public PermissionsPanel() {
         goodMods = new SortedListModel<>();
         badMods = new SortedListModel<>();
         unknownMods = new SortedListModel<>();
-        knownMods = new SortedListModel<>();
-
 		modFinder = new ModFinder();
-
-        Globals.getInstance().main = this;
+        Globals.getInstance().rebuildsMods = this;
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-		buttonPanel.setAlignmentX(0f);
-
-		JButton parsePackButton = new JButton("Parse");
-		parsePackButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-			}
-		});
-		buttonPanel.add(parsePackButton);
-
-        this.add(buttonPanel);
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         mainPanel.setAlignmentX(0f);
         this.add(mainPanel);
 
-        good = new NamedScrollingListPanel<>(
-                "Good", 100, goodMods);
+        good = new NamedScrollingListPanel<>("Good", 100, goodMods);
         good.addListener(this);
         mainPanel.add(good);
-        bad = new NamedScrollingListPanel<>(
-                "Bad", 100, badMods);
+
+        bad = new NamedScrollingListPanel<>("Bad", 100, badMods);
         bad.addListener(this);
         mainPanel.add(bad);
-        unknown = new NamedScrollingListPanel<>(
-                "Unknown", 100, unknownMods);
+
+        unknown = new NamedScrollingListPanel<>("Unknown", 100, unknownMods);
         mainPanel.add(unknown);
         unknown.addListener(this);
 
-        JPanel newWindow = new JPanel();
-        JPanel modEditWindow = new JPanel();
-
         cards = new JPanel(new CardLayout());
-        cards.setMinimumSize(new Dimension(500, 300));
-        cards.setMaximumSize(new Dimension(500, 900));
-        cards.add(newWindow);
-        cards.add(modEditWindow);
 
         modEditor = new ModEditor(new Dimension(500,900));
         cards.add(modEditor,"MODEDITOR");
@@ -100,13 +72,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
         mainPanel.add(cards);
     }
 
-    public void discoverMods(File minecraftFolder) {
-        modFinder.discoverModFiles(minecraftFolder);
-        recheckMods();
-    }
-
     public void selectionChanged(NamedSelectionEvent event) {
-        System.out.println(event.getParentName()+" : "+event.getSelected());
         updateEditor(event.getParentName(),event.getSelected());
     }
 
@@ -118,7 +84,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
             CardLayout cardLayout = (CardLayout)(cards.getLayout());
             cardLayout.show(cards, "MODEDITOR");
 
-            modEditor.setMod(Globals.getInstance().nameRegistry.getMod(good.getSelected().shortName), good.getSelected().shortName);
+            modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(good.getSelected()), good.getSelected().shortName);
         }
         if(list.equals("Bad")) {
             good.clearSelection();
@@ -127,7 +93,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
             CardLayout cardLayout = (CardLayout)(cards.getLayout());
             cardLayout.show(cards, "MODEDITOR");
 
-            modEditor.setMod(Globals.getInstance().nameRegistry.getMod(bad.getSelected().shortName), bad.getSelected().shortName);
+            modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(bad.getSelected()), bad.getSelected().shortName);
         }
         if(list.equals("Unknown")) {
             good.clearSelection();
@@ -140,37 +106,28 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
         }
     }
 
+	public void updatePack(ModPack modPack) {
+		this.modPack = modPack;
+	}
+
+	public void parsePack() {
+		knownModFiles = modFinder.discoverModFiles(new File(
+				Globals.getInstance().preferences.workingFolder+File.separator+"mods"));
+		recheckMods();
+	}
+
     public void recheckMods() {
         goodMods.clear();
         badMods.clear();
-        for(int i=0; i<knownMods.getSize(); i++) {
-            unknownMods.addElement(knownMods.get(i));
-        }
-        knownMods.clear();
+		unknownMods.clear();
 
-        ArrayList<Mod> mods;
-        for(int i=unknownMods.getSize()-1; i>=0; i--) {
-            mods = processModFile(unknownMods.get(i));
-            if(mods != null) {
-                knownMods.addElement(unknownMods.get(i));
-                unknownMods.remove(i);
-                for(Mod mod : mods) {
-                    badMods.addElement(mod);
-                }
-            }
-        }
+		ModStorage modStorage = Globals.getInstance().nameRegistry.compileMods(knownModFiles, modPack);
+		unknownMods.addAll(modStorage.modFiles);
+		ModInfo temp;
+		for(Mod mod : modStorage.mods) {
+			temp = Globals.getInstance().nameRegistry.getInfo(mod, modPack);
+		}
 
-        for(int i=badMods.getSize()-1; i>=0; i--) {
-            ModInfo temp = Globals.getInstance().nameRegistry.getMod(badMods.get(i).shortName);
-            if(temp != null) {//TODO FTB
-                if((Globals.getInstance().packType == Globals.PUBLIC && (temp.publicPolicy == ModInfo.OPEN || temp.publicPolicy == ModInfo.FTB)) ||
-                        (Globals.getInstance().packType == Globals.PRIVATE && (temp.privatePolicy == ModInfo.OPEN || temp.privatePolicy == ModInfo.FTB)) ||
-                        (!temp.customLink.equals(""))) {
-                    goodMods.addElement(badMods.get(i));
-                    badMods.remove(i);
-                }
-            }
-        }
         goodMods.sort(new SimpleObjectComparator());
         badMods.sort(new SimpleObjectComparator());
     }
@@ -232,25 +189,5 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
         }
 
         FileUtils.writeFile(bldr.toString(), infoFile);
-    }
-
-    private static ArrayList<Mod> processModFile(ModFile modFile) {
-        String result;
-        HashSet<String> identifiedIDs = new HashSet<>();
-        ArrayList<Mod> out = new ArrayList<>();
-        for(int i=0; i<modFile.IDs.getSize(); i++) {
-            result = Globals.getInstance().nameRegistry.checkID(modFile.IDs.get(i));
-            if(result != null) {
-                identifiedIDs.add(result);
-            }
-        }
-        if(identifiedIDs.isEmpty()) {
-            return null;
-        } else {
-            for(String ID : identifiedIDs) {
-                out.add(new Mod(modFile, ID));
-            }
-            return out;
-        }
     }
 }

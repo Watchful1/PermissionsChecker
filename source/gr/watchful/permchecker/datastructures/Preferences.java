@@ -12,6 +12,7 @@ public class Preferences {
 	public File exportFolder;
 	public ArrayList<String> minecraftVersions;
 	public String defaultMinecraftVersion;
+	public String parsedPackShortName;
 
     public Preferences() {
     }

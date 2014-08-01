@@ -1,13 +1,13 @@
 package gr.watchful.permchecker.modhandling;
 
-import gr.watchful.permchecker.datastructures.ModInfo;
+import gr.watchful.permchecker.datastructures.*;
 
 import java.util.ArrayList;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import com.google.gson.Gson;
-import gr.watchful.permchecker.datastructures.ModPack;
 
 /**
  * Stores and gives access to mappings for modid to shortname as well as shortname to associated modinfo object
@@ -146,15 +146,41 @@ public class ModNameRegistry {
 		}
 	}
 
-	public ModInfo getMod(String shortName) {
-		return getMod(shortName, null);
+	public ModInfo getInfo(Mod mod) {
+		return getInfo(mod, null);
 	}
 	
-	public ModInfo getMod(String shortName, ModPack modPack) {
-		if(modPack != null && modPack.modInfoMappings.containsKey(shortName)) {
-			return modPack.modInfoMappings.get(shortName);
+	public ModInfo getInfo(Mod mod, ModPack modPack) {
+		if(modPack != null && modPack.modInfoMappings.containsKey(mod.shortName)) {
+			return modPack.modInfoMappings.get(mod.shortName);
 		} else {
-			return modInfoMappings.get(shortName);
+			return modInfoMappings.get(mod.shortName);
 		}
+	}
+
+	public ModStorage compileMods(ArrayList<ModFile> modFiles, ModPack modPack) {
+		ModStorage modStorage = new ModStorage();
+		ArrayList<Mod> mods;
+		for(ModFile modfile : modFiles) {
+			mods = processModFile(modfile, modPack);
+			if(mods.isEmpty()) modStorage.modFiles.add(modfile);
+			else modStorage.mods.addAll(mods);
+		}
+		return modStorage;
+	}
+
+	private ArrayList<Mod> processModFile(ModFile modFile, ModPack modPack) {
+		ArrayList<Mod> mods = new ArrayList<>();
+
+		String result;
+		HashSet<String> identifiedIDs = new HashSet<>();
+		for(int i=0; i<modFile.IDs.getSize(); i++) {
+			result = checkID(modFile.IDs.get(i), modPack);
+			if(result != null) identifiedIDs.add(result);
+		}
+		for(String ID : identifiedIDs) {
+			mods.add(new Mod(modFile, ID));
+		}
+		return mods;
 	}
 }

@@ -23,7 +23,7 @@ public class ModPack {
 	public File icon;//Icon if set and size small enough. Button to select new icon, deletes old
 	public File splash;//Icon if set and size small enough. Button to select new icon, deletes old
 	public File server;//Icon if set. Button to select new icon, deletes old
-    //TODO public vs private pack type
+    public boolean isPublic;
 	
 	public Time lastEdited;
 	public ArrayList<String> submitters;
@@ -44,6 +44,7 @@ public class ModPack {
         modList = new ArrayList<>();
 		forgeType = ForgeType.RECOMMENDED;
 		ForgeVersion = 0;
+		isPublic = true;
 	}
 	
 	public String toString() {

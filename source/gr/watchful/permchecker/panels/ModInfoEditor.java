@@ -114,7 +114,7 @@ public class ModInfoEditor extends JPanel {
 		
 		notifySaveListeners(modInfo);
 		
-		Globals.getInstance().main.recheckMods();
+		Globals.getInstance().rebuildsMods.recheckMods();
 	}
 	
 	public void editShortName(boolean canEdit) {

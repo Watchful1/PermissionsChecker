@@ -22,6 +22,12 @@ public class SortedListModel<T> extends AbstractListModel {
 		fireIntervalAdded(this, list.size() - 1, list.size() - 1);
 	}
 
+	public void addAll(ArrayList<T> array) {
+		for(T element : array) {
+			addElement(element);
+		}
+	}
+
 	public void setElement(T element, int index) {
 		list.set(index, element);
 	}

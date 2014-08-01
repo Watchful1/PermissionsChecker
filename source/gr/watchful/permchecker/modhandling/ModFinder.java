@@ -18,17 +18,8 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 public class ModFinder {
-	private ModNameRegistry nameRegistry;
-	private static SortedListModel<ModFile> modFiles1;
-	private static SortedListModel<ModFile> unknownModFiles;
-	private static SortedListModel<Mod> mods;
-
 	// We need a central place to add ID's to when we can't return what we want
 	private ModFile otherMod;
-
-	public ModFinder() {
-		nameRegistry = Globals.getInstance().nameRegistry;
-	}
 
 	public ArrayList<ModFile> discoverModFiles(File folder) {
 		ArrayList<ModFile> modFiles = new ArrayList<>();
@@ -186,33 +177,5 @@ public class ModFinder {
 				otherMod.addVersion(versionStorage);
 			}
 		}
-	}
-	
-	public ModStorage compileModNames(ArrayList<ModFile> modFiles, ModPack modPack) {
-		ModStorage modStorage = new ModStorage();
-		ArrayList<Mod> mods;
-		for(ModFile modfile : modFiles) {
-			mods = processModFile(modfile, modPack);
-			if(mods.isEmpty()) modStorage.modFiles.add(modfile);
-			else {
-
-			}
-		}
-		return modStorage;
-	}
-	
-	private ArrayList<Mod> processModFile(ModFile modFile, ModPack modPack) {
-		ArrayList<Mod> mods = new ArrayList<>();
-
-		String result;
-		HashSet<String> identifiedIDs = new HashSet<>();
-		for(int i=0; i<modFile.IDs.getSize(); i++) {
-			result = nameRegistry.checkID(modFile.IDs.get(i), modPack);
-			if(result != null) identifiedIDs.add(result);
-		}
-		for(String ID : identifiedIDs) {
-			mods.add(new Mod(modFile, ID));
-		}
-		return mods;
 	}
 }
