@@ -93,6 +93,7 @@ repositories {
 	mavenCentral()
 }
 dependencies {
+    compile 'org.swinglabs.swingx:swingx-all:1.6.4'
 	compile 'com.google.code.gson:gson:2.2.4'
 	compile 'org.projectlombok:lombok:1.12.6'
 	compile 'com.google.guava:guava:16.0.1'
