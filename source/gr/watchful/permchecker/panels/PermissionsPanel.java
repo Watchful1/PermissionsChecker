@@ -20,91 +20,91 @@ import java.util.HashSet;
  */
 @SuppressWarnings("serial")
 public class PermissionsPanel extends JPanel implements NamedScrollingListPanelListener, RebuildsMods {
-    private SortedListModel<Mod> goodMods;
-    private SortedListModel<Mod> badMods;
-    private SortedListModel<ModFile> unknownMods;
-    private ArrayList<ModFile> knownModFiles;
-    private NamedScrollingListPanel<Mod> good;
-    private NamedScrollingListPanel<Mod> bad;
-    private NamedScrollingListPanel<ModFile> unknown;
-    private JPanel cards;
-    private ModEditor modEditor;
-    private ModFileEditor modFileEditor;
+	private SortedListModel<Mod> goodMods;
+	private SortedListModel<Mod> badMods;
+	private SortedListModel<ModFile> unknownMods;
+	private ArrayList<ModFile> knownModFiles;
+	private NamedScrollingListPanel<Mod> good;
+	private NamedScrollingListPanel<Mod> bad;
+	private NamedScrollingListPanel<ModFile> unknown;
+	private JPanel cards;
+	private ModEditor modEditor;
+	private ModFileEditor modFileEditor;
 	private ModFinder modFinder;
 	private ModPack modPack;
 
-    public PermissionsPanel() {
-        goodMods = new SortedListModel<>();
-        badMods = new SortedListModel<>();
-        unknownMods = new SortedListModel<>();
+	public PermissionsPanel() {
+		goodMods = new SortedListModel<>();
+		badMods = new SortedListModel<>();
+		unknownMods = new SortedListModel<>();
 		modFinder = new ModFinder();
-        Globals.getInstance().rebuildsMods = this;
+		Globals.getInstance().rebuildsMods = this;
 
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
-        mainPanel.setAlignmentX(0f);
-        this.add(mainPanel);
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+		mainPanel.setAlignmentX(0f);
+		this.add(mainPanel);
 
-        good = new NamedScrollingListPanel<>("Good", 100, goodMods);
-        good.addListener(this);
-        mainPanel.add(good);
+		good = new NamedScrollingListPanel<>("Good", 100, goodMods);
+		good.addListener(this);
+		mainPanel.add(good);
 
-        bad = new NamedScrollingListPanel<>("Bad", 100, badMods);
-        bad.addListener(this);
-        mainPanel.add(bad);
+		bad = new NamedScrollingListPanel<>("Bad", 100, badMods);
+		bad.addListener(this);
+		mainPanel.add(bad);
 
-        unknown = new NamedScrollingListPanel<>("Unknown", 100, unknownMods);
-        mainPanel.add(unknown);
-        unknown.addListener(this);
+		unknown = new NamedScrollingListPanel<>("Unknown", 100, unknownMods);
+		mainPanel.add(unknown);
+		unknown.addListener(this);
 
-        cards = new JPanel(new CardLayout());
+		cards = new JPanel(new CardLayout());
 
-        modEditor = new ModEditor(new Dimension(500,900));
-        cards.add(modEditor,"MODEDITOR");
-        modFileEditor = new ModFileEditor(new Dimension(300,300), new ModFile(new File("/")));
-        cards.add(modFileEditor,"MODFILEEDITOR");
+		modEditor = new ModEditor(new Dimension(500,900));
+		cards.add(modEditor,"MODEDITOR");
+		modFileEditor = new ModFileEditor(new Dimension(300,300), new ModFile(new File("/")));
+		cards.add(modFileEditor,"MODFILEEDITOR");
 
-        CardLayout cardLayout = (CardLayout)(cards.getLayout());
-        cardLayout.show(cards, "MODEDITOR");
+		CardLayout cardLayout = (CardLayout)(cards.getLayout());
+		cardLayout.show(cards, "MODEDITOR");
 
-        mainPanel.add(cards);
-    }
+		mainPanel.add(cards);
+	}
 
-    public void selectionChanged(NamedSelectionEvent event) {
-        updateEditor(event.getParentName(),event.getSelected());
-    }
+	public void selectionChanged(NamedSelectionEvent event) {
+		updateEditor(event.getParentName(),event.getSelected());
+	}
 
-    private void updateEditor(String list, int selected) {
-        if(list.equals("Good")) {
-            bad.clearSelection();
-            unknown.clearSelection();
+	private void updateEditor(String list, int selected) {
+		if(list.equals("Good")) {
+			bad.clearSelection();
+			unknown.clearSelection();
 
-            CardLayout cardLayout = (CardLayout)(cards.getLayout());
-            cardLayout.show(cards, "MODEDITOR");
+			CardLayout cardLayout = (CardLayout)(cards.getLayout());
+			cardLayout.show(cards, "MODEDITOR");
 
-            modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(good.getSelected()), good.getSelected().shortName);
-        }
-        if(list.equals("Bad")) {
-            good.clearSelection();
-            unknown.clearSelection();
+			modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(good.getSelected()), good.getSelected().shortName);
+		}
+		if(list.equals("Bad")) {
+			good.clearSelection();
+			unknown.clearSelection();
 
-            CardLayout cardLayout = (CardLayout)(cards.getLayout());
-            cardLayout.show(cards, "MODEDITOR");
+			CardLayout cardLayout = (CardLayout)(cards.getLayout());
+			cardLayout.show(cards, "MODEDITOR");
 
-            modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(bad.getSelected()), bad.getSelected().shortName);
-        }
-        if(list.equals("Unknown")) {
-            good.clearSelection();
-            bad.clearSelection();
+			modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(bad.getSelected()), bad.getSelected().shortName);
+		}
+		if(list.equals("Unknown")) {
+			good.clearSelection();
+			bad.clearSelection();
 
-            CardLayout cardLayout = (CardLayout)(cards.getLayout());
-            cardLayout.show(cards, "MODFILEEDITOR");
+			CardLayout cardLayout = (CardLayout)(cards.getLayout());
+			cardLayout.show(cards, "MODFILEEDITOR");
 
-            modFileEditor.setModFile(unknown.getSelected());
-        }
-    }
+			modFileEditor.setModFile(unknown.getSelected());
+		}
+	}
 
 	public void updatePack(ModPack modPack) {
 		this.modPack = modPack;
@@ -116,9 +116,9 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		recheckMods();
 	}
 
-    public void recheckMods() {
-        goodMods.clear();
-        badMods.clear();
+	public void recheckMods() {
+		goodMods.clear();
+		badMods.clear();
 		unknownMods.clear();
 
 		ModStorage modStorage = Globals.getInstance().nameRegistry.compileMods(knownModFiles, modPack);
@@ -126,68 +126,79 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		ModInfo temp;
 		for(Mod mod : modStorage.mods) {
 			temp = Globals.getInstance().nameRegistry.getInfo(mod, modPack);
+			if(temp.hasPublic()) {
+				mod.permStatus = Mod.PUBLIC;
+				goodMods.addElement(mod);
+			} else if(temp.hasPrivate()) {
+				modPack.isPublic = false;
+				mod.permStatus = Mod.PRIVATE;
+				goodMods.addElement(mod);
+			} else {
+				badMods.addElement(mod);
+			}
 		}
 
-        goodMods.sort(new SimpleObjectComparator());
-        badMods.sort(new SimpleObjectComparator());
-    }
+		goodMods.sort(new SimpleObjectComparator());
+		badMods.sort(new SimpleObjectComparator());
+	}
 
-    public void writeFile() {
-        //TODO check for no modpack
-        File infoFile = new File(Globals.getInstance().minecraftFolder+File.separator+"perms.txt");
-        System.out.println("Printing to: "+infoFile.getAbsolutePath());
+	public void writeFile() {
+		//TODO check for no modpack
+		File infoFile = new File(Globals.getInstance().preferences.workingFolder+File.separator+"perms.txt");
+		System.out.println("Printing to: "+infoFile.getAbsolutePath());
 
-        StringBuilder bldr = new StringBuilder();
-        bldr.append("Permission categories and full licenses for mods marked spreadsheet are available here: http://1drv.ms/1c8mItH\n");
-        bldr.append("For any problems, please contact Watchful11 on the FTB forums.\n");
+		StringBuilder bldr = new StringBuilder();
+		bldr.append("Permission categories and full licenses for mods marked spreadsheet are available here: http://1drv.ms/1c8mItH\n");
+		bldr.append("For any problems, please contact Watchful11 on the FTB forums.\n");
 
-        bldr.append("This is a ");
-        bldr.append(Globals.getInstance().getStringType());
-        bldr.append(" pack\n\n");
+		bldr.append("This is a ");
+		if(modPack.isPublic) bldr.append("public");
+		else bldr.append("private");
+		bldr.append(" pack\n\n");
 
-        for(int i=0; i<goodMods.getSize(); i++) {
-            ModInfo modInfo = Globals.getInstance().nameRegistry.getMod(goodMods.get(i).shortName);
-            bldr.append("(");
-            bldr.append(modInfo.getStringPolicy());
-            bldr.append(":");
-            if(modInfo.officialSpreadsheet) bldr.append("Spreadsheet");
-            else bldr.append("Custom");
-            bldr.append(") ");
-            bldr.append(modInfo.modName); bldr.append(" by ");
-            bldr.append(modInfo.modAuthor); bldr.append(" can be found at ");
-            bldr.append(modInfo.modLink); bldr.append(".");
+		for(int i=0; i<goodMods.getSize(); i++) {
+			ModInfo modInfo = Globals.getInstance().nameRegistry.getInfo(goodMods.get(i));
+			bldr.append("(");
+			bldr.append(ModInfo.getStringPolicy(modInfo.getPolicy(modPack.isPublic)));
+			bldr.append(":");
+			if(modInfo.officialSpreadsheet) bldr.append("Spreadsheet");
+			else bldr.append("Custom");
+			bldr.append(") ");
+			bldr.append(modInfo.modName); bldr.append(" by ");
+			bldr.append(modInfo.modAuthor); bldr.append(" can be found at ");
+			bldr.append(modInfo.modLink); bldr.append(".");
 
-            if(!modInfo.officialSpreadsheet) {
-                bldr.append(" The license is, ");
-                bldr.append(modInfo.getCurrentPermLink());
-                if(modInfo.licenseLink.equals("PM")) {
-                    bldr.append(", which is a private message.");
-                } else if(modInfo.licenseLink.equals(modInfo.modLink) || modInfo.licenseLink.equals("")) {
-                    bldr.append(".");
-                } else {
-                    bldr.append(", and can be found ");
-                    bldr.append(modInfo.licenseLink);
-                    bldr.append(".");
-                }
-            }
+			if(!modInfo.officialSpreadsheet) {
+				bldr.append(" The license is, ");
+				bldr.append(modInfo.getPermImage(modPack.isPublic));
+				if(modInfo.getPermLink(modPack.isPublic).equals("PM")) {
+					bldr.append(", which is a private message.");
+				} else if(modInfo.licenseLink.equals(modInfo.modLink) || modInfo.licenseLink.equals("")) {
+					bldr.append(".");
+				} else {
+					bldr.append(", and can be found ");
+					bldr.append(modInfo.licenseLink);
+					bldr.append(".");
+				}
+			}
 
-            switch(modInfo.getCurrentPolicy()) {
-                case ModInfo.NOTIFY:
-                    bldr.append(" The author has been notified, ");
-                    bldr.append(modInfo.customLink);
-                    bldr.append(".");
-                    break;
-                case ModInfo.REQUEST:
-                case ModInfo.CLOSED:
-                    bldr.append(" Permission has been obtained from the author, ");
-                    bldr.append(modInfo.customLink);
-                    bldr.append(".");
-                    break;
-            }
+			switch(modInfo.getPolicy(modPack.isPublic)) {
+				case ModInfo.NOTIFY:
+					bldr.append(" The author has been notified, ");
+					bldr.append(modInfo.customLink);
+					bldr.append(".");
+					break;
+				case ModInfo.REQUEST:
+				case ModInfo.CLOSED:
+					bldr.append(" Permission has been obtained from the author, ");
+					bldr.append(modInfo.customLink);
+					bldr.append(".");
+					break;
+			}
 
-            bldr.append("\n");
-        }
+			bldr.append("\n");
+		}
 
-        FileUtils.writeFile(bldr.toString(), infoFile);
-    }
+		FileUtils.writeFile(bldr.toString(), infoFile);
+	}
 }

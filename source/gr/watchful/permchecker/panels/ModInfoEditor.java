@@ -83,7 +83,7 @@ public class ModInfoEditor extends JPanel {
 		author.setText(modInfo.modAuthor);
 		link.setText(modInfo.modLink);
 		licensePermissionLink.setText(modInfo.licenseLink);
-		licenseImageLink.setText(modInfo.licenseImageLink);
+		licenseImageLink.setText(modInfo.licenseImage);
 		customLink.setText(modInfo.customLink);
 		this.shortName.setText(modInfo.shortName);
 		permType.setType(modInfo.getCurrentPolicy());
@@ -95,14 +95,14 @@ public class ModInfoEditor extends JPanel {
 		
 		if(!name.getText().equals(modInfo.modName) || !author.getText().equals(modInfo.modAuthor) || 
 				!link.getText().equals(modInfo.modLink) || !licensePermissionLink.getText().equals(modInfo.licenseLink) ||
-				!licenseImageLink.getText().equals(modInfo.licenseImageLink) || permType.getType() != modInfo.getCurrentPolicy() ||
+				!licenseImageLink.getText().equals(modInfo.licenseImage) || permType.getType() != modInfo.getCurrentPolicy() ||
 				!shortName.getText().equals(modInfo.shortName)) {
 			modInfo.officialSpreadsheet = false;
 			modInfo.modName = name.getText();
 			modInfo.modAuthor = author.getText();
 			modInfo.modLink = link.getText();
 			modInfo.licenseLink = licensePermissionLink.getText();
-			modInfo.licenseImageLink = licenseImageLink.getText();
+			modInfo.licenseImage = licenseImageLink.getText();
 			modInfo.setCurrentPolicy(permType.getType());
 			modInfo.shortName = shortName.getText();
 		}

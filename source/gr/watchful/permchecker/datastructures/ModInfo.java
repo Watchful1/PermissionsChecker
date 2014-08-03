@@ -5,11 +5,7 @@ public class ModInfo {
 	public static final int NOTIFY = 1;
 	public static final int REQUEST = 2;
 	public static final int CLOSED = 3;
-	public static final int FTB = 4;
 	public static final int UNKNOWN = 5;
-
-	public static final int FTB_GRANTED = 6;
-	public static final int FTB_UNKOWN = 7;
 	
 	public boolean officialSpreadsheet;
 	
@@ -21,31 +17,72 @@ public class ModInfo {
 	public String modLink;
 	
 	public String licenseLink;
+	public String licenseImage;
 	public String privateLicenseLink;
-	public String FTBLicenseLink;
-	public String licenseImageLink;
-	public String licensePrivateImageLink;
-	public String licenseFTBImageLink;
+	public String privateLicenseImage;
 	
 	public String customLink;
+	public boolean isPublicPerm;
 	
 	public int publicPolicy;
 	public int privatePolicy;
-	public int FTBPolicy;
 	
 	public ModInfo(String shortName) {
 		officialSpreadsheet = false;
 		this.shortName = shortName;
 		modName = "Unknown";
 		modAuthor = "Unknown";
-		modLink = "Unknown";
+		modLink = "None";
 		modVersion = "Unknown";
 		publicPolicy = UNKNOWN;
 		privatePolicy = UNKNOWN;
-		FTBPolicy = FTB_UNKOWN;
-		licenseLink = "Unknown";
-		privateLicenseLink = "Unknown";
-		FTBLicenseLink = "Unknown";
+		licenseLink = "";
+		licenseImage = "";
+		privateLicenseLink = "";
+		privateLicenseImage = "";
 		customLink = "";
+		isPublicPerm = false;
+	}
+
+	public boolean hasPublic() {
+		if(publicPolicy == OPEN) return true;
+		else if(!customLink.equals("") && isPublicPerm) return true;
+		else return false;
+	}
+
+	public boolean hasPrivate() {
+		if(privatePolicy == OPEN) return true;
+		else if(!customLink.equals("")) return true;
+		else return false;
+	}
+
+	public String getPermLink(boolean isPublic) {
+		if(isPublic || privateLicenseLink.equals("")) return licenseLink;
+		else return privateLicenseLink;
+	}
+
+	public String getPermImage(boolean isPublic) {
+		if(isPublic || privateLicenseImage.equals("")) return licenseImage;
+		else return privateLicenseImage;
+	}
+
+	public int getPolicy(boolean isPublic) {
+		if(isPublic) return publicPolicy;
+		else return privatePolicy;
+	}
+
+	public static String getStringPolicy(int num) {
+		switch (num) {
+			case OPEN:
+				return "Open";
+			case NOTIFY:
+				return "Notify";
+			case REQUEST:
+				return "Request";
+			case CLOSED:
+				return "Closed";
+			default:
+				return "Unknown";
+		}
 	}
 }

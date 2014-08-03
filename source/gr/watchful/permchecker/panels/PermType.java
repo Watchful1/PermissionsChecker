@@ -84,7 +84,7 @@ public class PermType extends JPanel {
 		buttonPanel.add(new JLabel("Notify"));
 		buttonPanel.add(notifyButton);
 		buttonPanel.add(Box.createRigidArea(new Dimension(5,0)));
-		
+
 		FTBButton = new JRadioButton();
 		FTBButton.addActionListener(new ActionListener() {
 			@Override

@@ -16,11 +16,13 @@ public class Mod {
 	}
 	
 	public String toString() {
-		ModInfo modInfo = Globals.getInstance().nameRegistry.getMod(shortName);
+		ModInfo modInfo = Globals.getInstance().nameRegistry.getInfo(this);
+		String priv = "";
+		if(permStatus == PRIVATE)  priv = "P) ";
 		if(modInfo == null || modInfo.modName == "Unknown") {
-			return shortName;
+			return priv+shortName;
 		} else {
-			return modInfo.modName;
+			return priv+modInfo.modName;
 		}
 	}
 }

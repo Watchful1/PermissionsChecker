@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import com.google.gson.Gson;
-
 /**
  * Stores and gives access to mappings for modid to shortname as well as shortname to associated modinfo object
  * @author Watchful
@@ -112,14 +110,14 @@ public class ModNameRegistry {
 					info.FTBPolicy = ModInfo.FTB_UNKOWN;
 				}
 				
-				info.licenseImageLink = imageBaseUrl+info.shortName+imageExtension;//set perm image link
+				info.licenseImage = imageBaseUrl+info.shortName+imageExtension;//set perm image link
 				if(row.get(7).equals("")) {//set private perm image link
-					info.licensePrivateImageLink = info.licenseImageLink;
+					info.privateLicenseImage = info.licenseImage;
 				} else {
-					info.licensePrivateImageLink = imageBaseUrl+info.shortName+"private"+imageExtension;
+					info.privateLicenseImage = imageBaseUrl+info.shortName+"private"+imageExtension;
 				}
 				if(row.get(8).equals("")) {//set FTB perm image link
-					info.licenseFTBImageLink = info.licenseImageLink;
+					info.licenseFTBImageLink = info.licenseImage;
 				} else {
 					info.licenseFTBImageLink = imageBaseUrl+info.shortName+"FTB"+imageExtension;
 				}
