@@ -5,15 +5,18 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
+import java.util.zip.*;
+
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import gr.watchful.permchecker.datastructures.ForgeType;
 import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModPack;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.util.Zip4jConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -90,85 +93,30 @@ public class FileUtils {
 	}
 
 	public static void extractZipTo(File zipLocation, File outputLocation) {
-		ZipInputStream zipInputStream = null;
 		try {
-			byte[] buf = new byte[1024];
-			zipInputStream = new ZipInputStream(new FileInputStream(zipLocation));
-			ZipEntry zipentry = zipInputStream.getNextEntry();
-			while (zipentry != null) {
-				String entryName = zipentry.getName();
-				System.out.println(entryName);
-				int n;
-				if(!zipentry.isDirectory() && !entryName.equalsIgnoreCase("minecraft") && !entryName.equalsIgnoreCase(".minecraft") && !entryName.equalsIgnoreCase("instMods")) {
-					new File(outputLocation.getAbsolutePath() + File.separator + entryName).getParentFile().mkdirs();
-					FileOutputStream fileoutputstream = new FileOutputStream(outputLocation.getAbsolutePath() + File.separator + entryName);			 
-					while ((n = zipInputStream.read(buf, 0, 1024)) > -1) {
-						fileoutputstream.write(buf, 0, n);
-					}
-					fileoutputstream.close();
-				}
-				zipInputStream.closeEntry();
-				zipentry = zipInputStream.getNextEntry();
-			}
-		} catch (Exception e) {
+			ZipFile zipFile = new ZipFile(zipLocation);
+			zipFile.extractAll(outputLocation.getPath());
+			System.out.println("Unzip done");
+		} catch (ZipException e) {
+			System.out.println("Unzip failed");
 			e.printStackTrace();
-			//System.out.println("ping");
-		} finally {
-			try {
-				zipInputStream.close();
-			} catch (IOException e) { }
 		}
-		System.out.println("done");
 	}
 	
-	public static void zipFilesTo(File[] files, File outputLocation) {
-		outputLocation.getParentFile().mkdirs();
-		ZipOutputStream zipOutputStream = null;
+	public static void zipFolderTo(File folder, File outputLocation) {
 		try {
-			zipOutputStream = new ZipOutputStream(new FileOutputStream(outputLocation));
-			addDirectoryOrFile(zipOutputStream, files, 0);
-		} catch (Exception e) {
+			ZipFile zipFile = new ZipFile(outputLocation);
+			String folderToAdd = folder.getPath();
+
+			ZipParameters parameters = new ZipParameters();
+			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+
+			zipFile.addFolder(folderToAdd, parameters);
+			System.out.println("Zip done");
+		} catch (ZipException e) {
+			System.out.println("Zip failed");
 			e.printStackTrace();
-		} finally {
-			try {
-				zipOutputStream.close();
-			} catch (IOException e) { }
-		}
-		System.out.println("done");
-	}
-	
-	private static void addDirectoryOrFile(ZipOutputStream zipOutputStream, File[] files, int depth) throws IOException {
-		for (int i=0; i<files.length; i++) {
-			if (files[i].isDirectory()) {
-				System.out.println("Adding directory " + files[i].getName());
-				addDirectoryOrFile(zipOutputStream, files[i].listFiles(),depth+1);
-				continue;
-			}
-
-			byte[] buffer = new byte[1024];
-			
-			String fileName = "";
-			File temp = files[i];
-			for(int j=0; j<depth; j++) {
-				for(int k=depth-j; k>0; k--) {
-					temp = temp.getParentFile();
-				}
-				fileName = fileName+temp.getName()+"/";
-				temp = files[i];
-			}
-			fileName = fileName+files[i].getName();
-			System.out.println("Adding file " + fileName);
-
-			FileInputStream fileInputStream = new FileInputStream(files[i]);
-			zipOutputStream.putNextEntry(new ZipEntry(fileName));
-
-			int length = buffer.length;
-			while ((length = fileInputStream.read(buffer)) > 0) {
-				zipOutputStream.write(buffer, 0, length);
-			}
-
-			zipOutputStream.closeEntry();
-			fileInputStream.close();
 		}
 	}
 	

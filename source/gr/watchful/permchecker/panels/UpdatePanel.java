@@ -101,7 +101,7 @@ public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 			System.out.println("xml export failed");
 			return;
 		}
-		FileUtils.zipFilesTo(Globals.getInstance().preferences.workingFolder.listFiles(),
+		FileUtils.zipFolderTo(Globals.getInstance().preferences.workingFolder,
 				new File(Globals.getInstance().preferences.exportFolder+File.separator+
 						"privatepacks"+File.separator+Globals.getModPack().shortName+File.separator+
 						Globals.getModPack().recommendedVersion.replaceAll("\\.","_")+

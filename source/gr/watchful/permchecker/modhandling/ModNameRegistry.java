@@ -3,10 +3,8 @@ package gr.watchful.permchecker.modhandling;
 import gr.watchful.permchecker.datastructures.*;
 
 import java.util.ArrayList;
-
 import java.util.HashMap;
 import java.util.HashSet;
-
 /**
  * Stores and gives access to mappings for modid to shortname as well as shortname to associated modinfo object
  * @author Watchful
@@ -118,7 +116,8 @@ public class ModNameRegistry {
 	}
 	
 	public String checkID(String modID, ModPack modPack) {
-		if(modPack != null && modPack.shortNameMappings.containsKey(modID)) {
+		if(modPack != null && modPack.shortNameMappings != null
+				&& modPack.shortNameMappings.containsKey(modID)) {
 			return modPack.shortNameMappings.get(modID);
 		} else {
 			return shortNameMappings.get(modID);
@@ -130,7 +129,8 @@ public class ModNameRegistry {
 	}
 	
 	public ModInfo getInfo(Mod mod, ModPack modPack) {
-		if(modPack != null && modPack.modInfoMappings.containsKey(mod.shortName)) {
+		if(modPack != null && modPack.modInfoMappings != null
+				&& modPack.modInfoMappings.containsKey(mod.shortName)) {
 			return modPack.modInfoMappings.get(mod.shortName);
 		} else {
 			return modInfoMappings.get(mod.shortName);

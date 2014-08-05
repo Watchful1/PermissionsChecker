@@ -110,8 +110,10 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 	}
 
 	public void parsePack() {
+		System.out.println("Parsing");
 		knownModFiles = modFinder.discoverModFiles(new File(
-				Globals.getInstance().preferences.workingFolder+File.separator+"mods"));
+				Globals.getInstance().preferences.workingFolder+File.separator+"minecraft"+File.separator+"mods"));
+		System.out.println("Found "+knownModFiles.size()+" files");
 		recheckMods();
 	}
 
@@ -125,6 +127,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		ModInfo temp;
 		for(Mod mod : modStorage.mods) {
 			temp = Globals.getInstance().nameRegistry.getInfo(mod, Globals.getModPack());
+			if(temp == null) continue;
 			if(temp.hasPublic()) {
 				mod.permStatus = Mod.PUBLIC;
 				goodMods.addElement(mod);

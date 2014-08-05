@@ -95,7 +95,7 @@ public class VersionEditor extends JPanel {
 
     public ArrayList<String> getVersions() {
 		ArrayList<String> temp = model.getArrayList();
-		if(recommendedIndex != -1) temp.set(recommendedIndex, temp.get(recommendedIndex).replaceAll("\\s\\*",""));
+		if(recommendedIndex != -1 && model.getSize() != 0) temp.set(recommendedIndex, temp.get(recommendedIndex).replaceAll("\\s\\*",""));
         return temp;
     }
 
@@ -107,6 +107,7 @@ public class VersionEditor extends JPanel {
     }
 
 	public void setRecommendedVersion(String recommendedVersion) {
+		if(recommendedVersion == null) return;
 		int index = model.getIndexByString(recommendedVersion);
 		if(index == -1) {
 			System.out.println("Can't find version "+recommendedVersion);
@@ -122,6 +123,7 @@ public class VersionEditor extends JPanel {
 	}
 
 	public String getRecommendedVersion() {
+		if(model.getSize() == 0) return null;
 		return model.get(recommendedIndex).replaceAll("\\s\\*","");
 	}
 }

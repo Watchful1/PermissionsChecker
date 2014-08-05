@@ -1,14 +1,19 @@
-import gr.watchful.permchecker.datastructures.*;
+import gr.watchful.permchecker.datastructures.Globals;
+import gr.watchful.permchecker.datastructures.ModPack;
+import gr.watchful.permchecker.datastructures.SimpleObjectComparator;
+import gr.watchful.permchecker.datastructures.SortedListModel;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
-import gr.watchful.permchecker.panels.*;
+import gr.watchful.permchecker.panels.ModPacksPanel;
+import gr.watchful.permchecker.panels.NamedScrollingListPanel;
+import gr.watchful.permchecker.panels.PermissionsPanel;
+import gr.watchful.permchecker.panels.UpdatePanel;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-
-import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class mainClass extends JFrame {
@@ -89,6 +94,15 @@ public class mainClass extends JFrame {
 			}
 		});
 		menu.add(newPack);
+
+		JMenuItem checkPack = new JMenuItem("Check pack");
+		checkPack.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				permissionsPanel.parsePack();
+			}
+		});
+		menu.add(checkPack);
 
 		this.setJMenuBar(menuBar);
 
