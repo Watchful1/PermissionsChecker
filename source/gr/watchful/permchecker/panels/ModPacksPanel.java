@@ -108,7 +108,8 @@ public class ModPacksPanel extends JPanel implements UsesPack {
 		if(!pack.description.equals(descriptionField.getText())) changed = true;
 		if(!pack.minecraftVersion.equals(minecraftVersionSelecter.getVersion())) changed = true;
 		if(!pack.versions.equals(versionEditor.getVersions())) changed = true;
-		if(!pack.recommendedVersion.equals(versionEditor.getRecommendedVersion())) changed = true;
+		if(pack.recommendedVersion != null &&
+				!pack.recommendedVersion.equals(versionEditor.getRecommendedVersion())) changed = true;
 		if(!pack.forgeType.equals(forgeEditor.getForgeType())) changed = true;
 		if(!(pack.ForgeVersion == forgeEditor.getForgeVersion())) changed = true;
 		//if(!pack.icon.equals(iconSelector.getFile())) changed = true;
