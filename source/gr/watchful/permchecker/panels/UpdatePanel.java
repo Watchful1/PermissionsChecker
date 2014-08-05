@@ -3,6 +3,7 @@ package gr.watchful.permchecker.panels;
 import gr.watchful.permchecker.datastructures.ForgeType;
 import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModPack;
+import gr.watchful.permchecker.datastructures.UsesPack;
 import gr.watchful.permchecker.utils.FileUtils;
 
 import javax.swing.*;
@@ -10,9 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-public class UpdatePanel extends JPanel implements ActionListener {
+public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 	private LabelField packName;
-	private ModPack pack;
 	private FileSelector selector;
 
 
@@ -41,7 +41,6 @@ public class UpdatePanel extends JPanel implements ActionListener {
     }
 
 	public void setPack(ModPack pack) {
-		this.pack = pack;
 		packName.setText(pack.name);
 	}
 
@@ -86,31 +85,36 @@ public class UpdatePanel extends JPanel implements ActionListener {
 	 */
 	public void exportPack() {
 		boolean success = true;
-		if(pack.forgeType.equals(ForgeType.VERSION)) {
-			success = FileUtils.addForge(Globals.getInstance().preferences.workingFolder, pack.ForgeVersion);
+		if(Globals.getModPack().forgeType.equals(ForgeType.VERSION)) {
+			success = FileUtils.addForge(Globals.getInstance().preferences.workingFolder, Globals.getModPack().ForgeVersion);
 		} else {
-			success = FileUtils.addForge(Globals.getInstance().preferences.workingFolder, pack.forgeType);
+			success = FileUtils.addForge(Globals.getInstance().preferences.workingFolder, Globals.getModPack().forgeType);
 		}
 		if(!success) {
 			System.out.println("pack.json add failed");
 			return;
 		}
-		String xml = FileUtils.buildXML(pack);
+		String xml = FileUtils.buildXML(Globals.getModPack());
 		if(!FileUtils.writeFile(xml, new File(
 				Globals.getInstance().preferences.exportFolder+File.separator+"static"+
-				File.separator+pack.key+".xml"))) {
+				File.separator+Globals.getModPack().key+".xml"))) {
 			System.out.println("xml export failed");
 			return;
 		}
 		FileUtils.zipFilesTo(Globals.getInstance().preferences.workingFolder.listFiles(),
 				new File(Globals.getInstance().preferences.exportFolder+File.separator+
-				"privatepacks"+File.separator+pack.shortName+File.separator+
-				pack.recommendedVersion.replaceAll("\\.","_")+
-				File.separator+pack.shortName+".zip"));
+						"privatepacks"+File.separator+Globals.getModPack().shortName+File.separator+
+						Globals.getModPack().recommendedVersion.replaceAll("\\.","_")+
+				File.separator+Globals.getModPack().shortName+".zip"));
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		extractPack(selector.getFile());
+	}
+
+	@Override
+	public void updatePack(ModPack modPack) {
+		setPack(modPack);
 	}
 }

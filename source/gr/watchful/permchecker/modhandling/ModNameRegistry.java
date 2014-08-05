@@ -47,13 +47,6 @@ public class ModNameRegistry {
 				} else {
 					info.privateLicenseLink = row.get(7);
 				}
-				if(row.get(8).equals("")) {//set FTB perm link
-					info.FTBLicenseLink = info.licenseLink;
-				} else if(row.get(8).equals("PM")) {
-					info.FTBLicenseLink = imageBaseUrl+"PrivateMessage"+imageExtension;
-				} else {
-					info.FTBLicenseLink = row.get(8);
-				}
 				
 				switch(row.get(3)){//set the public policy
 				case "Open":
@@ -103,23 +96,11 @@ public class ModNameRegistry {
 					break;
 				}
 				
-				//set FTB policy
-				if(info.publicPolicy == ModInfo.OPEN || info.publicPolicy == ModInfo.FTB || !row.get(8).equals("")) {
-					info.FTBPolicy = ModInfo.FTB_GRANTED;
-				} else {
-					info.FTBPolicy = ModInfo.FTB_UNKOWN;
-				}
-				
 				info.licenseImage = imageBaseUrl+info.shortName+imageExtension;//set perm image link
 				if(row.get(7).equals("")) {//set private perm image link
 					info.privateLicenseImage = info.licenseImage;
 				} else {
 					info.privateLicenseImage = imageBaseUrl+info.shortName+"private"+imageExtension;
-				}
-				if(row.get(8).equals("")) {//set FTB perm image link
-					info.licenseFTBImageLink = info.licenseImage;
-				} else {
-					info.licenseFTBImageLink = imageBaseUrl+info.shortName+"FTB"+imageExtension;
 				}
 				
 				modInfoMappings.put(row.get(2), info);

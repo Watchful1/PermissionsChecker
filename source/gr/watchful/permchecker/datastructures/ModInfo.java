@@ -5,6 +5,7 @@ public class ModInfo {
 	public static final int NOTIFY = 1;
 	public static final int REQUEST = 2;
 	public static final int CLOSED = 3;
+	public static final int FTB = 4;
 	public static final int UNKNOWN = 5;
 	
 	public boolean officialSpreadsheet;

@@ -7,11 +7,12 @@ import java.awt.event.ActionListener;
 import gr.watchful.permchecker.datastructures.ForgeType;
 import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModPack;
+import gr.watchful.permchecker.datastructures.UsesPack;
 
 import javax.swing.*;
 
 @SuppressWarnings("serial")
-public class ModPacksPanel extends JPanel {
+public class ModPacksPanel extends JPanel implements UsesPack {
     private JPanel mainPanel;
 
     private JPanel buttonPanel;
@@ -29,6 +30,8 @@ public class ModPacksPanel extends JPanel {
     private FileSelector iconSelector;
     private FileSelector splashSelector;
     private FileSelector serverSelector;
+
+	private ModPack oldPack;
 
     private NamedScrollingListPanel<ModPack> modPacksList;
 	
@@ -183,4 +186,11 @@ public class ModPacksPanel extends JPanel {
         splashSelector.setFile(pack.splash);
         serverSelector.setFile(pack.server);
     }
+
+	@Override
+	public void updatePack(ModPack modPack) {
+		if(oldPack != null) savePack(oldPack);
+		oldPack = modPack;
+		setPack(modPack);
+	}
 }

@@ -55,7 +55,7 @@ public class ModFileEditor extends JPanel implements SavesMods {
 		ModNameRegistry nameRegistry = Globals.getInstance().nameRegistry;
 		for(int i=0; i<IDs.getModel().getSize(); i++) {
 			System.out.println("ID: "+IDs.getModel().getElementAt(i)+" Shortname: "+modInfo.shortName);
-			nameRegistry.addShortName(modInfo.shortName, (String) IDs.getModel().getElementAt(i));
+			Globals.getModPack().addShortName(modInfo.shortName, (String) IDs.getModel().getElementAt(i));
 		}
 	}
 }

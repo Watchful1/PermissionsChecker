@@ -19,7 +19,7 @@ import java.util.HashSet;
  * @author watchful
  */
 @SuppressWarnings("serial")
-public class PermissionsPanel extends JPanel implements NamedScrollingListPanelListener, RebuildsMods {
+public class PermissionsPanel extends JPanel implements NamedScrollingListPanelListener, RebuildsMods, UsesPack {
 	private SortedListModel<Mod> goodMods;
 	private SortedListModel<Mod> badMods;
 	private SortedListModel<ModFile> unknownMods;
@@ -31,7 +31,6 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 	private ModEditor modEditor;
 	private ModFileEditor modFileEditor;
 	private ModFinder modFinder;
-	private ModPack modPack;
 
 	public PermissionsPanel() {
 		goodMods = new SortedListModel<>();
@@ -107,7 +106,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 	}
 
 	public void updatePack(ModPack modPack) {
-		this.modPack = modPack;
+		//TODO
 	}
 
 	public void parsePack() {
@@ -121,16 +120,16 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		badMods.clear();
 		unknownMods.clear();
 
-		ModStorage modStorage = Globals.getInstance().nameRegistry.compileMods(knownModFiles, modPack);
+		ModStorage modStorage = Globals.getInstance().nameRegistry.compileMods(knownModFiles, Globals.getModPack());
 		unknownMods.addAll(modStorage.modFiles);
 		ModInfo temp;
 		for(Mod mod : modStorage.mods) {
-			temp = Globals.getInstance().nameRegistry.getInfo(mod, modPack);
+			temp = Globals.getInstance().nameRegistry.getInfo(mod, Globals.getModPack());
 			if(temp.hasPublic()) {
 				mod.permStatus = Mod.PUBLIC;
 				goodMods.addElement(mod);
 			} else if(temp.hasPrivate()) {
-				modPack.isPublic = false;
+				Globals.getModPack().isPublic = false;
 				mod.permStatus = Mod.PRIVATE;
 				goodMods.addElement(mod);
 			} else {
@@ -148,18 +147,18 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		System.out.println("Printing to: "+infoFile.getAbsolutePath());
 
 		StringBuilder bldr = new StringBuilder();
-		bldr.append("Permission categories and full licenses for mods marked spreadsheet are available here: http://1drv.ms/1c8mItH\n");
+		bldr.append("Permission categories and full licenses for mods marked spreadsheet are available here: http://1drv.ms/1rsQNOJ\n");
 		bldr.append("For any problems, please contact Watchful11 on the FTB forums.\n");
 
 		bldr.append("This is a ");
-		if(modPack.isPublic) bldr.append("public");
+		if(Globals.getModPack().isPublic) bldr.append("public");
 		else bldr.append("private");
 		bldr.append(" pack\n\n");
 
 		for(int i=0; i<goodMods.getSize(); i++) {
 			ModInfo modInfo = Globals.getInstance().nameRegistry.getInfo(goodMods.get(i));
 			bldr.append("(");
-			bldr.append(ModInfo.getStringPolicy(modInfo.getPolicy(modPack.isPublic)));
+			bldr.append(ModInfo.getStringPolicy(modInfo.getPolicy(Globals.getModPack().isPublic)));
 			bldr.append(":");
 			if(modInfo.officialSpreadsheet) bldr.append("Spreadsheet");
 			else bldr.append("Custom");
@@ -170,8 +169,8 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 
 			if(!modInfo.officialSpreadsheet) {
 				bldr.append(" The license is, ");
-				bldr.append(modInfo.getPermImage(modPack.isPublic));
-				if(modInfo.getPermLink(modPack.isPublic).equals("PM")) {
+				bldr.append(modInfo.getPermImage(Globals.getModPack().isPublic));
+				if(modInfo.getPermLink(Globals.getModPack().isPublic).equals("PM")) {
 					bldr.append(", which is a private message.");
 				} else if(modInfo.licenseLink.equals(modInfo.modLink) || modInfo.licenseLink.equals("")) {
 					bldr.append(".");
@@ -182,7 +181,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 				}
 			}
 
-			switch(modInfo.getPolicy(modPack.isPublic)) {
+			switch(modInfo.getPolicy(Globals.getModPack().isPublic)) {
 				case ModInfo.NOTIFY:
 					bldr.append(" The author has been notified, ");
 					bldr.append(modInfo.customLink);

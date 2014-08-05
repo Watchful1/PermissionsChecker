@@ -22,6 +22,8 @@ public class Globals {
     public File permFile;
     public RebuildsMods rebuildsMods;
     public JFrame mainFrame;
+	private ModPack modpack;
+	private ArrayList<UsesPack> packListeners;
 
     public static final String permUrl = "https://onedrive.live.com/download?resid=96628E67B4C51B81!161&ithint=" +
             "file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
@@ -31,6 +33,7 @@ public class Globals {
 	public Globals() {
 		nameRegistry = new ModNameRegistry();
         preferences = new Preferences();
+		packListeners = new ArrayList<>();
     }
 	
 	public static Globals getInstance() {
@@ -125,4 +128,19 @@ public class Globals {
         nameRegistry.loadMappings(infos, mappings, infos.get(15).get(14), infos.get(15).get(15));
         return true;
     }
+
+	public void addListener(UsesPack usesPack) {
+		packListeners.add(usesPack);
+	}
+
+	public static ModPack getModPack() {
+		return getInstance().modpack;
+	}
+
+	public static void setModPack(ModPack packIn) {
+		getInstance().modpack = packIn;
+		for(UsesPack usesPack : getInstance().packListeners) {
+			usesPack.updatePack(getInstance().modpack);
+		}
+	}
 }

@@ -27,7 +27,7 @@ public class ModInfoEditor extends JPanel {
 	private LabelField licensePermissionLink;
 	private LabelField customLink;
 	private LabelField shortName;
-	private PermType permType;
+	private PermType publicPermType;
 	
 	private ArrayList<SavesMods> saveListeners;
 	
@@ -67,8 +67,8 @@ public class ModInfoEditor extends JPanel {
 		this.add(shortName);
 		shortName.lock("This cannot be changed for mods already in the database");
 		
-		permType = new PermType();
-		this.add(permType);
+		publicPermType = new PermType();
+		this.add(publicPermType);
 		
 		saveListeners = new ArrayList<SavesMods>();
 	}
@@ -86,7 +86,7 @@ public class ModInfoEditor extends JPanel {
 		licenseImageLink.setText(modInfo.licenseImage);
 		customLink.setText(modInfo.customLink);
 		this.shortName.setText(modInfo.shortName);
-		permType.setType(modInfo.getCurrentPolicy());
+		publicPermType.setType(modInfo.publicPolicy);
 		updateEditableCustom();
 	}
 	
@@ -95,7 +95,7 @@ public class ModInfoEditor extends JPanel {
 		
 		if(!name.getText().equals(modInfo.modName) || !author.getText().equals(modInfo.modAuthor) || 
 				!link.getText().equals(modInfo.modLink) || !licensePermissionLink.getText().equals(modInfo.licenseLink) ||
-				!licenseImageLink.getText().equals(modInfo.licenseImage) || permType.getType() != modInfo.getCurrentPolicy() ||
+				!licenseImageLink.getText().equals(modInfo.licenseImage) || publicPermType.getType() != modInfo.publicPolicy ||
 				!shortName.getText().equals(modInfo.shortName)) {
 			modInfo.officialSpreadsheet = false;
 			modInfo.modName = name.getText();
@@ -103,12 +103,12 @@ public class ModInfoEditor extends JPanel {
 			modInfo.modLink = link.getText();
 			modInfo.licenseLink = licensePermissionLink.getText();
 			modInfo.licenseImage = licenseImageLink.getText();
-			modInfo.setCurrentPolicy(permType.getType());
+			modInfo.publicPolicy = publicPermType.getType();
 			modInfo.shortName = shortName.getText();
 		}
 		
 		modInfo.customLink = customLink.getText();
-		nameRegistry.addModInfo(getShortName(), modInfo);
+		Globals.getModPack().addModInfo(getShortName(), modInfo);
 		
 		updateEditableCustom();
 		
@@ -127,7 +127,7 @@ public class ModInfoEditor extends JPanel {
 	}
 	
 	private void updateEditableCustom() {
-		if(permType.getType() == ModInfo.OPEN || permType.getType() == ModInfo.FTB) {//TODO non-ftb launcher
+		if(publicPermType.getType() == ModInfo.OPEN || publicPermType.getType() == ModInfo.FTB) {//TODO non-ftb launcher
 			customLink.lock("Don't need a link for open permission mods");
 		} else {
 			customLink.unLock();
