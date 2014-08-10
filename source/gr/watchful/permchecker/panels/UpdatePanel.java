@@ -14,6 +14,7 @@ import java.io.File;
 public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 	private LabelField packName;
 	private FileSelector selector;
+	public PermissionsPanel permPanel;//TODO really should be a better way to do this
 
 
     public UpdatePanel() {
@@ -60,6 +61,7 @@ public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 			return;
 		}
 
+		FileUtils.purgeDirectory(Globals.getInstance().preferences.workingFolder);
 		FileUtils.extractZipTo(file, Globals.getInstance().preferences.workingFolder);
 	}
 
@@ -84,16 +86,20 @@ public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 	 * Trigger pack json save
 	 */
 	public void exportPack() {
+		permPanel.parsePack();
+		permPanel.writeFile();
+
 		boolean success = true;
 		if(Globals.getModPack().forgeType.equals(ForgeType.VERSION)) {
-			success = FileUtils.addForge(Globals.getInstance().preferences.workingFolder, Globals.getModPack().ForgeVersion);
+			success = FileUtils.addForge(Globals.getInstance().preferences.getWorkingMinecraftFolder(), Globals.getModPack().ForgeVersion);
 		} else {
-			success = FileUtils.addForge(Globals.getInstance().preferences.workingFolder, Globals.getModPack().forgeType);
+			success = FileUtils.addForge(Globals.getInstance().preferences.getWorkingMinecraftFolder(), Globals.getModPack().forgeType);
 		}
 		if(!success) {
 			System.out.println("pack.json add failed");
 			return;
 		}
+
 		String xml = FileUtils.buildXML(Globals.getModPack());
 		if(!FileUtils.writeFile(xml, new File(
 				Globals.getInstance().preferences.exportFolder+File.separator+"static"+
@@ -102,10 +108,10 @@ public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 			return;
 		}
 		FileUtils.zipFolderTo(Globals.getInstance().preferences.workingFolder,
-				new File(Globals.getInstance().preferences.exportFolder+File.separator+
-						"privatepacks"+File.separator+Globals.getModPack().shortName+File.separator+
-						Globals.getModPack().recommendedVersion.replaceAll("\\.","_")+
-				File.separator+Globals.getModPack().shortName+".zip"));
+				new File(Globals.getInstance().preferences.exportFolder + File.separator +
+						"privatepacks" + File.separator + Globals.getModPack().shortName + File.separator +
+						Globals.getModPack().recommendedVersion.replaceAll("\\.", "_") +
+						File.separator + Globals.getModPack().shortName + ".zip"));
 	}
 
 	@Override

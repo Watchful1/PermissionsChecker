@@ -146,7 +146,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 
 	public void writeFile() {
 		//TODO check for no modpack
-		File infoFile = new File(Globals.getInstance().preferences.workingFolder+File.separator+"perms.txt");
+		File infoFile = new File(Globals.getInstance().preferences.getWorkingMinecraftFolder()+File.separator+"perms.txt");
 		System.out.println("Printing to: "+infoFile.getAbsolutePath());
 
 		StringBuilder bldr = new StringBuilder();

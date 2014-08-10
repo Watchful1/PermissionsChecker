@@ -27,7 +27,8 @@ public class Globals {
 
     public static final String permUrl = "https://onedrive.live.com/download?resid=96628E67B4C51B81!161&ithint=" +
             "file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
-	public static final String forgeUrl = " ";
+	public static final String forgeUrl = "http://api.feed-the-beast.com/ss/api/GetForgePackJSON/";
+	public static final String ftbRepoUrl = "http://www.creeperrepo.net/FTB2/static/";
 
 	
 	public Globals() {

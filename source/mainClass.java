@@ -8,6 +8,7 @@ import gr.watchful.permchecker.panels.ModPacksPanel;
 import gr.watchful.permchecker.panels.NamedScrollingListPanel;
 import gr.watchful.permchecker.panels.PermissionsPanel;
 import gr.watchful.permchecker.panels.UpdatePanel;
+import gr.watchful.permchecker.utils.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,6 +50,7 @@ public class mainClass extends JFrame {
 		Globals.getInstance().addListener(updatePanel);
 		permissionsPanel = new PermissionsPanel();
 		Globals.getInstance().addListener(permissionsPanel);
+		updatePanel.permPanel = permissionsPanel;
 
         modPacksList.addListener(new NamedScrollingListPanelListener() {
             @Override
@@ -94,6 +96,25 @@ public class mainClass extends JFrame {
 			}
 		});
 		menu.add(newPack);
+
+		JMenuItem newPackFromCode = new JMenuItem("Add pack from code");
+		newPackFromCode.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				String code = JOptionPane.showInputDialog(
+						Globals.getInstance().mainFrame, "Pack code", "Add pack",
+						JOptionPane.PLAIN_MESSAGE);
+				if(code == null || code.length() <= 0) return;
+				String xml = FileUtils.downloadToString(Globals.ftbRepoUrl+code+".xml");
+				if(xml == null || xml.length() <= 0) {
+					System.out.println("Couldn't find code");
+					return;
+				}
+				ModPack temp = FileUtils.readXML(xml);
+				if(temp != null) System.out.println(temp);
+			}
+		});
+		menu.add(newPackFromCode);
 
 		JMenuItem checkPack = new JMenuItem("Check pack");
 		checkPack.addActionListener(new ActionListener() {

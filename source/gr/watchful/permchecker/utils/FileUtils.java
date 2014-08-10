@@ -1,10 +1,14 @@
 package gr.watchful.permchecker.utils;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.zip.*;
 
 import net.lingala.zip4j.core.ZipFile;
@@ -19,7 +23,11 @@ import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
@@ -105,14 +113,16 @@ public class FileUtils {
 	
 	public static void zipFolderTo(File folder, File outputLocation) {
 		try {
+			outputLocation.mkdirs();
+			outputLocation.delete();
 			ZipFile zipFile = new ZipFile(outputLocation);
-			String folderToAdd = folder.getPath();
 
 			ZipParameters parameters = new ZipParameters();
 			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
 			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+			parameters.setIncludeRootFolder(false);
 
-			zipFile.addFolder(folderToAdd, parameters);
+			zipFile.addFolder(folder.getPath(), parameters);
 			System.out.println("Zip done");
 		} catch (ZipException e) {
 			System.out.println("Zip failed");
@@ -165,6 +175,50 @@ public class FileUtils {
         fos.getChannel().transferFrom(rbc, 0, 1 << 24);
         fos.close();
     }
+
+	public static String downloadToString(String url)  {
+		URL website = null;
+		try {
+			website = new URL(url);
+		} catch (MalformedURLException e) {
+			System.out.println("Couldn't connect to "+url);
+			return null;
+		}
+		URLConnection connection = null;
+		try {
+			connection = website.openConnection();
+		} catch (IOException e) {
+			System.out.println("Couldn't connect to " + url);
+			return null;
+		}
+		BufferedReader in = null;
+		try {
+			in = new BufferedReader(
+					new InputStreamReader(connection.getInputStream()));
+		} catch (IOException e) {
+			System.out.println("Couldn't read " + url);
+			return null;
+		}
+
+		StringBuilder response = new StringBuilder();
+		String inputLine;
+
+		try {
+			while ((inputLine = in.readLine()) != null)
+				response.append(inputLine);
+		} catch (IOException e) {
+			System.out.println("Trouble reading " + url);
+			return null;
+		}
+
+		try {
+			in.close();
+		} catch (IOException e) {
+			System.out.println("Couldn't close connection to " + url);
+		}
+
+		return response.toString();
+	}
 	
 	public static String getJSON(Object object) {
 		Gson gson = new Gson();
@@ -265,5 +319,53 @@ public class FileUtils {
 		}
 
 		return "";
+	}
+
+	public static ModPack readXML(String string) {
+		DocumentBuilder dBuilder;
+		Document doc = null;
+		try {
+			dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			doc = dBuilder.parse(new InputSource(new StringReader(string)));
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+			System.out.println("Couldn't parse xml");
+			return null;
+		}
+
+		doc.getDocumentElement().normalize();
+
+		Node nNode = doc.getElementsByTagName("modpack").item(0);
+
+		ModPack pack = null;
+		String[] temp;
+
+		if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+			Element eElement = (Element) nNode;
+
+			pack = new ModPack();
+			pack.name = eElement.getAttribute("name");
+			pack.author = eElement.getAttribute("author");
+			pack.recommendedVersion = eElement.getAttribute("version");
+			pack.minecraftVersion = eElement.getAttribute("mcVersion");
+			pack.description = eElement.getAttribute("description");
+			pack.iconName = eElement.getAttribute("logo");
+			pack.splashName = eElement.getAttribute("image");
+			pack.zipName = eElement.getAttribute("url");
+			if(eElement.getAttribute("server").equals("")) pack.serverName = "";
+			else pack.serverName = eElement.getAttribute("server");
+
+			temp = eElement.getAttribute("oldVersions").split(";");
+			pack.versions = new ArrayList<>(Arrays.asList(temp));
+		}
+
+		return pack;
+	}
+
+	public static void purgeDirectory(File dir) {
+		for (File file: dir.listFiles()) {
+			if (file.isDirectory()) purgeDirectory(file);
+			file.delete();
+		}
 	}
 }

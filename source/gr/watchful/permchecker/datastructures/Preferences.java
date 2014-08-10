@@ -34,4 +34,8 @@ public class Preferences {
 		minecraftVersions.add("1.2.5");
 		defaultMinecraftVersion = "1.6.4";
     }
+
+	public File getWorkingMinecraftFolder() {
+		return new File(workingFolder+File.separator+"minecraft");
+	}
 }

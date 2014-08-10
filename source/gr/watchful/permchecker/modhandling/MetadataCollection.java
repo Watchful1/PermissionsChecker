@@ -59,7 +59,6 @@ public class MetadataCollection
                 int i = 0;
                 for (JsonElement mod : jsonList)
                 {
-                	System.out.println(mod);
                     collection.modList[i++]=gson.fromJson(mod, ModMetadata.class);
                 }
             }

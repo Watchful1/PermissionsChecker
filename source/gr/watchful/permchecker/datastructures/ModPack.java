@@ -20,10 +20,16 @@ public class ModPack {
 	public ArrayList<String> modList;//autocomputed, no interface
 	public ForgeType forgeType;
 	public int ForgeVersion;
-	public File icon;//Icon if set and size small enough. Button to select new icon, deletes old
-	public File splash;//Icon if set and size small enough. Button to select new icon, deletes old
-	public File server;//Icon if set. Button to select new icon, deletes old
     public boolean isPublic;
+
+	public String iconName;
+	public String splashName;
+	public String serverName;
+	public String zipName;
+
+	transient public File icon;
+	transient public File splash;
+	transient public File server;
 	
 	public Time lastEdited;
 	public ArrayList<String> submitters;
