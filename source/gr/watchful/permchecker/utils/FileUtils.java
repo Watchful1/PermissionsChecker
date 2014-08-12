@@ -351,6 +351,7 @@ public class FileUtils {
 			pack.iconName = eElement.getAttribute("logo");
 			pack.splashName = eElement.getAttribute("image");
 			pack.zipName = eElement.getAttribute("url");
+			pack.shortName = eElement.getAttribute("dir");
 			if(eElement.getAttribute("server").equals("")) pack.serverName = "";
 			else pack.serverName = eElement.getAttribute("server");
 

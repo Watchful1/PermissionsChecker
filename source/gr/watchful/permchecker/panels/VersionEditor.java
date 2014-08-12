@@ -82,6 +82,7 @@ public class VersionEditor extends JPanel {
     }
 
     private void addVersion(String newVersion) {
+		System.out.println("Adding version "+newVersion);
         model.add(0, newVersion);
 		recommendedIndex++;
 		setRecommendedVersion(newVersion);
@@ -100,6 +101,7 @@ public class VersionEditor extends JPanel {
     }
 
     public void setVersions(ArrayList<String> versions) {
+		recommendedIndex = -1;
         model.clear();
         for(String version : versions) {
             model.addElement(version);

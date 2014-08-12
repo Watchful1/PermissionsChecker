@@ -111,7 +111,9 @@ public class mainClass extends JFrame {
 					return;
 				}
 				ModPack temp = FileUtils.readXML(xml);
-				if(temp != null) System.out.println(temp);
+				if(temp != null) System.out.println("Adding pack "+temp);
+				temp.key = code;
+				addPack(temp);
 			}
 		});
 		menu.add(newPackFromCode);
@@ -148,12 +150,15 @@ public class mainClass extends JFrame {
 		modPacksModel.sort(new SimpleObjectComparator());
     }
 
-    public void addPack() {
-        ModPack newPack = new ModPack();
-        modPacksModel.addElement(newPack);
+	public void addPack() {
+		addPack(new ModPack());
+	}
+
+    public void addPack(ModPack pack) {
+        modPacksModel.addElement(pack);
         modPacksList.setSelected(0);
         modPacksList.sortKeepSelected();
-        modPacksPanel.setPack(newPack);
+        modPacksPanel.setPack(pack);
     }
 
     public static void main(String[] args) {
