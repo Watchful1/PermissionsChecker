@@ -123,7 +123,18 @@ public class ModPack {
 	}
 
 	public String getModList() {
-		return "";
+		StringBuilder bldr = new StringBuilder();
+		Boolean first = true;
+		for(String mod : modList) {
+			if(first) {
+				first = false;
+				bldr.append(mod);
+				continue;
+			}
+			bldr.append("; ");
+			bldr.append(mod);
+		}
+		return bldr.toString();
 	}
 
 	public String getStringVersions() {
