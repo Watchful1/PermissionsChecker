@@ -7,9 +7,12 @@ import java.util.ArrayList;
  * This will be saved as a JSON to persist user preferences across sessions
  */
 public class Preferences {
-	public File saveFolder;
-    public File workingFolder;
-	public File exportFolder;
+	transient public File saveFolder;
+	transient public File workingFolder;
+	transient public File exportFolder;
+	public String saveFolderPath;
+	public String workingFolderPath;
+	public String exportFolderPath;
 	public ArrayList<String> minecraftVersions;
 	public String defaultMinecraftVersion;
 	public String parsedPackShortName;
@@ -20,9 +23,13 @@ public class Preferences {
     public void initPreferences(File appStore) {
         System.out.println("Initialized new preferences");
 
-        saveFolder = new File(appStore+File.separator+"packs");
-        workingFolder = new File(appStore+File.separator+"working");
-		exportFolder = new File(appStore+File.separator+"export");
+		saveFolderPath = appStore+File.separator+"packs";
+		workingFolderPath = appStore+File.separator+"working";
+		exportFolderPath = appStore+File.separator+"export";
+
+        saveFolder = new File(saveFolderPath);
+        workingFolder = new File(workingFolderPath);
+		exportFolder = new File(exportFolderPath);
 
 		minecraftVersions = new ArrayList<>();
 		minecraftVersions.add("1.7.10");

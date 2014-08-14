@@ -107,11 +107,24 @@ public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 			System.out.println("xml export failed");
 			return;
 		}
+		File packExportFolder = new File(Globals.getInstance().preferences.exportFolder + File.separator +
+				"privatepacks" + File.separator + Globals.getModPack().shortName + File.separator +
+				Globals.getModPack().recommendedVersion.replaceAll("\\.", "_"));
 		FileUtils.zipFolderTo(Globals.getInstance().preferences.workingFolder,
-				new File(Globals.getInstance().preferences.exportFolder + File.separator +
-						"privatepacks" + File.separator + Globals.getModPack().shortName + File.separator +
-						Globals.getModPack().recommendedVersion.replaceAll("\\.", "_") +
-						File.separator + Globals.getModPack().shortName + ".zip"));
+				new File(packExportFolder + File.separator + Globals.getModPack().getZipName()));
+
+		if(Globals.getModPack().icon != null && Globals.getModPack().icon.exists()) {
+			FileUtils.moveFile(Globals.getModPack().icon, new File(packExportFolder + File.separator +
+					Globals.getModPack().getIconName()));
+		}
+		if(Globals.getModPack().splash != null && Globals.getModPack().splash.exists()) {
+			FileUtils.moveFile(Globals.getModPack().splash, new File(packExportFolder + File.separator +
+					Globals.getModPack().getSplashName()));
+		}
+		if(Globals.getModPack().server != null && Globals.getModPack().server.exists()) {
+			FileUtils.moveFile(Globals.getModPack().server, new File(packExportFolder + File.separator +
+					Globals.getModPack().getServerName()));
+		}
 	}
 
 	@Override

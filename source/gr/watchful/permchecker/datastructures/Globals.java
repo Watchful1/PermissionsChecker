@@ -91,6 +91,10 @@ public class Globals {
         if(prefFile.exists()) {
             preferences = (Preferences) FileUtils.readObject(new File(appStore+
                             File.separator+"preferences.conf"), new Preferences());
+
+			preferences.saveFolder = new File(preferences.saveFolderPath);
+			preferences.workingFolder = new File(preferences.workingFolderPath);
+			preferences.exportFolder = new File(preferences.exportFolderPath);
         } else {
             preferences = new Preferences();
             preferences.initPreferences(appStore);

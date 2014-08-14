@@ -17,7 +17,7 @@ public class ModPack {
 	public String recommendedVersion;//simple, select from available
 	public String minecraftVersion;//simple, select from available
 	public ArrayList<String> versions;//add, simple. Remove, change rec version if necessary. Move TODO
-	public ArrayList<String> modList;//autocomputed, no interface
+	transient public ArrayList<String> modList;//autocomputed, no interface
 	public ForgeType forgeType;
 	public int ForgeVersion;
     public boolean isPublic;
@@ -107,19 +107,23 @@ public class ModPack {
 	}
 
 	public String getIconName() {
-		return shortName+"Icon"+".png";
+		if(iconName == null || iconName.equals("")) iconName = shortName+"Icon"+".png";
+		return iconName;
 	}
 
 	public String getSplashName() {
-		return shortName+"Splash"+".png";
+		if(splashName == null || splashName.equals("")) splashName = shortName+"Splash"+".png";
+		return splashName;
 	}
 
 	public String getZipName() {
-		return shortName+".zip";
+		if(zipName == null || zipName.equals("")) zipName = shortName+".zip";
+		return zipName;
 	}
 
 	public String getServerName() {
-		return shortName+".zip";
+		if(serverName == null || serverName.equals("")) serverName = shortName+"Server"+".zip";
+		return serverName;
 	}
 
 	public String getModList() {

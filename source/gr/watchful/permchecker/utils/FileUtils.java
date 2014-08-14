@@ -90,6 +90,18 @@ public class FileUtils {
 		}
 	}
 
+	public static void moveFile(File sourceFile, File destinationFile) {
+		moveFile(sourceFile, destinationFile, true);
+	}
+
+	public static void moveFile(File sourceFile, File destinationFile, boolean overwrite) {
+		if(!sourceFile.exists()) return;
+		if(destinationFile.exists() && !overwrite) return;
+		if(destinationFile.exists()) destinationFile.delete();
+		else destinationFile.getParentFile().mkdirs();
+		sourceFile.renameTo(destinationFile);
+	}
+
 	public static boolean delete(File resource) {
 		if (resource.isDirectory()) {
 			File[] childFiles = resource.listFiles();
@@ -363,6 +375,7 @@ public class FileUtils {
 	}
 
 	public static void purgeDirectory(File dir) {
+		if(!dir.exists()) return;
 		for (File file: dir.listFiles()) {
 			if (file.isDirectory()) purgeDirectory(file);
 			file.delete();

@@ -3,16 +3,18 @@ package gr.watchful.permchecker.panels;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import gr.watchful.permchecker.datastructures.ForgeType;
 import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModPack;
 import gr.watchful.permchecker.datastructures.UsesPack;
+import gr.watchful.permchecker.utils.FileUtils;
 
 import javax.swing.*;
 
 @SuppressWarnings("serial")
-public class ModPacksPanel extends JPanel implements UsesPack {
+public class ModPacksPanel extends JPanel implements ActionListener, UsesPack {
     private JPanel mainPanel;
 
     private JPanel buttonPanel;
@@ -84,10 +86,13 @@ public class ModPacksPanel extends JPanel implements UsesPack {
 		forgeEditor = new ForgeEditor("Forge");
 		editorPanel.add(forgeEditor);
         iconSelector = new FileSelector("Icon", 150, "png");
+		iconSelector.addListener(this);
         editorPanel.add(iconSelector);
         splashSelector = new FileSelector("Splash", 150, "png");
+		splashSelector.addListener(this);
         editorPanel.add(splashSelector);
         serverSelector = new FileSelector("Server", -1, "zip");
+		serverSelector.addListener(this);
         editorPanel.add(serverSelector);
 
         mainPanel.add(editorPanel);
@@ -193,5 +198,16 @@ public class ModPacksPanel extends JPanel implements UsesPack {
 		if(oldPack != null) savePack(oldPack);
 		oldPack = modPack;
 		setPack(modPack);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(!e.getSource().getClass().equals(FileSelector.class)) return;
+		FileSelector fileSelector = (FileSelector) e.getSource();
+
+		File tempLocation = new File(Globals.getInstance().preferences.exportFolder +
+				File.separator + "temp" + File.separator + fileSelector.getFile().getName());
+		FileUtils.moveFile(fileSelector.getFile(), tempLocation);
+		fileSelector.setFile(tempLocation);
 	}
 }
