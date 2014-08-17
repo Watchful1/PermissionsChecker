@@ -37,16 +37,31 @@ public class ModInfoEditor extends JPanel {
 		this.setMinimumSize(new Dimension(200, 100));
 		this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
 		this.setPreferredSize(size);
-		this.setAlignmentY(0);
+		this.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+		buttonPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
 		
-		save = new JButton("Save");
+		save = new JButton("Save Public");
 		save.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				save();
+				save(true);
 			}
 		});
-		this.add(save);
+		buttonPanel.add(save);
+
+		save = new JButton("Save Private");
+		save.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				save(false);
+			}
+		});
+		buttonPanel.add(save);
+
+		this.add(buttonPanel);
 		
 		name = new LabelField("Name");
 		this.add(name);
@@ -90,9 +105,7 @@ public class ModInfoEditor extends JPanel {
 		updateEditableCustom();
 	}
 	
-	public void save() {
-		ModNameRegistry nameRegistry = Globals.getInstance().nameRegistry;
-		
+	public void save(boolean isPublic) {
 		if(!name.getText().equals(modInfo.modName) || !author.getText().equals(modInfo.modAuthor) || 
 				!link.getText().equals(modInfo.modLink) || !licensePermissionLink.getText().equals(modInfo.licenseLink) ||
 				!licenseImageLink.getText().equals(modInfo.licenseImage) || publicPermType.getType() != modInfo.publicPolicy ||
@@ -108,6 +121,7 @@ public class ModInfoEditor extends JPanel {
 		}
 		
 		modInfo.customLink = customLink.getText();
+		modInfo.isPublicPerm = isPublic;
 		Globals.getModPack().addModInfo(getShortName(), modInfo);
 		
 		updateEditableCustom();

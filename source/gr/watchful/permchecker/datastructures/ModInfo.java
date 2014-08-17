@@ -46,13 +46,13 @@ public class ModInfo {
 	}
 
 	public boolean hasPublic() {
-		if(publicPolicy == OPEN) return true;
+		if(publicPolicy == OPEN || publicPolicy == FTB) return true;
 		else if(!customLink.equals("") && isPublicPerm) return true;
 		else return false;
 	}
 
 	public boolean hasPrivate() {
-		if(privatePolicy == OPEN) return true;
+		if(privatePolicy == OPEN || privatePolicy == FTB) return true;
 		else if(!customLink.equals("")) return true;
 		else return false;
 	}

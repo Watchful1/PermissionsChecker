@@ -90,8 +90,6 @@ public class Globals {
             preferences = (Preferences) FileUtils.readObject(new File(appStore+
                             File.separator+"preferences.conf"), new Preferences(appStore));
 			preferences.init(appStore);
-			if(preferences.copyImportAssets) System.out.println("True");
-			else System.out.println("False");
         } else {
             preferences = new Preferences(appStore);
             savePreferences();
