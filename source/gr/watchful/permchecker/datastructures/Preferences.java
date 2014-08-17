@@ -45,6 +45,14 @@ public class Preferences {
     }
 
 	public File getWorkingMinecraftFolder() {
-		return new File(workingFolder+File.separator+"minecraft");
+		File capital = new File(workingFolder+File.separator+"Minecraft");
+		File dotCapital = new File(workingFolder+File.separator+".Minecraft");
+		File dot = new File(workingFolder+File.separator+".minecraft");
+		File normal = new File(workingFolder+File.separator+"minecraft");
+
+		if(capital.exists()) capital.renameTo(normal);
+		else if(dotCapital.exists()) dotCapital.renameTo(normal);
+		else if(dot.exists()) dot.renameTo(normal);
+		return normal;
 	}
 }
