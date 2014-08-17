@@ -20,7 +20,6 @@ public class ModFileEditor extends JPanel implements SavesMods {
 	
 	public ModFileEditor(Dimension size, ModFile modFile) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		//this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		this.setAlignmentX(0);
 		
 		JPanel listPanel = new JPanel();
@@ -30,9 +29,9 @@ public class ModFileEditor extends JPanel implements SavesMods {
 		listPanel.setPreferredSize(new Dimension(300,100));
 		listPanel.setAlignmentX(0);
 		
-		names = new NamedScrollingListPanel<String>("Names", 100, modFile.names);
+		names = new NamedScrollingListPanel<>("Names", 100, modFile.names);
 		listPanel.add(names);
-		IDs = new NamedScrollingListPanel<String>("IDs", 100, modFile.IDs);
+		IDs = new NamedScrollingListPanel<>("IDs", 100, modFile.IDs);
 		listPanel.add(IDs);
 		
 		this.add(listPanel);
@@ -47,12 +46,11 @@ public class ModFileEditor extends JPanel implements SavesMods {
 	public void setModFile(ModFile modFile) {
 		names.setModel(modFile.names);
 		IDs.setModel(modFile.IDs);
-		modInfoEditor.setMod(modFile.tempInfo, "");
+		modInfoEditor.setMod(modFile.getInfo(), "");
 	}
 
 	@Override
 	public void saveMod(ModInfo modInfo) {
-		ModNameRegistry nameRegistry = Globals.getInstance().nameRegistry;
 		for(int i=0; i<IDs.getModel().getSize(); i++) {
 			System.out.println("ID: "+IDs.getModel().getElementAt(i)+" Shortname: "+modInfo.shortName);
 			Globals.getModPack().addShortName(modInfo.shortName, (String) IDs.getModel().getElementAt(i));

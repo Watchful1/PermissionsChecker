@@ -32,7 +32,6 @@ public class ModInfoEditor extends JPanel {
 	private ArrayList<SavesMods> saveListeners;
 	
 	public ModInfoEditor(Dimension size) {
-		//this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setMinimumSize(new Dimension(200, 100));
 		this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));

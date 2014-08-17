@@ -11,8 +11,6 @@ public class ModFile {
 	public SortedListModel<String> IDs = new SortedListModel<String>();
 	public SortedListModel<String> names = new SortedListModel<String>();
 	public SortedListModel<String> versions = new SortedListModel<String>();
-
-	public ModInfo tempInfo;
 	
 	public ModFile(File fileIn) {
 		file = fileIn;
@@ -38,4 +36,13 @@ public class ModFile {
     {
         versions.addElement(version);
     }
+
+	public ModInfo getInfo() {
+		/*if(mcmod != null) {
+			ModInfo temp = new ModInfo("");
+			temp.modName = mcmod.
+			return temp;
+		}*/
+		return null;
+	}
 }
