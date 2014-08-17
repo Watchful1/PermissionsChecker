@@ -1,13 +1,14 @@
 package gr.watchful.permchecker.datastructures;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ModStorage {
+	public HashMap<String, Mod> mods;
 	public ArrayList<ModFile> modFiles;
-	public ArrayList<Mod> mods;
 
 	public ModStorage() {
 		modFiles = new ArrayList<>();
-		mods = new ArrayList<>();
+		mods = new HashMap<>();
 	}
 }

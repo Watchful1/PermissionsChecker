@@ -143,7 +143,12 @@ public class ModNameRegistry {
 		for(ModFile modfile : modFiles) {
 			mods = processModFile(modfile, modPack);
 			if(mods.isEmpty()) modStorage.modFiles.add(modfile);
-			else modStorage.mods.addAll(mods);
+			else {
+				for(Mod mod : mods) {
+					if(!modStorage.mods.containsKey(mod.shortName))
+						modStorage.mods.put(mod.shortName, mod);
+				}
+			}
 		}
 		return modStorage;
 	}
