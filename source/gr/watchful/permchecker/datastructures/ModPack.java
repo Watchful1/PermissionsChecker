@@ -39,18 +39,26 @@ public class ModPack {
 	public HashMap<String, ModInfo> modInfoMappings;
 	
 	public ModPack() {
-        name = "Unnamed";
-        author = "";
-        shortName = "";
-        key = "";
-        description = "";
-        recommendedVersion = "";
-        minecraftVersion = "";
-        versions = new ArrayList<>();
-        modList = new ArrayList<>();
-		forgeType = ForgeType.RECOMMENDED;
-		ForgeVersion = 0;
+		init();
+		ForgeVersion = -1;
 		isPublic = true;
+	}
+
+	public void init() {
+		if(name == null || name.equals("")) name = "Unnamed";
+		if(author == null || author.equals("")) author = "none";
+		if(shortName == null) shortName = "";
+		if(key == null || key.equals("")) key = generateKey();
+		if(description == null) description = "";
+		if(versions == null) versions = new ArrayList<>();
+		if(versions.size() == 0) versions.add("1");
+		if(recommendedVersion == null || recommendedVersion.equals(""))
+			recommendedVersion = versions.get(0);
+		if(minecraftVersion == null || minecraftVersion.equals("")) minecraftVersion = "1.6.4";
+		if(modList == null) modList = new ArrayList<>();
+		if(forgeType == null) forgeType = ForgeType.RECOMMENDED;
+		if(shortNameMappings == null) shortNameMappings = new HashMap<>();
+		if(modInfoMappings == null) modInfoMappings = new HashMap<>();
 	}
 	
 	public String toString() {
@@ -75,15 +83,16 @@ public class ModPack {
 	
 	public static ModPack loadObject(File saveFile) {
 		if(!saveFile.exists()) return null;
-		
-		return (ModPack) FileUtils.readObject(saveFile, new ModPack());
+		ModPack temp = (ModPack) FileUtils.readObject(saveFile, new ModPack());
+		temp.init();
+		return temp;
 	}
 
     public static String generateShortName(String name) {
         return name.replaceAll("[^0-9A-Za-z]", "");
     }
 
-    public static String generateKay() {
+    public static String generateKey() {
         String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         Random rnd = new Random();
         int len = 10;
