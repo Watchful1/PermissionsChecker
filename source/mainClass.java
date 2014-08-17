@@ -176,7 +176,7 @@ public class mainClass extends JFrame {
 
     public void addPack(ModPack pack) {
         modPacksModel.addElement(pack);
-        modPacksList.setSelected(0);
+        modPacksList.setSelected(modPacksModel.getSize()-1);
         modPacksList.sortKeepSelected();
         modPacksPanel.setPack(pack);
     }
