@@ -2,6 +2,7 @@ package gr.watchful.permchecker.datastructures;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This will be saved as a JSON to persist user preferences across sessions
@@ -17,6 +18,8 @@ public class Preferences {
 	public String defaultMinecraftVersion;
 	public String parsedPackShortName;
 	public boolean copyImportAssets;
+
+	public HashMap<String, String> unknownMods;
 
     public Preferences(File appStore) {
 		init(appStore);
@@ -42,7 +45,8 @@ public class Preferences {
 			minecraftVersions.add("1.2.5");
 		}
 		if(defaultMinecraftVersion == null || defaultMinecraftVersion.equals("")) defaultMinecraftVersion = "1.6.4";
-    }
+    	if(unknownMods == null) unknownMods = new HashMap<>();
+	}
 
 	public File getWorkingMinecraftFolder() {
 		File capital = new File(workingFolder+File.separator+"Minecraft");

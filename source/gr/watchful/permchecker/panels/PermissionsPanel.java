@@ -124,6 +124,12 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 
 		ModStorage modStorage = Globals.getInstance().nameRegistry.compileMods(knownModFiles, Globals.getModPack());
 		unknownMods.addAll(modStorage.modFiles);
+		for(ModFile modFile : modStorage.modFiles) {
+			for(String ID : modFile.IDs.getArrayList()) {
+				Globals.getInstance().preferences.unknownMods.put(ID, modFile.fileName());
+			}
+		}
+		Globals.getInstance().savePreferences();
 		ModInfo temp;
 		for(Mod mod : modStorage.mods.values()) {
 			temp = Globals.getInstance().nameRegistry.getInfo(mod, Globals.getModPack());
