@@ -47,7 +47,6 @@ public class FileSelector extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home")); //TODO change this to the working folder
-                //fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 fileChooser.setFileFilter(new FileNameExtensionFilter(allowedType+" files", allowedType));
                 int returnVal = fileChooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {

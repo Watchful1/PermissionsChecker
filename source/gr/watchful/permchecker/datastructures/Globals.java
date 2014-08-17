@@ -1,7 +1,6 @@
 package gr.watchful.permchecker.datastructures;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ public class Globals {
 	
 	public Globals() {
 		nameRegistry = new ModNameRegistry();
-        preferences = new Preferences();
 		packListeners = new ArrayList<>();
     }
 	
@@ -90,14 +88,12 @@ public class Globals {
         File prefFile = new File(appStore+File.separator+"preferences.conf");
         if(prefFile.exists()) {
             preferences = (Preferences) FileUtils.readObject(new File(appStore+
-                            File.separator+"preferences.conf"), new Preferences());
-
-			preferences.saveFolder = new File(preferences.saveFolderPath);
-			preferences.workingFolder = new File(preferences.workingFolderPath);
-			preferences.exportFolder = new File(preferences.exportFolderPath);
+                            File.separator+"preferences.conf"), new Preferences(appStore));
+			preferences.init(appStore);
+			if(preferences.copyImportAssets) System.out.println("True");
+			else System.out.println("False");
         } else {
-            preferences = new Preferences();
-            preferences.initPreferences(appStore);
+            preferences = new Preferences(appStore);
             savePreferences();
         }
     }

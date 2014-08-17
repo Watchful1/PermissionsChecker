@@ -207,7 +207,11 @@ public class ModPacksPanel extends JPanel implements ActionListener, UsesPack {
 
 		File tempLocation = new File(Globals.getInstance().preferences.exportFolder +
 				File.separator + "temp" + File.separator + fileSelector.getFile().getName());
-		FileUtils.moveFile(fileSelector.getFile(), tempLocation);
+		if(Globals.getInstance().preferences.copyImportAssets) {
+			FileUtils.copyFile(fileSelector.getFile(), tempLocation);
+		} else {
+			FileUtils.moveFile(fileSelector.getFile(), tempLocation);
+		}
 		fileSelector.setFile(tempLocation);
 	}
 }
