@@ -9,12 +9,14 @@ import gr.watchful.permchecker.panels.NamedScrollingListPanel;
 import gr.watchful.permchecker.panels.PermissionsPanel;
 import gr.watchful.permchecker.panels.UpdatePanel;
 import gr.watchful.permchecker.utils.FileUtils;
+import gr.watchful.permchecker.utils.OsTypes;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 @SuppressWarnings("serial")
 public class mainClass extends JFrame {
@@ -126,6 +128,24 @@ public class mainClass extends JFrame {
 			}
 		});
 		menu.add(checkPack);
+
+		JMenuItem openFolder = new JMenuItem("Open appdata");
+		openFolder.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(!OsTypes.getOperatingSystemType().equals(OsTypes.OSType.Windows)) {
+					System.out.println("Os is not windows, can't open explorer");
+					return;
+				}
+				try {
+					Desktop.getDesktop().open(Globals.getInstance().appStore);
+				} catch (IOException e) {
+					System.out.println("Couldn't open explorer");
+					return;
+				}
+			}
+		});
+		menu.add(openFolder);
 
 		this.setJMenuBar(menuBar);
 
