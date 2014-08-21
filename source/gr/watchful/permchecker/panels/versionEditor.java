@@ -82,14 +82,26 @@ public class VersionEditor extends JPanel {
     }
 
     private void addVersion(String newVersion) {
-		System.out.println("Adding version "+newVersion);
+		for(String version : getVersions()) {
+			if(version.equals(newVersion)) {
+				System.out.println("Version "+newVersion+" already exists, can't add");
+				return;
+			}
+		}
         model.add(0, newVersion);
-		recommendedIndex++;
-		setRecommendedVersion(newVersion);
+		if(recommendedIndex != -1) recommendedIndex++;
+		setRecommendedIndex(0);
     }
 
     private void removeSelectedVersion() {
-        if(list.getSelectedIndex() >= 0) {
+        if(list.getSelectedIndex() > -1) {
+			if(model.getSize() == 1) {
+				recommendedIndex = -1;
+			} else if(recommendedIndex == list.getSelectedIndex()) {
+				setRecommendedIndex(recommendedIndex + 1);
+			} else if(recommendedIndex > list.getSelectedIndex()) {
+				recommendedIndex--;
+			}
             model.remove(list.getSelectedIndex());
         }
     }
@@ -115,7 +127,13 @@ public class VersionEditor extends JPanel {
 			System.out.println("Can't find version "+recommendedVersion);
 			return;
 		}
+		setRecommendedIndex(index);
+	}
+
+	private void setRecommendedIndex(int index) {
 		if(index == recommendedIndex) return;
+		if(index < 0) index = 0;
+		if(index > model.getSize() - 1) index = model.getSize() - 1;
 		if(recommendedIndex != -1) {
 			model.setElement(model.get(recommendedIndex).replaceAll("\\s\\*",""), recommendedIndex);
 		}

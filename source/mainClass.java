@@ -79,7 +79,7 @@ public class mainClass extends JFrame {
 		tabbedPane.add("Permissions", permissionsPanel);
 
 		tabbedPane.addChangeListener(new ChangeListener() {
-			private int previousIndex = -1;
+			private int previousIndex = 0;
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();

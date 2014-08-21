@@ -89,12 +89,12 @@ public class VersionEditor extends JPanel {
 			}
 		}
         model.add(0, newVersion);
-		if(model.getSize() != 1) recommendedIndex++;
-		setRecommendedVersion(newVersion);
+		if(recommendedIndex != -1) recommendedIndex++;
+		setRecommendedIndex(0);
     }
 
     private void removeSelectedVersion() {
-        if(list.getSelectedIndex() >= 0) {
+        if(list.getSelectedIndex() > -1) {
 			if(model.getSize() == 1) {
 				recommendedIndex = -1;
 			} else if(recommendedIndex == list.getSelectedIndex()) {
@@ -108,7 +108,6 @@ public class VersionEditor extends JPanel {
 
     public ArrayList<String> getVersions() {
 		ArrayList<String> temp = model.getArrayList();
-		System.out.println(recommendedIndex);
 		if(recommendedIndex != -1 && model.getSize() != 0) temp.set(recommendedIndex, temp.get(recommendedIndex).replaceAll("\\s\\*",""));
         return temp;
     }
