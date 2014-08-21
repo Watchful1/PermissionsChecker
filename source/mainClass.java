@@ -179,6 +179,7 @@ public class mainClass extends JFrame {
 				FileUtils.writeFile(bldr.toString(), new File(Globals.getInstance().appStore +
 					File.separator+"UnknownMods.txt"));
 				Globals.getInstance().preferences.unknownMods = new HashMap<>();
+				Globals.getInstance().savePreferences();
 			}
 		});
 		menu.add(exportUnknowns);
