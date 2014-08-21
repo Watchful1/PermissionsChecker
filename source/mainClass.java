@@ -12,6 +12,8 @@ import gr.watchful.permchecker.utils.FileUtils;
 import gr.watchful.permchecker.utils.OsTypes;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -60,7 +62,7 @@ public class mainClass extends JFrame {
             @Override
             public void selectionChanged(NamedSelectionEvent event) {
                 if(oldSelection != null && oldSelection.equals(modPacksList.getSelected())) return;
-				Globals.getInstance().setModPack(modPacksList.getSelected());
+				Globals.getInstance().setModPack(modPacksList.getSelected(), null);
                 oldSelection = modPacksList.getSelected();
 				modPacksList.revalidate();
             }
@@ -75,6 +77,20 @@ public class mainClass extends JFrame {
         tabbedPane.add("Info", modPacksPanel);
         tabbedPane.add("Update", updatePanel);
 		tabbedPane.add("Permissions", permissionsPanel);
+
+		tabbedPane.addChangeListener(new ChangeListener() {
+			private int previousIndex = -1;
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
+				int index = sourceTabbedPane.getSelectedIndex();
+				if(previousIndex == 0) {
+					modPacksPanel.savePack(Globals.getModPack());
+					Globals.setModPack(Globals.getModPack(), modPacksPanel);
+				}
+				previousIndex = index;
+			}
+		});
 
 		this.add(tabbedPane);
 
