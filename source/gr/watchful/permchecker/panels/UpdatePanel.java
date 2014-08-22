@@ -120,18 +120,21 @@ public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 		}
 		File packExportFolder = new File(Globals.getInstance().preferences.exportFolder + File.separator +
 				"privatepacks" + File.separator + Globals.getModPack().shortName + File.separator +
-				versionSelector.getSelectedItem());
+				versionSelector.getSelectedItem().toString().replaceAll("\\.","_"));
 		FileUtils.zipFolderTo(Globals.getInstance().preferences.workingFolder,
 				new File(packExportFolder + File.separator + Globals.getModPack().getZipName()));
 
 		if(Globals.getModPack().icon != null && Globals.getModPack().icon.exists()) {
-			FileUtils.moveFile(Globals.getModPack().icon, new File(packExportFolder + File.separator +
+			FileUtils.moveFile(Globals.getModPack().icon, new File(Globals.getInstance().preferences.exportFolder
+					+ File.separator + "static" + File.separator +
 					Globals.getModPack().getIconName()));
 		}
 		if(Globals.getModPack().splash != null && Globals.getModPack().splash.exists()) {
-			FileUtils.moveFile(Globals.getModPack().splash, new File(packExportFolder + File.separator +
+			FileUtils.moveFile(Globals.getModPack().splash, new File(Globals.getInstance().preferences.exportFolder
+					+ File.separator + "static" + File.separator +
 					Globals.getModPack().getSplashName()));
 		}
+		if(Globals.getModPack().server == null) System.out.println("Server is null in pack");
 		if(Globals.getModPack().server != null && Globals.getModPack().server.exists()) {
 			FileUtils.moveFile(Globals.getModPack().server, new File(packExportFolder + File.separator +
 					Globals.getModPack().getServerName()));

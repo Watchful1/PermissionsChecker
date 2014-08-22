@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import gr.watchful.permchecker.datastructures.ForgeType;
 import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModPack;
@@ -117,10 +118,12 @@ public class ModPacksPanel extends JPanel implements ActionListener, UsesPack {
 				!pack.recommendedVersion.equals(versionEditor.getRecommendedVersion())) changed = true;
 		if(!pack.forgeType.equals(forgeEditor.getForgeType())) changed = true;
 		if(!(pack.ForgeVersion == forgeEditor.getForgeVersion())) changed = true;
-		//if(!pack.icon.equals(iconSelector.getFile())) changed = true;
-		//if(!pack.splash.equals(splashSelector.getFile())) changed = true;
-		//if(!pack.server.equals(serverSelector.getFile())) changed = true;
-		// TODO need to work out how to do icons, splashes and server files
+		if((pack.icon != null && !pack.icon.equals(iconSelector.getFile()))
+				|| (pack.icon == null && iconSelector.getFile() != null)) changed = true;
+		if((pack.splash != null && !pack.splash.equals(splashSelector.getFile()))
+				|| (pack.splash == null && splashSelector.getFile() != null)) changed = true;
+		if((pack.server != null && !pack.server.equals(serverSelector.getFile()))
+				|| (pack.server == null && serverSelector.getFile() != null)) changed = true;
 		if(!changed) return;
 
         boolean found = false;
@@ -169,6 +172,7 @@ public class ModPacksPanel extends JPanel implements ActionListener, UsesPack {
 		pack.ForgeVersion = forgeEditor.getForgeVersion();
         pack.icon = iconSelector.getFile();
         pack.splash = splashSelector.getFile();
+		System.out.println(serverSelector.getFile());
         pack.server = serverSelector.getFile();
 
         modPacksList.sortKeepSelected();
@@ -207,6 +211,7 @@ public class ModPacksPanel extends JPanel implements ActionListener, UsesPack {
 
 		File tempLocation = new File(Globals.getInstance().preferences.exportFolder +
 				File.separator + "temp" + File.separator + fileSelector.getFile().getName());
+		if(fileSelector.getFile().equals(tempLocation)) return;
 		if(Globals.getInstance().preferences.copyImportAssets) {
 			FileUtils.copyFile(fileSelector.getFile(), tempLocation);
 		} else {

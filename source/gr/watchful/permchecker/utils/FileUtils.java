@@ -97,9 +97,11 @@ public class FileUtils {
 	public static void moveFile(File sourceFile, File destinationFile, boolean overwrite) {
 		if(!sourceFile.exists()) return;
 		if(destinationFile.exists() && !overwrite) return;
+		System.out.println("Moving file from: "+sourceFile.getAbsolutePath());
+		System.out.println("To: "+destinationFile.getAbsolutePath());
 		if(destinationFile.exists()) destinationFile.delete();
 		else destinationFile.getParentFile().mkdirs();
-		sourceFile.renameTo(destinationFile);
+		if(!sourceFile.renameTo(destinationFile)) System.out.println("Move failed!");
 	}
 
 	public static boolean delete(File resource) {
