@@ -102,9 +102,11 @@ public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 
 		boolean success = true;
 		if(Globals.getModPack().forgeType.equals(ForgeType.VERSION)) {
-			success = FileUtils.addForge(Globals.getInstance().preferences.getWorkingMinecraftFolder(), Globals.getModPack().ForgeVersion);
+			success = FileUtils.addForge(Globals.getInstance().preferences.getWorkingMinecraftFolder(),
+					Globals.getModPack().ForgeVersion);
 		} else {
-			success = FileUtils.addForge(Globals.getInstance().preferences.getWorkingMinecraftFolder(), Globals.getModPack().forgeType);
+			success = FileUtils.addForge(Globals.getInstance().preferences.getWorkingMinecraftFolder(),
+					Globals.getModPack().forgeType, Globals.getModPack().minecraftVersion);
 		}
 		if(!success) {
 			System.out.println("pack.json add failed");
@@ -114,7 +116,7 @@ public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 		String xml = FileUtils.buildXML(Globals.getModPack());
 		if(!FileUtils.writeFile(xml, new File(
 				Globals.getInstance().preferences.exportFolder+File.separator+"static"+
-				File.separator+Globals.getModPack().key+".xml"))) {
+				File.separator+Globals.getModPack().key+".xml"), true)) {
 			System.out.println("xml export failed");
 			return;
 		}

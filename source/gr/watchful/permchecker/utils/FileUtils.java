@@ -143,17 +143,34 @@ public class FileUtils {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static boolean writeFile(String string, File location) {
+		return writeFile(string, location, false);
+	}
+	
+	public static boolean writeFile(String string, File location, boolean forceASCII) {
 		if(!location.exists()) location.getParentFile().mkdirs();
 		try{
-			// Create file 
-			FileWriter fstream = new FileWriter(location);
-			BufferedWriter out = new BufferedWriter(fstream);
-			out.write(string);
-			//Close the output stream
-			out.close();
-		} catch (Exception e){//Catch exception if any
+			if (location.exists()) location.delete();
+			location.createNewFile();
+
+			if(!forceASCII) {
+				FileWriter fstream = new FileWriter(location);
+				BufferedWriter out = new BufferedWriter(fstream);
+				out.write(string);
+				out.close();
+			} else {
+				Writer out = new BufferedWriter(new OutputStreamWriter(
+						new FileOutputStream(location), "ASCII"));
+				try {
+					out.write(string);
+				} catch (Exception e) {
+					System.err.println("Error: " + e.getMessage());
+				} finally {
+					out.close();
+				}
+			}
+		} catch (Exception e){
 			System.err.println("Error: " + e.getMessage());
 			return false;
 		}
@@ -258,8 +275,8 @@ public class FileUtils {
 		return getObject(readFile(file), object);
 	}
 
-	public static boolean addForge(File minecraftFolder, ForgeType forgeType) {
-		return addForge(minecraftFolder, 0, forgeType, "");
+	public static boolean addForge(File minecraftFolder, ForgeType forgeType, String mcVersion) {
+		return addForge(minecraftFolder, 0, forgeType, mcVersion);
 	}
 
 	public static boolean addForge(File minecraftFolder, int forgeVersion) {
