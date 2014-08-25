@@ -112,7 +112,10 @@ public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 			System.out.println("pack.json add failed");
 			return;
 		}
-
+		if((Globals.getModPack().server != null && Globals.getModPack().server.exists()) &&
+				(Globals.getModPack().serverName == null || Globals.getModPack().serverName.equals(""))) {
+			Globals.getModPack().serverName = Globals.getModPack().shortName + "Server.zip";
+		}
 		String xml = FileUtils.buildXML(Globals.getModPack());
 		if(!FileUtils.writeFile(xml, new File(
 				Globals.getInstance().preferences.exportFolder+File.separator+"static"+
@@ -139,7 +142,7 @@ public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 		if(Globals.getModPack().server == null) System.out.println("Server is null in pack");
 		if(Globals.getModPack().server != null && Globals.getModPack().server.exists()) {
 			FileUtils.moveFile(Globals.getModPack().server, new File(packExportFolder + File.separator +
-					Globals.getModPack().getServerName()));
+					Globals.getModPack().serverName));
 		}
 	}
 

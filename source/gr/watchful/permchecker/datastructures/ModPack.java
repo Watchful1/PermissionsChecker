@@ -130,11 +130,6 @@ public class ModPack {
 		return zipName;
 	}
 
-	public String getServerName() {
-		if(serverName == null || serverName.equals("")) serverName = shortName+"Server"+".zip";
-		return serverName;
-	}
-
 	public String getModList() {
 		StringBuilder bldr = new StringBuilder();
 		Boolean first = true;

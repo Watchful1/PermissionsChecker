@@ -320,8 +320,8 @@ public class FileUtils {
 		modpack.setAttribute("image", modPack.getSplashName());
 		modpack.setAttribute("dir", modPack.shortName);
 		modpack.setAttribute("mcVersion", modPack.minecraftVersion);
-		if (false) {//modPack.getRecomendedServer().exists()) {
-			modpack.setAttribute("serverPack", modPack.getServerName());
+		if (modPack.serverName != null && !modPack.serverName.equals("")) {
+			modpack.setAttribute("serverPack", modPack.serverName);
 		} else {
 			modpack.setAttribute("serverPack", "");
 		}
