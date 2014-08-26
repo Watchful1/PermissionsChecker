@@ -144,6 +144,11 @@ public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 			FileUtils.moveFile(Globals.getModPack().server, new File(packExportFolder + File.separator +
 					Globals.getModPack().serverName));
 		}
+
+		System.out.println("Deleting working folder");
+		for(File file : Globals.getInstance().preferences.workingFolder.listFiles()) {
+			FileUtils.delete(file);
+		}
 	}
 
 	@Override
