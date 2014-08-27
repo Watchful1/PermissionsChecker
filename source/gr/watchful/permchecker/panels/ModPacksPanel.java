@@ -106,26 +106,6 @@ public class ModPacksPanel extends JPanel implements ActionListener, UsesPack {
 
 		ModPack pack = packIn;
 
-		boolean changed = false;
-		if(!pack.name.equals(nameField.getText())) changed = true;
-		if(!pack.author.equals(authorField.getText())) changed = true;
-		if(!pack.shortName.equals(shortNameField.getText())) changed = true;
-		if(!pack.key.equals(keyField.getText())) changed = true;
-		if(!pack.description.equals(descriptionField.getText())) changed = true;
-		if(!pack.minecraftVersion.equals(minecraftVersionSelecter.getVersion())) changed = true;
-		if(!pack.versions.equals(versionEditor.getVersions())) changed = true;
-		if(pack.recommendedVersion != null &&
-				!pack.recommendedVersion.equals(versionEditor.getRecommendedVersion())) changed = true;
-		if(!pack.forgeType.equals(forgeEditor.getForgeType())) changed = true;
-		if(!(pack.ForgeVersion == forgeEditor.getForgeVersion())) changed = true;
-		if((pack.icon != null && !pack.icon.equals(iconSelector.getFile()))
-				|| (pack.icon == null && iconSelector.getFile() != null)) changed = true;
-		if((pack.splash != null && !pack.splash.equals(splashSelector.getFile()))
-				|| (pack.splash == null && splashSelector.getFile() != null)) changed = true;
-		if((pack.server != null && !pack.server.equals(serverSelector.getFile()))
-				|| (pack.server == null && serverSelector.getFile() != null)) changed = true;
-		if(!changed) return;
-
         boolean found = false;
 
         if(shortNameField.getText().equals("")) {

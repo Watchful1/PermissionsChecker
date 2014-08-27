@@ -51,7 +51,7 @@ public class ModPack {
 		if(key == null || key.equals("")) key = generateKey();
 		if(description == null) description = "";
 		if(versions == null) versions = new ArrayList<>();
-		if(versions.size() == 0) versions.add("1");
+		if(versions.size() == 0) versions.add("1.0.0");
 		if(recommendedVersion == null || recommendedVersion.equals(""))
 			recommendedVersion = versions.get(0);
 		if(minecraftVersion == null || minecraftVersion.equals("")) minecraftVersion = "1.6.4";
