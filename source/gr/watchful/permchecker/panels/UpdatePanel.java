@@ -72,8 +72,8 @@ public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 		}
 
 		FileUtils.purgeDirectory(Globals.getInstance().preferences.workingFolder);
-		FileUtils.extractZipTo(file, Globals.getInstance().preferences.workingFolder);
-		if(!Globals.getInstance().preferences.copyImportAssets) file.delete();
+		boolean temp = FileUtils.extractZipTo(file, Globals.getInstance().preferences.workingFolder);
+		if(temp && !Globals.getInstance().preferences.copyImportAssets) file.delete();
 	}
 
 	/**

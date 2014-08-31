@@ -93,7 +93,7 @@ repositories {
 	mavenCentral()
 }
 dependencies {
-    compile 'net.lingala.zip4j:zip4j:1.2.3'
+    compile 'net.lingala.zip4j:zip4j:1.2.4'
 	compile 'com.google.code.gson:gson:2.2.4'
 	compile 'org.projectlombok:lombok:1.12.6'
 	compile 'com.google.guava:guava:16.0.1'

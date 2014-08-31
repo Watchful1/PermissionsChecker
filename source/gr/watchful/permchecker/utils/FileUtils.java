@@ -1,5 +1,6 @@
 package gr.watchful.permchecker.utils;
 
+import java.awt.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,6 +28,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -114,14 +116,36 @@ public class FileUtils {
 		return resource.delete();
 	}
 
-	public static void extractZipTo(File zipLocation, File outputLocation) {
+	public static boolean extractZipTo(File zipLocation, File outputLocation) {
 		try {
 			ZipFile zipFile = new ZipFile(zipLocation);
 			zipFile.extractAll(outputLocation.getPath());
 			System.out.println("Unzip done");
+			return true;
 		} catch (ZipException e) {
 			System.out.println("Unzip failed");
-			e.printStackTrace();
+			//e.printStackTrace();
+
+			Object[] options = {"Yes", "No"};
+			int n = JOptionPane.showOptionDialog(Globals.getInstance().mainFrame,
+					"Unzip failed.\nWould you like to manually unzip?",
+					"Unzip failed",
+					JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					options,
+					options[1]);
+			if(n == 0) {
+				FileUtils.purgeDirectory(Globals.getInstance().preferences.workingFolder);
+				try {
+					Desktop.getDesktop().open(zipLocation);
+					Desktop.getDesktop().open(outputLocation);
+				} catch (IOException e1) {
+					System.out.println("Explorer open failed");
+					e1.printStackTrace();
+				}
+			}
+			return false;
 		}
 	}
 	
