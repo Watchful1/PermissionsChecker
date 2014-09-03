@@ -5,17 +5,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import com.sun.xml.internal.bind.v2.TODO;
-import gr.watchful.permchecker.datastructures.ForgeType;
 import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModPack;
 import gr.watchful.permchecker.datastructures.UsesPack;
 import gr.watchful.permchecker.utils.FileUtils;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
-public class ModPacksPanel extends JPanel implements ActionListener, UsesPack {
+public class ModPacksPanel extends JPanel implements ActionListener, UsesPack, ChangeListener {
     private JPanel mainPanel;
 
     private JPanel buttonPanel;
@@ -27,7 +27,7 @@ public class ModPacksPanel extends JPanel implements ActionListener, UsesPack {
     private LabelField shortNameField;
     private LabelField keyField;
     private HTMLField descriptionField;
-	private MinecraftVersionSelecter minecraftVersionSelecter;
+	private MinecraftVersionSelector minecraftVersionSelector;
     private VersionEditor versionEditor;
 	private ForgeEditor forgeEditor;
     private FileSelector iconSelector;
@@ -67,24 +67,24 @@ public class ModPacksPanel extends JPanel implements ActionListener, UsesPack {
         editorPanel.setLayout(new BoxLayout(editorPanel, BoxLayout.Y_AXIS));
         editorPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
-        nameField = new LabelField("Name");
+        nameField = new LabelField("Name", this);
         editorPanel.add(nameField);
-        authorField = new LabelField("Author");
+        authorField = new LabelField("Author", this);
         editorPanel.add(authorField);
-        shortNameField = new LabelField("ShortName");
+        shortNameField = new LabelField("ShortName", this);
         shortNameField.lock("This is autocomputed, changing it breaks lots of stuff");
         editorPanel.add(shortNameField);
-        keyField = new LabelField("Pack Key");
+        keyField = new LabelField("Pack Key", this);
         editorPanel.add(keyField);
-        descriptionField = new HTMLField("Description");
+        descriptionField = new HTMLField("Description", this);
         editorPanel.add(descriptionField);
-		minecraftVersionSelecter = new MinecraftVersionSelecter("Minecraft");
-		minecraftVersionSelecter.setVersions(Globals.getInstance().preferences.minecraftVersions);
-		minecraftVersionSelecter.setVersion(Globals.getInstance().preferences.defaultMinecraftVersion);
-		editorPanel.add(minecraftVersionSelecter);
-        versionEditor = new VersionEditor("Version");
+		minecraftVersionSelector = new MinecraftVersionSelector("Minecraft", this);
+		minecraftVersionSelector.setVersions(Globals.getInstance().preferences.minecraftVersions);
+		minecraftVersionSelector.setVersion(Globals.getInstance().preferences.defaultMinecraftVersion);//TODO should this be here?
+		editorPanel.add(minecraftVersionSelector);
+        versionEditor = new VersionEditor("Version", this);
         editorPanel.add(versionEditor);
-		forgeEditor = new ForgeEditor("Forge");
+		forgeEditor = new ForgeEditor("Forge", this);
 		editorPanel.add(forgeEditor);
         iconSelector = new FileSelector("Icon", 150, "png");
 		iconSelector.addListener(this);
@@ -145,7 +145,7 @@ public class ModPacksPanel extends JPanel implements ActionListener, UsesPack {
         pack.shortName = shortNameField.getText(); // TODO detect changes here
         pack.key = keyField.getText(); // TODO detect changes here
         pack.description = descriptionField.getText();
-		pack.minecraftVersion = minecraftVersionSelecter.getVersion();
+		pack.minecraftVersion = minecraftVersionSelector.getVersion();
         pack.versions = versionEditor.getVersions();
         pack.recommendedVersion = versionEditor.getRecommendedVersion();
 		pack.forgeType = forgeEditor.getForgeType();
@@ -167,7 +167,7 @@ public class ModPacksPanel extends JPanel implements ActionListener, UsesPack {
         shortNameField.setText(pack.shortName);
         keyField.setText(pack.key);
         descriptionField.setText(pack.description);
-		minecraftVersionSelecter.setVersion(pack.minecraftVersion);
+		minecraftVersionSelector.setVersion(pack.minecraftVersion);
 		versionEditor.setVersions(pack.versions);
 		versionEditor.setRecommendedVersion(pack.recommendedVersion);
 		forgeEditor.setForgeType(pack.forgeType);
@@ -199,4 +199,31 @@ public class ModPacksPanel extends JPanel implements ActionListener, UsesPack {
 		}
 		fileSelector.setFile(tempLocation);
 	}
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if(e.getSource().equals(nameField)) {
+            Globals.getModPack().name = nameField.getText();
+        } else if(e.getSource().equals(authorField)) {
+            Globals.getModPack().author = authorField.getText();
+        } else if(e.getSource().equals(shortNameField)) {
+            Globals.getModPack().shortName = shortNameField.getText(); // TODO
+        } else if(e.getSource().equals(keyField)) {
+            Globals.getModPack().key = keyField.getText(); // TODO
+        } else if(e.getSource().equals(descriptionField)) {
+            Globals.getModPack().description = descriptionField.getText();
+        } else if(e.getSource().equals(minecraftVersionSelector)) {
+            Globals.getModPack().minecraftVersion = minecraftVersionSelector.getVersion();
+        } else if(e.getSource().equals(versionEditor)) {
+            Globals.getModPack().versions = versionEditor.getVersions();
+            Globals.getModPack().recommendedVersion = versionEditor.getRecommendedVersion();
+        } else if(e.getSource().equals(forgeEditor)) {
+            Globals.getModPack().forgeType = forgeEditor.getForgeType();
+            Globals.getModPack().ForgeVersion = forgeEditor.getForgeVersion();
+        }
+        FileSelector iconSelector;
+        FileSelector splashSelector;
+        FileSelector serverSelector;
+        Globals.modPackChanged(this);
+    }
 }

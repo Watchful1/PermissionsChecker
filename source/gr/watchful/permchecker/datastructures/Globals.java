@@ -138,8 +138,12 @@ public class Globals {
 
 	public static void setModPack(ModPack packIn, UsesPack source) {
 		getInstance().modpack = packIn;
-		for(UsesPack usesPack : getInstance().packListeners) {
-			if(!usesPack.equals(source)) usesPack.updatePack(getInstance().modpack);
-		}
+		modPackChanged(source);
 	}
+
+    public static void modPackChanged(UsesPack source) {
+        for(UsesPack usesPack : getInstance().packListeners) {
+            if(!usesPack.equals(source)) usesPack.updatePack(getInstance().modpack);
+        }
+    }
 }

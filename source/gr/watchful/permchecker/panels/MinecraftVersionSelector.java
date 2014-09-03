@@ -1,16 +1,29 @@
 package gr.watchful.permchecker.panels;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class MinecraftVersionSelecter extends JPanel {
+public class MinecraftVersionSelector extends JPanel {
 	private JLabel label;
 	private JComboBox<String> chooser;
 	private DefaultComboBoxModel<String> items;
+    private ChangeListener changeListener;
+    private String oldVersion;
 
-	public MinecraftVersionSelecter(String name) {
-		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+	public MinecraftVersionSelector(String name) {
+        this(name, null);
+    }
+
+    public MinecraftVersionSelector(String name, ChangeListener changeListener) {
+        this.changeListener = changeListener;
+        oldVersion = "";
+
+        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 21));
 		this.setAlignmentX(0);
 
@@ -23,6 +36,15 @@ public class MinecraftVersionSelecter extends JPanel {
 		items = new DefaultComboBoxModel<>();
 
 		chooser = new JComboBox<>(items);
+        chooser.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(oldVersion.equals(getVersion())) return;
+                oldVersion = getVersion();
+
+                notifyChanged();
+            }
+        });
 		this.add(chooser);
 	}
 
@@ -32,6 +54,7 @@ public class MinecraftVersionSelecter extends JPanel {
 			System.out.println("Couldn't find minecraft version "+version);
 			return;
 		}
+        oldVersion = version;
 		chooser.setSelectedIndex(index);
 	}
 
@@ -45,4 +68,10 @@ public class MinecraftVersionSelecter extends JPanel {
 	public String getVersion() {
 		return (String) chooser.getSelectedItem();
 	}
+
+    public void notifyChanged() {
+        if(changeListener == null) return;
+
+        changeListener.stateChanged(new ChangeEvent(this));
+    }
 }

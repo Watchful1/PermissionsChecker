@@ -12,7 +12,7 @@ public class ModPack {
 	public String name;//simple
 	public String author;//simple
 	public String shortName;//difficult, need to change all files on server
-	public String key;//moderate, delete 1 local file. Leaves old code on server
+	public String key;//moderate, delete 1 local file. Leaves old code on server TODO
 	public String description;//simple
 	public String recommendedVersion;//simple, select from available
 	public String minecraftVersion;//simple, select from available
