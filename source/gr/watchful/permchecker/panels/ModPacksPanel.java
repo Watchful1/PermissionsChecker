@@ -15,167 +15,164 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
-public class ModPacksPanel extends JPanel implements ActionListener, UsesPack, ChangeListener {
-    private JPanel mainPanel;
+public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
+	private JPanel mainPanel;
 
-    private JPanel buttonPanel;
-    private JButton saveButton;
+	private JPanel buttonPanel;
+	private JButton saveButton;
 
-    private JPanel editorPanel;
-    private LabelField nameField;
-    private LabelField authorField;
-    private LabelField shortNameField;
-    private LabelField keyField;
-    private HTMLField descriptionField;
+	private JPanel editorPanel;
+	private LabelField nameField;
+	private LabelField authorField;
+	private LabelField shortNameField;
+	private LabelField keyField;
+	private HTMLField descriptionField;
 	private MinecraftVersionSelector minecraftVersionSelector;
-    private VersionEditor versionEditor;
+	private VersionEditor versionEditor;
 	private ForgeEditor forgeEditor;
-    private FileSelector iconSelector;
-    private FileSelector splashSelector;
-    private FileSelector serverSelector;
+	private FileSelector iconSelector;
+	private FileSelector splashSelector;
+	private FileSelector serverSelector;
 
 	private ModPack oldPack;
 
-    private NamedScrollingListPanel<ModPack> modPacksList;
+	private NamedScrollingListPanel<ModPack> modPacksList;
 	
 	public ModPacksPanel(NamedScrollingListPanel<ModPack> modPacksListIn) {
 		this.setLayout(new BorderLayout());
 
-        modPacksList = modPacksListIn;
+		modPacksList = modPacksListIn;
 
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-        //buttons at the top to manage packs
+		//buttons at the top to manage packs
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        buttonPanel.setAlignmentX(0f);
+		buttonPanel.setAlignmentX(0f);
 		
 		saveButton = new JButton("Save");
 		saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                savePack(modPacksList.getSelected());
-            }
-        });
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				savePack(modPacksList.getSelected());
+			}
+		});
 		buttonPanel.add(saveButton);
 
-        mainPanel.add(buttonPanel);
+		mainPanel.add(buttonPanel);
 
-        //fields in the middle to edit pack details
-        editorPanel = new JPanel();
-        editorPanel.setLayout(new BoxLayout(editorPanel, BoxLayout.Y_AXIS));
-        editorPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		//fields in the middle to edit pack details
+		editorPanel = new JPanel();
+		editorPanel.setLayout(new BoxLayout(editorPanel, BoxLayout.Y_AXIS));
+		editorPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
-        nameField = new LabelField("Name", this);
-        editorPanel.add(nameField);
-        authorField = new LabelField("Author", this);
-        editorPanel.add(authorField);
-        shortNameField = new LabelField("ShortName", this);
-        shortNameField.lock("This is autocomputed, changing it breaks lots of stuff");
-        editorPanel.add(shortNameField);
-        keyField = new LabelField("Pack Key", this);
-        editorPanel.add(keyField);
-        descriptionField = new HTMLField("Description", this);
-        editorPanel.add(descriptionField);
+		nameField = new LabelField("Name", this);
+		editorPanel.add(nameField);
+		authorField = new LabelField("Author", this);
+		editorPanel.add(authorField);
+		shortNameField = new LabelField("ShortName", this);
+		shortNameField.lock("This is autocomputed, changing it breaks lots of stuff");
+		editorPanel.add(shortNameField);
+		keyField = new LabelField("Pack Key", this);
+		editorPanel.add(keyField);
+		descriptionField = new HTMLField("Description", this);
+		editorPanel.add(descriptionField);
 		minecraftVersionSelector = new MinecraftVersionSelector("Minecraft", this);
 		minecraftVersionSelector.setVersions(Globals.getInstance().preferences.minecraftVersions);
 		minecraftVersionSelector.setVersion(Globals.getInstance().preferences.defaultMinecraftVersion);//TODO should this be here?
 		editorPanel.add(minecraftVersionSelector);
-        versionEditor = new VersionEditor("Version", this);
-        editorPanel.add(versionEditor);
+		versionEditor = new VersionEditor("Version", this);
+		editorPanel.add(versionEditor);
 		forgeEditor = new ForgeEditor("Forge", this);
 		editorPanel.add(forgeEditor);
-        iconSelector = new FileSelector("Icon", 150, "png");
-		iconSelector.addListener(this);
-        editorPanel.add(iconSelector);
-        splashSelector = new FileSelector("Splash", 150, "png");
-		splashSelector.addListener(this);
-        editorPanel.add(splashSelector);
-        serverSelector = new FileSelector("Server", -1, "zip");
-		serverSelector.addListener(this);
-        editorPanel.add(serverSelector);
+		iconSelector = new FileSelector("Icon", 150, "png", this);
+		editorPanel.add(iconSelector);
+		splashSelector = new FileSelector("Splash", 150, "png", this);
+		editorPanel.add(splashSelector);
+		serverSelector = new FileSelector("Server", -1, "zip", this);
+		editorPanel.add(serverSelector);
 
-        mainPanel.add(editorPanel);
+		mainPanel.add(editorPanel);
 
-        this.add(mainPanel);
+		this.add(mainPanel);
 	}
 	
 	public void savePack(ModPack packIn) {
-        if(packIn == null) return;
+		if(packIn == null) return;
 
 		ModPack pack = packIn;
 
-        boolean found = false;
+		boolean found = false;
 
-        if(shortNameField.getText().equals("")) {
-            String shortName = ModPack.generateShortName(nameField.getText());
-            for(int i=0; i<modPacksList.getModel().getSize(); i++) {
-                if(shortName.equals(modPacksList.getModel().get(i).shortName)) {
-                    System.out.println("ShortName exists. Create new.");
-                    String result = (String) JOptionPane.showInputDialog(
-                        Globals.getInstance().mainFrame, "Shortname exists, pick new shortname",
-                            "New Shortname", JOptionPane.PLAIN_MESSAGE, null, null, shortName);
-                    shortName = result;
-                    i=0;
-                }
-            }
-            shortNameField.setText(shortName);
-        }
+		if(shortNameField.getText().equals("")) {
+			String shortName = ModPack.generateShortName(nameField.getText());
+			for(int i=0; i<modPacksList.getModel().getSize(); i++) {
+				if(shortName.equals(modPacksList.getModel().get(i).shortName)) {
+					System.out.println("ShortName exists. Create new.");
+					String result = (String) JOptionPane.showInputDialog(
+						Globals.getInstance().mainFrame, "Shortname exists, pick new shortname",
+							"New Shortname", JOptionPane.PLAIN_MESSAGE, null, null, shortName);
+					shortName = result;
+					i=0;
+				}
+			}
+			shortNameField.setText(shortName);
+		}
 
-        if(shortNameField.getText() == null || shortNameField.getText().equals("")) {
-            System.out.println("Blank ShortName, can't save");
-        }
-        if(keyField.getText() == null || keyField.getText().equals("")) {
-            System.out.println("Blank Key, can't save");
-            return;
-        }
-        for(int i=0; i<modPacksList.getModel().getSize(); i++) {
-            ModPack newPack = modPacksList.getModel().get(i);
-            if(keyField.getText().equals(newPack.key)) {
-                if(found) {
-                    System.out.println("Key exists. Can't save.");
-                    return;
-                } else found = true;
-            }
-        }
+		if(shortNameField.getText() == null || shortNameField.getText().equals("")) {
+			System.out.println("Blank ShortName, can't save");
+		}
+		if(keyField.getText() == null || keyField.getText().equals("")) {
+			System.out.println("Blank Key, can't save");
+			return;
+		}
+		for(int i=0; i<modPacksList.getModel().getSize(); i++) {
+			ModPack newPack = modPacksList.getModel().get(i);
+			if(keyField.getText().equals(newPack.key)) {
+				if(found) {
+					System.out.println("Key exists. Can't save.");
+					return;
+				} else found = true;
+			}
+		}
 
-        pack.name = nameField.getText();
-        pack.author = authorField.getText();
-        pack.shortName = shortNameField.getText(); // TODO detect changes here
-        pack.key = keyField.getText(); // TODO detect changes here
-        pack.description = descriptionField.getText();
+		pack.name = nameField.getText();
+		pack.author = authorField.getText();
+		pack.shortName = shortNameField.getText(); // TODO detect changes here
+		pack.key = keyField.getText(); // TODO detect changes here
+		pack.description = descriptionField.getText();
 		pack.minecraftVersion = minecraftVersionSelector.getVersion();
-        pack.versions = versionEditor.getVersions();
-        pack.recommendedVersion = versionEditor.getRecommendedVersion();
+		pack.versions = versionEditor.getVersions();
+		pack.recommendedVersion = versionEditor.getRecommendedVersion();
 		pack.forgeType = forgeEditor.getForgeType();
 		pack.ForgeVersion = forgeEditor.getForgeVersion();
-        pack.icon = iconSelector.getFile();
-        pack.splash = splashSelector.getFile();
+		pack.icon = iconSelector.getFile();
+		pack.splash = splashSelector.getFile();
 		System.out.println(serverSelector.getFile());
-        pack.server = serverSelector.getFile();
+		pack.server = serverSelector.getFile();
 
-        modPacksList.sortKeepSelected();
+		modPacksList.sortKeepSelected();
 
 		System.out.println("Saving changed pack");
 		if(!modPacksList.getSelected().saveThisObject()) System.out.println("Couldn't save pack");
 	}
 
-    public void setPack(ModPack pack) {
-        nameField.setText(pack.name);
-        authorField.setText(pack.author);
-        shortNameField.setText(pack.shortName);
-        keyField.setText(pack.key);
-        descriptionField.setText(pack.description);
+	public void setPack(ModPack pack) {
+		nameField.setText(pack.name);
+		authorField.setText(pack.author);
+		shortNameField.setText(pack.shortName);
+		keyField.setText(pack.key);
+		descriptionField.setText(pack.description);
 		minecraftVersionSelector.setVersion(pack.minecraftVersion);
 		versionEditor.setVersions(pack.versions);
 		versionEditor.setRecommendedVersion(pack.recommendedVersion);
 		forgeEditor.setForgeType(pack.forgeType);
 		forgeEditor.setForgeVersion(pack.ForgeVersion);
-        iconSelector.setFile(pack.icon);
-        splashSelector.setFile(pack.splash);
-        serverSelector.setFile(pack.server);
-    }
+		iconSelector.setFile(pack.icon);
+		splashSelector.setFile(pack.splash);
+		serverSelector.setFile(pack.server);
+	}
 
 	@Override
 	public void updatePack(ModPack modPack) {
@@ -184,46 +181,52 @@ public class ModPacksPanel extends JPanel implements ActionListener, UsesPack, C
 		setPack(modPack);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(!e.getSource().getClass().equals(FileSelector.class)) return;
-		FileSelector fileSelector = (FileSelector) e.getSource();
-
+	public boolean fileChanged(FileSelector fileSelector) {
 		File tempLocation = new File(Globals.getInstance().preferences.exportFolder +
 				File.separator + "temp" + File.separator + fileSelector.getFile().getName());
-		if(fileSelector.getFile().equals(tempLocation)) return;
+		if(fileSelector.getFile().equals(tempLocation)) return false;
 		if(Globals.getInstance().preferences.copyImportAssets) {
 			FileUtils.copyFile(fileSelector.getFile(), tempLocation);
 		} else {
 			FileUtils.moveFile(fileSelector.getFile(), tempLocation);
 		}
 		fileSelector.setFile(tempLocation);
+		return true;
 	}
 
-    @Override
-    public void stateChanged(ChangeEvent e) {
-        if(e.getSource().equals(nameField)) {
-            Globals.getModPack().name = nameField.getText();
-        } else if(e.getSource().equals(authorField)) {
-            Globals.getModPack().author = authorField.getText();
-        } else if(e.getSource().equals(shortNameField)) {
-            Globals.getModPack().shortName = shortNameField.getText(); // TODO
-        } else if(e.getSource().equals(keyField)) {
-            Globals.getModPack().key = keyField.getText(); // TODO
-        } else if(e.getSource().equals(descriptionField)) {
-            Globals.getModPack().description = descriptionField.getText();
-        } else if(e.getSource().equals(minecraftVersionSelector)) {
-            Globals.getModPack().minecraftVersion = minecraftVersionSelector.getVersion();
-        } else if(e.getSource().equals(versionEditor)) {
-            Globals.getModPack().versions = versionEditor.getVersions();
-            Globals.getModPack().recommendedVersion = versionEditor.getRecommendedVersion();
-        } else if(e.getSource().equals(forgeEditor)) {
-            Globals.getModPack().forgeType = forgeEditor.getForgeType();
-            Globals.getModPack().ForgeVersion = forgeEditor.getForgeVersion();
-        }
-        FileSelector iconSelector;
-        FileSelector splashSelector;
-        FileSelector serverSelector;
-        Globals.modPackChanged(this);
-    }
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		if(e.getSource().equals(nameField)) {
+			Globals.getModPack().name = nameField.getText();
+		} else if(e.getSource().equals(authorField)) {
+			Globals.getModPack().author = authorField.getText();
+		} else if(e.getSource().equals(shortNameField)) {
+			Globals.getModPack().shortName = shortNameField.getText(); // TODO
+		} else if(e.getSource().equals(keyField)) {
+			Globals.getModPack().key = keyField.getText(); // TODO
+		} else if(e.getSource().equals(descriptionField)) {
+			Globals.getModPack().description = descriptionField.getText();
+		} else if(e.getSource().equals(minecraftVersionSelector)) {
+			Globals.getModPack().minecraftVersion = minecraftVersionSelector.getVersion();
+		} else if(e.getSource().equals(versionEditor)) {
+			Globals.getModPack().versions = versionEditor.getVersions();
+			Globals.getModPack().recommendedVersion = versionEditor.getRecommendedVersion();
+		} else if(e.getSource().equals(forgeEditor)) {
+			Globals.getModPack().forgeType = forgeEditor.getForgeType();
+			Globals.getModPack().ForgeVersion = forgeEditor.getForgeVersion();
+		} else if(e.getSource().equals(iconSelector)) {
+			if(fileChanged(iconSelector)) {
+				Globals.getModPack().icon = iconSelector.getFile();
+			}
+		} else if(e.getSource().equals(splashSelector)) {
+			if(fileChanged(splashSelector)) {
+				Globals.getModPack().splash = splashSelector.getFile();
+			}
+		} else if(e.getSource().equals(serverSelector)) {
+			if(fileChanged(serverSelector)) {
+				Globals.getModPack().server = serverSelector.getFile();
+			}
+		}
+		Globals.modPackChanged(this);
+	}
 }

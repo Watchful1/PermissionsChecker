@@ -2,6 +2,7 @@ package gr.watchful.permchecker.utils;
 
 import java.awt.*;
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -417,11 +418,36 @@ public class FileUtils {
 		return pack;
 	}
 
+	public static ModPack packFromCode(String code) {
+		if(code == null || code.length() <= 0) return null;
+
+		String xml = FileUtils.downloadToString(Globals.ftbRepoUrl+"static/"+code+".xml");
+		if(xml == null || xml.length() <= 0) return null;
+
+		return FileUtils.readXML(xml);
+	}
+
 	public static void purgeDirectory(File dir) {
 		if(!dir.exists()) return;
 		for (File file: dir.listFiles()) {
 			if (file.isDirectory()) purgeDirectory(file);
 			file.delete();
+		}
+	}
+
+	public static boolean remoteFileExists(String url)  {
+		try {
+			HttpURLConnection.setFollowRedirects(false);
+			// note : you may also need
+			//        HttpURLConnection.setInstanceFollowRedirects(false)
+			HttpURLConnection con =
+					(HttpURLConnection) new URL(url).openConnection();
+			con.setRequestMethod("HEAD");
+			return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
 	}
 }

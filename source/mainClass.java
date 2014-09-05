@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 @SuppressWarnings("serial")
@@ -125,13 +126,13 @@ public class mainClass extends JFrame {
 						Globals.getInstance().mainFrame, "Pack code", "Add pack",
 						JOptionPane.PLAIN_MESSAGE);
 				if(code == null || code.length() <= 0) return;
-				String xml = FileUtils.downloadToString(Globals.ftbRepoUrl+code+".xml");
-				if(xml == null || xml.length() <= 0) {
+
+				ModPack temp = FileUtils.packFromCode(code);
+				if(temp == null) {
 					System.out.println("Couldn't find code");
 					return;
 				}
-				ModPack temp = FileUtils.readXML(xml);
-				if(temp != null) System.out.println("Adding pack "+temp);
+				System.out.println("Adding pack "+temp);
 				temp.key = code;
 				addPack(temp);
 			}
@@ -217,6 +218,30 @@ public class mainClass extends JFrame {
         modPacksList.sortKeepSelected();
         modPacksPanel.setPack(pack);
     }
+
+	public boolean codeExists(String code, String currentPack) {
+		if(code == null || code.equals("")) return false;
+		ModPack pack = FileUtils.packFromCode(code);
+
+		if(pack != null && pack.shortName != null &&
+				!pack.shortName.equals("") && !currentPack.equals(pack.shortName)) return true;
+
+		for(int i=0; i<modPacksList.getModel().getSize(); i++) {
+			ModPack newPack = modPacksList.getModel().get(i);
+			if(code.equals(newPack.key) && !currentPack.equals(newPack.shortName)) return true;
+		}
+		return false;
+	}
+
+	public boolean shortnameExists(String shortname) {
+		for(int i=0; i<modPacksList.getModel().getSize(); i++) {
+			ModPack newPack = modPacksList.getModel().get(i);
+			if(shortname.equals(newPack.shortName)) return true;
+		}
+		return FileUtils.remoteFileExists(Globals.ftbRepoUrl+"static/"+shortname+"Icon.png") ||
+				FileUtils.remoteFileExists(Globals.ftbRepoUrl+"static/"+shortname+"Splash.png") ||
+				FileUtils.remoteFileExists(Globals.ftbRepoUrl+"privatepacks/"+shortname);
+	}
 
     public static void main(String[] args) {
         new mainClass();

@@ -19,10 +19,14 @@ public class FileSelector extends JPanel {
     private File file;
     private int maxKilobytes;
     private String allowedType;
-
-	private ArrayList<ActionListener> listeners;
+    private ChangeListener changeListener;
 
     public FileSelector(String name, int maxKilobytesIn, String allowedTypeIn) {
+        this(name, maxKilobytesIn, allowedTypeIn, null);
+    }
+
+    public FileSelector(String name, int maxKilobytesIn, String allowedTypeIn, ChangeListener changeListener) {
+        this.changeListener = changeListener;
         maxKilobytes = maxKilobytesIn;
         allowedType = allowedTypeIn;
 
@@ -56,8 +60,6 @@ public class FileSelector extends JPanel {
             }
         });
         this.add(selectButton);
-
-		listeners = new ArrayList<>();
     }
 
     public void setFile(File fileIn) {
@@ -80,22 +82,17 @@ public class FileSelector extends JPanel {
                 status.setForeground(Color.BLACK);
             }
         }
-		notifyListeners();
+        notifyChanged();
     }
 
     public File getFile() {
         return file;
     }
 
-	public void addListener(ActionListener listener) {
-		listeners.add(listener);
-	}
-
-	private void notifyListeners() {
-		for(ActionListener listener : listeners) {
-			listener.actionPerformed(new ActionEvent(this, 0, ""));
-		}
-	}
+    public void notifyChanged() {
+        if(changeListener == null) return;
+        changeListener.stateChanged(new ChangeEvent(this));
+    }
 
     public static String getSizeName(long bytes) {
         if(bytes < 1024) return Math.round(bytes) + " bytes";
