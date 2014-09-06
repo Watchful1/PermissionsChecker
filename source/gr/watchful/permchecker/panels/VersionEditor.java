@@ -4,6 +4,8 @@ import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.SortedListModel;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,8 +17,15 @@ public class VersionEditor extends JPanel {
     private JList<String> list;
     private SortedListModel<String> model;
 	private int recommendedIndex;
+    private ChangeListener changeListener;
 
     public VersionEditor(String name) {
+        this(name, null);
+    }
+
+    public VersionEditor(String name, ChangeListener changeListener) {
+        this.changeListener = changeListener;
+
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.setAlignmentX(0);
 
@@ -91,6 +100,7 @@ public class VersionEditor extends JPanel {
         model.add(0, newVersion);
 		if(recommendedIndex != -1) recommendedIndex++;
 		setRecommendedIndex(0);
+        notifyChanged();
     }
 
     private void removeSelectedVersion() {
@@ -103,6 +113,7 @@ public class VersionEditor extends JPanel {
 				recommendedIndex--;
 			}
             model.remove(list.getSelectedIndex());
+            notifyChanged();
         }
     }
 
@@ -140,10 +151,16 @@ public class VersionEditor extends JPanel {
 		model.setElement(model.get(index)+" *", index);
 		recommendedIndex = index;
 		list.repaint();
+        notifyChanged();
 	}
 
 	public String getRecommendedVersion() {
 		if(model.getSize() == 0) return null;
 		return model.get(recommendedIndex).replaceAll("\\s\\*","");
 	}
+
+    public void notifyChanged() {
+        if(changeListener == null) return;
+        changeListener.stateChanged(new ChangeEvent(this));
+    }
 }

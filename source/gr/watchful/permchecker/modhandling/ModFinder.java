@@ -30,6 +30,14 @@ public class ModFinder {
 		for(File file : folder.listFiles()) {
 			if(file.isDirectory())  modFiles.addAll(discoverModFiles(file));
 			else {
+				/*int i = file.getName().lastIndexOf('.');
+				if (i <= 0) continue;
+				String extension = file.getName().substring(i+1);
+				boolean good = false;
+				for(String type : Globals.modTypes) {
+					if(type.equals(extension)) good = true;
+				}
+				if(!good) continue; *///TODO Clumsy, need to work on
 				try {
 					temp = processFile(file);
 					if (temp != null) modFiles.add(temp);
@@ -78,6 +86,7 @@ public class ModFinder {
 			} else if(superName.equals("DummyModContainer") || superName.equals("cpw/mods/fml/common/DummyModContainer")) {
 				//TODO this is a forge coremod, launch a method visitor to try to find the name
 				tmp = true;
+				otherMod.addID(name);
 			}
 		}
 
@@ -94,6 +103,7 @@ public class ModFinder {
 		public  MethodVisitor visitMethod(int access, String name, String desc,
 										  String signature, String[] exceptions) {
 			if (tmp) {
+				//System.out.println("Visiting "+name);
 				return new ModMethodVisitor();
 			}
 			//System.out.println("    "+name);

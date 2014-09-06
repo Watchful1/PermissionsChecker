@@ -7,12 +7,14 @@ import gr.watchful.permchecker.datastructures.UsesPack;
 import gr.watchful.permchecker.utils.FileUtils;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
+public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 	private LabelField packName;
 	private FileSelector selector;
 	JComboBox<String> versionSelector;
@@ -27,8 +29,7 @@ public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
         packName.lock("Currently opened pack");
         this.add(packName);
 
-        selector = new FileSelector("Zip", -1, "zip");
-		selector.addListener(this);
+        selector = new FileSelector("Zip", -1, "zip", this);
         this.add(selector);
 
         versionSelector = new JComboBox<>();
@@ -126,8 +127,10 @@ public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 		File packExportFolder = new File(Globals.getInstance().preferences.exportFolder + File.separator +
 				"privatepacks" + File.separator + Globals.getModPack().shortName + File.separator +
 				versionSelector.getSelectedItem().toString().replaceAll("\\.","_"));
-		FileUtils.zipFolderTo(Globals.getInstance().preferences.workingFolder,
-				new File(packExportFolder + File.separator + Globals.getModPack().getZipName()));
+		if(!FileUtils.zipFolderTo(Globals.getInstance().preferences.workingFolder,
+				new File(packExportFolder + File.separator + Globals.getModPack().getZipName()))) {
+
+		}
 
 		if(Globals.getModPack().icon != null && Globals.getModPack().icon.exists()) {
 			FileUtils.moveFile(Globals.getModPack().icon, new File(Globals.getInstance().preferences.exportFolder
@@ -139,20 +142,17 @@ public class UpdatePanel extends JPanel implements ActionListener, UsesPack {
 					+ File.separator + "static" + File.separator +
 					Globals.getModPack().getSplashName()));
 		}
-		if(Globals.getModPack().server == null) System.out.println("Server is null in pack");
 		if(Globals.getModPack().server != null && Globals.getModPack().server.exists()) {
 			FileUtils.moveFile(Globals.getModPack().server, new File(packExportFolder + File.separator +
 					Globals.getModPack().serverName));
 		}
 
 		System.out.println("Deleting working folder");
-		for(File file : Globals.getInstance().preferences.workingFolder.listFiles()) {
-			FileUtils.delete(file);
-		}
+		FileUtils.purgeDirectory(Globals.getInstance().preferences.workingFolder);
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void stateChanged(ChangeEvent e) {
 		extractPack(selector.getFile());
 	}
 

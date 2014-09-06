@@ -28,6 +28,7 @@ public class Globals {
             "file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
 	public static final String forgeUrl = "http://api.feed-the-beast.com/ss/api/GetForgePackJSON/";
 	public static final String ftbRepoUrl = "http://www.creeperrepo.net/FTB2/";
+	public static final String[] modTypes = {"jar", "zip", "disabled", "litemod"};
 
 	
 	public Globals() {
@@ -138,12 +139,8 @@ public class Globals {
 
 	public static void setModPack(ModPack packIn, UsesPack source) {
 		getInstance().modpack = packIn;
-		modPackChanged(source);
+		for(UsesPack usesPack : getInstance().packListeners) {
+			if(!usesPack.equals(source)) usesPack.updatePack(getInstance().modpack);
+		}
 	}
-
-    public static void modPackChanged(UsesPack source) {
-        for(UsesPack usesPack : getInstance().packListeners) {
-            if(!usesPack.equals(source)) usesPack.updatePack(getInstance().modpack);
-        }
-    }
 }

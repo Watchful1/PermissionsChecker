@@ -137,7 +137,7 @@ public class FileUtils {
 					options,
 					options[1]);
 			if(n == 0) {
-				FileUtils.purgeDirectory(Globals.getInstance().preferences.workingFolder);
+				FileUtils.purgeDirectory(outputLocation);
 				try {
 					Desktop.getDesktop().open(zipLocation);
 					Desktop.getDesktop().open(outputLocation);
@@ -150,8 +150,8 @@ public class FileUtils {
 		}
 	}
 	
-	public static void zipFolderTo(File folder, File outputLocation) {
-		try {
+	public static boolean zipFolderTo(File folder, File outputLocation) {
+		/*try {
 			outputLocation.mkdirs();
 			outputLocation.delete();
 			ZipFile zipFile = new ZipFile(outputLocation);
@@ -163,10 +163,32 @@ public class FileUtils {
 
 			zipFile.addFolder(folder.getPath(), parameters);
 			System.out.println("Zip done");
-		} catch (ZipException e) {
+			return true;
+		} catch (ZipException e) {*/
 			System.out.println("Zip failed");
-			e.printStackTrace();
-		}
+			//e.printStackTrace();
+
+			Object[] options = {"Yes", "No"};
+			int n = JOptionPane.showOptionDialog(Globals.getInstance().mainFrame,
+					"Zip failed.\nWould you like to manually zip?",
+					"Zip failed",
+					JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					options,
+					options[1]);
+			if(n == 0) {
+				try {
+					Desktop.getDesktop().open(folder);
+					outputLocation.createNewFile();
+					Desktop.getDesktop().open(outputLocation);
+				} catch (IOException e1) {
+					System.out.println("Explorer open failed");
+					e1.printStackTrace();
+				}
+			}
+			return false;
+		//}
 	}
 
 	public static boolean writeFile(String string, File location) {
@@ -319,6 +341,8 @@ public class FileUtils {
 			System.out.println("URL: "+forgeUrl);
 			downloadToFile(new URL(forgeUrl), new File(minecraftFolder+File.separator+"pack.json"));
 		} catch (IOException e) {
+			JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+					"Pack.json add failed");
 			return false;
 		}
 		return true;
