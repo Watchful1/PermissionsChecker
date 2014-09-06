@@ -149,7 +149,6 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		pack.ForgeVersion = forgeEditor.getForgeVersion();
 		pack.icon = iconSelector.getFile();
 		pack.splash = splashSelector.getFile();
-		System.out.println(serverSelector.getFile());
 		pack.server = serverSelector.getFile();
 
 		modPacksList.sortKeepSelected();
@@ -196,6 +195,9 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
+		System.out.println("State changed");
+		System.out.println(e.getSource());
+		if(Globals.getModPack() == null) return; //this isn't supposed to happen
 		if(e.getSource().equals(nameField)) {
 			Globals.getModPack().name = nameField.getText();
 		} else if(e.getSource().equals(authorField)) {

@@ -30,6 +30,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -141,6 +142,17 @@ public class FileUtils {
 				try {
 					Desktop.getDesktop().open(zipLocation);
 					Desktop.getDesktop().open(outputLocation);
+					Object[] options2 = {"Done", "Cancel"};
+					int n2 = JOptionPane.showOptionDialog(Globals.getInstance().mainFrame,
+							"Done with manual unzip?",
+							"Waiting",
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE,
+							null,
+							options2,
+							options2[0]);
+					if(n2 == 0) return true;
+					else return false;
 				} catch (IOException e1) {
 					System.out.println("Explorer open failed");
 					e1.printStackTrace();
@@ -151,7 +163,7 @@ public class FileUtils {
 	}
 	
 	public static boolean zipFolderTo(File folder, File outputLocation) {
-		/*try {
+		try {
 			outputLocation.mkdirs();
 			outputLocation.delete();
 			ZipFile zipFile = new ZipFile(outputLocation);
@@ -164,9 +176,8 @@ public class FileUtils {
 			zipFile.addFolder(folder.getPath(), parameters);
 			System.out.println("Zip done");
 			return true;
-		} catch (ZipException e) {*/
+		} catch (ZipException e) {
 			System.out.println("Zip failed");
-			//e.printStackTrace();
 
 			Object[] options = {"Yes", "No"};
 			int n = JOptionPane.showOptionDialog(Globals.getInstance().mainFrame,
@@ -180,15 +191,20 @@ public class FileUtils {
 			if(n == 0) {
 				try {
 					Desktop.getDesktop().open(folder);
-					outputLocation.createNewFile();
-					Desktop.getDesktop().open(outputLocation);
+					JFileChooser fileChooser = new JFileChooser(folder);
+					fileChooser.setFileFilter(new FileNameExtensionFilter("zip files", "zip"));
+					int returnVal = fileChooser.showOpenDialog(null);
+					if (returnVal == JFileChooser.APPROVE_OPTION) {
+						File result = fileChooser.getSelectedFile();
+						FileUtils.moveFile(result, outputLocation);
+						return true;
+					}
 				} catch (IOException e1) {
 					System.out.println("Explorer open failed");
-					e1.printStackTrace();
 				}
 			}
 			return false;
-		//}
+		}
 	}
 
 	public static boolean writeFile(String string, File location) {

@@ -145,13 +145,16 @@ public class VersionEditor extends JPanel {
 		if(index == recommendedIndex) return;
 		if(index < 0) index = 0;
 		if(index > model.getSize() - 1) index = model.getSize() - 1;
+		boolean first = false;
 		if(recommendedIndex != -1) {
 			model.setElement(model.get(recommendedIndex).replaceAll("\\s\\*",""), recommendedIndex);
+		} else {
+			first = true;
 		}
 		model.setElement(model.get(index)+" *", index);
 		recommendedIndex = index;
 		list.repaint();
-        notifyChanged();
+        if(!first) notifyChanged();
 	}
 
 	public String getRecommendedVersion() {

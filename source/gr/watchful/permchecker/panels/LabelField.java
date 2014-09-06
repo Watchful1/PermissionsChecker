@@ -48,7 +48,6 @@ public class LabelField extends JPanel {
         textField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                //do nothing
             }
 
             @Override

@@ -14,6 +14,7 @@ public class MinecraftVersionSelector extends JPanel {
 	private DefaultComboBoxModel<String> items;
     private ChangeListener changeListener;
     private String oldVersion;
+	private boolean paused;
 
 	public MinecraftVersionSelector(String name) {
         this(name, null);
@@ -22,6 +23,7 @@ public class MinecraftVersionSelector extends JPanel {
     public MinecraftVersionSelector(String name, ChangeListener changeListener) {
         this.changeListener = changeListener;
         oldVersion = "";
+		paused = false;
 
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 21));
@@ -59,10 +61,12 @@ public class MinecraftVersionSelector extends JPanel {
 	}
 
 	public void setVersions(ArrayList<String> versions) {
+		paused = true;
 		items.removeAllElements();
 		for(String version : versions) {
 			items.addElement(version);
 		}
+		paused = false;
 	}
 
 	public String getVersion() {
@@ -71,6 +75,7 @@ public class MinecraftVersionSelector extends JPanel {
 
     public void notifyChanged() {
         if(changeListener == null) return;
+		if(paused) return;
 
         changeListener.stateChanged(new ChangeEvent(this));
     }
