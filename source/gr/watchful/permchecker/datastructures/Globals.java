@@ -20,6 +20,7 @@ public class Globals {
 	public File appStore;
 	public File permFile;
 	public RebuildsMods rebuildsMods;
+	public ListsMods listsMods;
 	public JFrame mainFrame;
 	private ModPack modpack;
 	private ArrayList<UsesPack> packListeners;

@@ -71,7 +71,7 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		editorPanel.add(nameField);
 		authorField = new LabelField("Author", this);
 		editorPanel.add(authorField);
-		shortNameField = new LabelField("ShortName", this);
+		shortNameField = new LabelField("ShortName");
 		shortNameField.lock("This is autocomputed, changing it breaks lots of stuff");
 		editorPanel.add(shortNameField);
 		keyField = new LabelField("Pack Key", this);
@@ -202,10 +202,20 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 			Globals.getModPack().name = nameField.getText();
 		} else if(e.getSource().equals(authorField)) {
 			Globals.getModPack().author = authorField.getText();
-		} else if(e.getSource().equals(shortNameField)) {
-			Globals.getModPack().shortName = shortNameField.getText(); // TODO
 		} else if(e.getSource().equals(keyField)) {
-			Globals.getModPack().key = keyField.getText(); // TODO
+			if(keyField.getText() == null || keyField.getText().equals("")) return;
+			while(Globals.getInstance().listsMods.codeExists(keyField.getText(), shortNameField.getText())) {
+				String result = (String) JOptionPane.showInputDialog(
+						Globals.getInstance().mainFrame, "Key exists, pick new key",
+						"New key", JOptionPane.PLAIN_MESSAGE, null, null, keyField.getText());
+				if(result == null || result.equals("")) {
+					keyField.setText(Globals.getModPack().key);
+					return;
+				}
+				else keyField.setText(result);
+			}
+
+			Globals.getModPack().key = keyField.getText();
 		} else if(e.getSource().equals(descriptionField)) {
 			Globals.getModPack().description = descriptionField.getText();
 		} else if(e.getSource().equals(minecraftVersionSelector)) {

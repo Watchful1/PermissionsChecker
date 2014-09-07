@@ -1,7 +1,4 @@
-import gr.watchful.permchecker.datastructures.Globals;
-import gr.watchful.permchecker.datastructures.ModPack;
-import gr.watchful.permchecker.datastructures.SimpleObjectComparator;
-import gr.watchful.permchecker.datastructures.SortedListModel;
+import gr.watchful.permchecker.datastructures.*;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
 import gr.watchful.permchecker.panels.ModPacksPanel;
@@ -24,7 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public class mainClass extends JFrame {
+public class mainClass extends JFrame implements ListsMods {
 	private JTabbedPane tabbedPane;
 	private ModPacksPanel modPacksPanel;
     private UpdatePanel updatePanel;
@@ -35,6 +32,7 @@ public class mainClass extends JFrame {
 
 	public mainClass() {
         Globals.getInstance().mainFrame = this;
+		Globals.getInstance().listsMods = this;
         Globals.getInstance().initializeFolders();
         Globals.getInstance().loadPreferences();
         Globals.getInstance().updateListings();
