@@ -98,6 +98,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 	 * Trigger pack json save
 	 */
 	public void exportPack() {
+		Globals.saveCurrentPack();
 		permPanel.parsePack();
 		permPanel.writeFile();
 
