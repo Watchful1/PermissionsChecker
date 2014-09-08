@@ -20,10 +20,11 @@ public class Globals {
 	public File appStore;
 	public File permFile;
 	public RebuildsMods rebuildsMods;
-	public ListsMods listsMods;
+	public ListsPacks listsPacks;
 	public JFrame mainFrame;
 	private ModPack modpack;
 	private ArrayList<UsesPack> packListeners;
+	public boolean changeFlag;
 
 	public static final String permUrl = "https://onedrive.live.com/download?resid=96628E67B4C51B81!161&ithint=" +
 			"file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
@@ -138,17 +139,32 @@ public class Globals {
 		return getInstance().modpack;
 	}
 
-	public static void setModPack(ModPack packIn, UsesPack source) {
+	public static void setModPack(ModPack packIn) {
+		saveCurrentPack();
 		getInstance().modpack = packIn;
-		modPackChanged(source);
+		modPackChanged(null, false);
+	}
+
+	public static void modPackChanged(UsesPack source, boolean dirty) {
+		getModPack().dirty = dirty;
 		for (UsesPack usesPack : getInstance().packListeners) {
-			if (!usesPack.equals(source)) usesPack.updatePack(getInstance().modpack);
+			if (source == null || !usesPack.equals(source)) usesPack.updatePack(getModPack());
 		}
 	}
 
-	public static void modPackChanged(UsesPack source) {
-		for (UsesPack usesPack : getInstance().packListeners) {
-			if (!usesPack.equals(source)) usesPack.updatePack(getInstance().modpack);
+	public static void saveCurrentPack() {
+		if(getModPack() != null && getModPack().dirty) {
+			System.out.println("Saving "+getModPack().shortName+" to disk");
+			getInstance().changeFlag = false;
+			if(!getModPack().saveThisObject()) {
+				System.out.println("Save failed");
+				return;
+			}
+			if(getInstance().changeFlag) {
+				modPackChanged(null, true);
+			}
+			getInstance().changeFlag = false;
+			getModPack().dirty = false;
 		}
 	}
 }

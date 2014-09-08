@@ -71,10 +71,12 @@ public class ForgeEditor extends JPanel {
 	}
 
 	public void setForgeType(ForgeType forgeType) {
+		oldType = forgeType;
 		forgeTypeEditor.setSelectedItem(forgeType);
 	}
 
 	public void setForgeVersion(int forgeVersion) {
+		oldVersion = Integer.toString(forgeVersion);
 		forgeVersionEditor.setText(Integer.toString(forgeVersion));
 	}
 

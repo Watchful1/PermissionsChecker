@@ -99,20 +99,21 @@ public class VersionEditor extends JPanel {
 		}
         model.add(0, newVersion);
 		if(recommendedIndex != -1) recommendedIndex++;
-		setRecommendedIndex(0);
+		setRecommendedIndex(0, true);
         notifyChanged();
     }
 
     private void removeSelectedVersion() {
         if(list.getSelectedIndex() > -1) {
-			if(model.getSize() == 1) {
+			int previousSelected = list.getSelectedIndex();
+			model.remove(previousSelected);
+			if(model.getSize() == 0) {
 				recommendedIndex = -1;
-			} else if(recommendedIndex == list.getSelectedIndex()) {
-				setRecommendedIndex(recommendedIndex + 1);
-			} else if(recommendedIndex > list.getSelectedIndex()) {
+			} else if(recommendedIndex == previousSelected) {
+				setRecommendedIndex(recommendedIndex + 1, true);
+			} else if(recommendedIndex > previousSelected) {
 				recommendedIndex--;
 			}
-            model.remove(list.getSelectedIndex());
             notifyChanged();
         }
     }
@@ -138,15 +139,15 @@ public class VersionEditor extends JPanel {
 			System.out.println("Can't find version "+recommendedVersion);
 			return;
 		}
-		setRecommendedIndex(index);
+		setRecommendedIndex(index, false);
 	}
 
-	private void setRecommendedIndex(int index) {
+	private void setRecommendedIndex(int index, boolean silent) {
 		if(index == recommendedIndex) return;
 		if(index < 0) index = 0;
 		if(index > model.getSize() - 1) index = model.getSize() - 1;
 		boolean first = false;
-		if(recommendedIndex != -1) {
+		if(recommendedIndex > -1 && recommendedIndex < model.getSize()) {
 			model.setElement(model.get(recommendedIndex).replaceAll("\\s\\*",""), recommendedIndex);
 		} else {
 			first = true;
@@ -154,7 +155,7 @@ public class VersionEditor extends JPanel {
 		model.setElement(model.get(index)+" *", index);
 		recommendedIndex = index;
 		list.repaint();
-        if(!first) notifyChanged();
+        if(!first && !silent) notifyChanged();
 	}
 
 	public String getRecommendedVersion() {

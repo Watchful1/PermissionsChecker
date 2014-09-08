@@ -22,6 +22,7 @@ public class HTMLField extends JPanel {
     }
 
     public HTMLField(String name, ChangeListener changeListener) {
+		this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
         this.changeListener = changeListener;
         oldText = "";
 
@@ -38,6 +39,7 @@ public class HTMLField extends JPanel {
         tabbedPane.setTabPlacement(JTabbedPane.RIGHT);
 
         textField = new JTextArea();
+		textField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
         textField.setLineWrap(true);
         textField.setWrapStyleWord(true);
         textField.addFocusListener(new FocusListener() {
@@ -60,6 +62,7 @@ public class HTMLField extends JPanel {
         VerticalTextIcon.addTab(tabbedPane, "Edit", scrollTextArea);
 
         viewHTML = new JLabel();
+		viewHTML.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
         viewHTML.setVerticalAlignment(SwingConstants.TOP);
         JScrollPane scrollLabel = new JScrollPane(viewHTML);
         scrollLabel.setMinimumSize(new Dimension(1, 150));

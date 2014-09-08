@@ -1,8 +1,6 @@
 package gr.watchful.permchecker.panels;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
 import gr.watchful.permchecker.datastructures.Globals;
@@ -47,7 +45,7 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
 		//buttons at the top to manage packs
-		buttonPanel = new JPanel();
+		/*buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		buttonPanel.setAlignmentX(0f);
 		
@@ -60,7 +58,7 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		});
 		buttonPanel.add(saveButton);
 
-		mainPanel.add(buttonPanel);
+		mainPanel.add(buttonPanel);*/
 
 		//fields in the middle to edit pack details
 		editorPanel = new JPanel();
@@ -175,8 +173,6 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 
 	@Override
 	public void updatePack(ModPack modPack) {
-		if(oldPack != null) savePack(oldPack);
-		oldPack = modPack;
 		setPack(modPack);
 	}
 
@@ -195,16 +191,17 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		System.out.println("State changed");
-		System.out.println(e.getSource());
-		if(Globals.getModPack() == null) return; //this isn't supposed to happen
+		if(Globals.getModPack() == null) return;
+
+		boolean changed = true;
 		if(e.getSource().equals(nameField)) {
 			Globals.getModPack().name = nameField.getText();
+			Globals.getInstance().listsPacks.nameChanged();
 		} else if(e.getSource().equals(authorField)) {
 			Globals.getModPack().author = authorField.getText();
 		} else if(e.getSource().equals(keyField)) {
 			if(keyField.getText() == null || keyField.getText().equals("")) return;
-			while(Globals.getInstance().listsMods.codeExists(keyField.getText(), shortNameField.getText())) {
+			while(Globals.getInstance().listsPacks.codeExists(keyField.getText(), shortNameField.getText())) {
 				String result = (String) JOptionPane.showInputDialog(
 						Globals.getInstance().mainFrame, "Key exists, pick new key",
 						"New key", JOptionPane.PLAIN_MESSAGE, null, null, keyField.getText());
@@ -238,7 +235,12 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 			if(fileChanged(serverSelector)) {
 				Globals.getModPack().server = serverSelector.getFile();
 			}
+		} else {
+			changed = false;
 		}
-		Globals.modPackChanged(this);
+		if(changed) {
+			Globals.modPackChanged(this, true);
+		}
+
 	}
 }

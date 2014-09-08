@@ -9,19 +9,18 @@ import gr.watchful.permchecker.utils.FileUtils;
 import gr.watchful.permchecker.utils.OsTypes;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public class mainClass extends JFrame implements ListsMods {
+public class mainClass extends JFrame implements ListsPacks {
 	private JTabbedPane tabbedPane;
 	private ModPacksPanel modPacksPanel;
     private UpdatePanel updatePanel;
@@ -32,7 +31,7 @@ public class mainClass extends JFrame implements ListsMods {
 
 	public mainClass() {
         Globals.getInstance().mainFrame = this;
-		Globals.getInstance().listsMods = this;
+		Globals.getInstance().listsPacks = this;
         Globals.getInstance().initializeFolders();
         Globals.getInstance().loadPreferences();
         Globals.getInstance().updateListings();
@@ -61,7 +60,7 @@ public class mainClass extends JFrame implements ListsMods {
             @Override
             public void selectionChanged(NamedSelectionEvent event) {
                 if(oldSelection != null && oldSelection.equals(modPacksList.getSelected())) return;
-				Globals.getInstance().setModPack(modPacksList.getSelected(), null);
+				Globals.getInstance().setModPack(modPacksList.getSelected());
                 oldSelection = modPacksList.getSelected();
 				modPacksList.revalidate();
             }
@@ -76,20 +75,6 @@ public class mainClass extends JFrame implements ListsMods {
         tabbedPane.add("Info", modPacksPanel);
         tabbedPane.add("Update", updatePanel);
 		tabbedPane.add("Permissions", permissionsPanel);
-
-		tabbedPane.addChangeListener(new ChangeListener() {
-			private int previousIndex = 0;
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
-				int index = sourceTabbedPane.getSelectedIndex();
-				if(previousIndex == 0) {
-					modPacksPanel.savePack(Globals.getModPack());
-					Globals.setModPack(Globals.getModPack(), modPacksPanel);
-				}
-				previousIndex = index;
-			}
-		});
 
 		this.add(tabbedPane);
 
@@ -187,7 +172,7 @@ public class mainClass extends JFrame implements ListsMods {
 
 
 		pack();
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setVisible(true);
 	}
 	
@@ -234,14 +219,40 @@ public class mainClass extends JFrame implements ListsMods {
 	public boolean shortnameExists(String shortname) {
 		for(int i=0; i<modPacksList.getModel().getSize(); i++) {
 			ModPack newPack = modPacksList.getModel().get(i);
-			if(shortname.equals(newPack.shortName)) return true;
+			if(shortname.equals(newPack.shortName)) {
+				System.out.println("Shortname exists in pack with name "+newPack.name);
+				return true;
+			}
 		}
-		return FileUtils.remoteFileExists(Globals.ftbRepoUrl+"static/"+shortname+"Icon.png") ||
-				FileUtils.remoteFileExists(Globals.ftbRepoUrl+"static/"+shortname+"Splash.png") ||
-				FileUtils.remoteFileExists(Globals.ftbRepoUrl+"privatepacks/"+shortname);
+
+		if(FileUtils.remoteFileExists(Globals.ftbRepoUrl+"static/"+shortname+"Icon.png")) {
+			System.out.println("Remote icon exists for "+shortname);
+			return true;
+		}
+		if(FileUtils.remoteFileExists(Globals.ftbRepoUrl+"static/"+shortname+"Splash.png")) {
+			System.out.println("Remote splash exists for "+shortname);
+			return true;
+		}
+		if(FileUtils.remoteFileExists(Globals.ftbRepoUrl+"privatepacks/"+shortname)) {
+			System.out.println("Remote folder exists for "+shortname);
+			return true;
+		}
+		return false;
 	}
 
-    public static void main(String[] args) {
-        new mainClass();
+	@Override
+	public void nameChanged() {
+		modPacksList.sortKeepSelected();
+	}
+
+	public static void main(String[] args) {
+        mainClass main = new mainClass();
+		main.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentHidden(ComponentEvent e) {
+				Globals.saveCurrentPack();
+				((JFrame)(e.getComponent())).dispose();
+			}
+		});
     }
 }

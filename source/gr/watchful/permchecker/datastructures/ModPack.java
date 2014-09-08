@@ -2,6 +2,7 @@ package gr.watchful.permchecker.datastructures;
 
 import gr.watchful.permchecker.utils.FileUtils;
 
+import javax.swing.*;
 import java.io.File;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class ModPack {
 	transient public File icon;
 	transient public File splash;
 	transient public File server;
+	transient public boolean dirty;
 	
 	public Time lastEdited;
 	public ArrayList<String> submitters;
@@ -67,10 +69,13 @@ public class ModPack {
 	
 	public Boolean saveThisObject() {
 		if(Globals.getInstance().preferences.saveFolder == null) return false;
-		else {
-			saveObject(new File(Globals.getInstance().preferences.saveFolder+File.separator+shortName+".json"), this);
-			return true;
+		else if(shortName == null || shortName.equals("")) {
+			if(createShortName(this)) Globals.getInstance().changeFlag = true;
+			else return false;
 		}
+
+		saveObject(new File(Globals.getInstance().preferences.saveFolder+File.separator+shortName+".json"), this);
+		return true;
 	}
 	
 	public static void saveObject(File saveFile, ModPack pack) {
@@ -154,6 +159,22 @@ public class ModPack {
 			bldr.append(versions.get(i));
 		}
 		return bldr.toString();
+	}
+
+	public static boolean createShortName(ModPack pack) {
+		String result = generateShortName(pack.name);
+		while(Globals.getInstance().listsPacks.shortnameExists(result)) {
+			result = (String) JOptionPane.showInputDialog(
+					Globals.getInstance().mainFrame, "Shortname exists for "+pack.name
+							+"\npick new shortname",
+					"New Shortname", JOptionPane.PLAIN_MESSAGE, null, null, pack.shortName);
+			if(result == null || result.equals("")) {
+				System.out.println("Shortname creation canceled");
+				return false;
+			}
+		}
+		pack.shortName = result;
+		return true;
 	}
 
 	public void addShortName(String shortName, String modID) {
