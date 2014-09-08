@@ -14,10 +14,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-/**
- * Eventually I will move everything relevant to the permissions panel from the mainClass constructor to here
- * @author watchful
- */
 @SuppressWarnings("serial")
 public class PermissionsPanel extends JPanel implements NamedScrollingListPanelListener, RebuildsMods, UsesPack {
 	private SortedListModel<Mod> goodMods;

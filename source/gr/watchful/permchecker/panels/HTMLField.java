@@ -23,11 +23,13 @@ public class HTMLField extends JPanel {
 
     public HTMLField(String name, ChangeListener changeListener) {
 		this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+		this.setPreferredSize(new Dimension(Integer.MAX_VALUE, 100));
+		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		this.setAlignmentX(0);
+
         this.changeListener = changeListener;
         oldText = "";
 
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.setAlignmentX(0);
         label = new JLabel(name);
         label.setMinimumSize(new Dimension(90, 21));
         label.setMaximumSize(new Dimension(90, 21));
@@ -35,11 +37,9 @@ public class HTMLField extends JPanel {
         this.add(label);
 
         tabbedPane = new JTabbedPane();
-        tabbedPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
         tabbedPane.setTabPlacement(JTabbedPane.RIGHT);
 
         textField = new JTextArea();
-		textField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
         textField.setLineWrap(true);
         textField.setWrapStyleWord(true);
         textField.addFocusListener(new FocusListener() {
@@ -62,10 +62,9 @@ public class HTMLField extends JPanel {
         VerticalTextIcon.addTab(tabbedPane, "Edit", scrollTextArea);
 
         viewHTML = new JLabel();
-		viewHTML.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
         viewHTML.setVerticalAlignment(SwingConstants.TOP);
         JScrollPane scrollLabel = new JScrollPane(viewHTML);
-        scrollLabel.setMinimumSize(new Dimension(1, 150));
+        scrollLabel.setMinimumSize(new Dimension(1, 100));
 
         VerticalTextIcon.addTab(tabbedPane, "View", scrollLabel);
 

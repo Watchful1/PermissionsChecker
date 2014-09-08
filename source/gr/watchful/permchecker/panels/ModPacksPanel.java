@@ -14,12 +14,6 @@ import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
 public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
-	private JPanel mainPanel;
-
-	private JPanel buttonPanel;
-	private JButton saveButton;
-
-	private JPanel editorPanel;
 	private LabelField nameField;
 	private LabelField authorField;
 	private LabelField shortNameField;
@@ -37,63 +31,37 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 	private NamedScrollingListPanel<ModPack> modPacksList;
 	
 	public ModPacksPanel(NamedScrollingListPanel<ModPack> modPacksListIn) {
-		this.setLayout(new BorderLayout());
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+		this.setAlignmentY(JPanel.TOP_ALIGNMENT);
 
 		modPacksList = modPacksListIn;
 
-		mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-
-		//buttons at the top to manage packs
-		/*buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-		buttonPanel.setAlignmentX(0f);
-		
-		saveButton = new JButton("Save");
-		saveButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				savePack(modPacksList.getSelected());
-			}
-		});
-		buttonPanel.add(saveButton);
-
-		mainPanel.add(buttonPanel);*/
-
-		//fields in the middle to edit pack details
-		editorPanel = new JPanel();
-		editorPanel.setLayout(new BoxLayout(editorPanel, BoxLayout.Y_AXIS));
-		editorPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-
 		nameField = new LabelField("Name", this);
-		editorPanel.add(nameField);
+		this.add(nameField);
 		authorField = new LabelField("Author", this);
-		editorPanel.add(authorField);
+		this.add(authorField);
 		shortNameField = new LabelField("ShortName");
 		shortNameField.lock("This is autocomputed, changing it breaks lots of stuff");
-		editorPanel.add(shortNameField);
+		this.add(shortNameField);
 		keyField = new LabelField("Pack Key", this);
-		editorPanel.add(keyField);
+		this.add(keyField);
 		descriptionField = new HTMLField("Description", this);
-		editorPanel.add(descriptionField);
+		this.add(descriptionField);
 		minecraftVersionSelector = new MinecraftVersionSelector("Minecraft", this);
 		minecraftVersionSelector.setVersions(Globals.getInstance().preferences.minecraftVersions);
 		minecraftVersionSelector.setVersion(Globals.getInstance().preferences.defaultMinecraftVersion);//TODO should this be here?
-		editorPanel.add(minecraftVersionSelector);
+		this.add(minecraftVersionSelector);
 		versionEditor = new VersionEditor("Version", this);
-		editorPanel.add(versionEditor);
+		this.add(versionEditor);
 		forgeEditor = new ForgeEditor("Forge", this);
-		editorPanel.add(forgeEditor);
+		this.add(forgeEditor);
 		iconSelector = new FileSelector("Icon", 150, "png", this);
-		editorPanel.add(iconSelector);
+		this.add(iconSelector);
 		splashSelector = new FileSelector("Splash", 150, "png", this);
-		editorPanel.add(splashSelector);
+		this.add(splashSelector);
 		serverSelector = new FileSelector("Server", -1, "zip", this);
-		editorPanel.add(serverSelector);
-
-		mainPanel.add(editorPanel);
-
-		this.add(mainPanel);
+		this.add(serverSelector);
 	}
 	
 	public void savePack(ModPack packIn) {
