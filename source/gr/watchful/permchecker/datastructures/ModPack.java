@@ -167,7 +167,7 @@ public class ModPack {
 			result = (String) JOptionPane.showInputDialog(
 					Globals.getInstance().mainFrame, "Shortname exists for "+pack.name
 							+"\npick new shortname",
-					"New Shortname", JOptionPane.PLAIN_MESSAGE, null, null, pack.shortName);
+					"New Shortname", JOptionPane.PLAIN_MESSAGE, null, null, result);
 			if(result == null || result.equals("")) {
 				System.out.println("Shortname creation canceled");
 				return false;

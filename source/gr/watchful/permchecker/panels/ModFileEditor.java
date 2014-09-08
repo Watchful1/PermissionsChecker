@@ -37,7 +37,6 @@ public class ModFileEditor extends JPanel implements SavesMods {
 		this.add(listPanel);
 		
 		modInfoEditor = new ModInfoEditor(new Dimension(500,900));
-		modInfoEditor.editShortName(true);
 		this.add(modInfoEditor);
 		
 		modInfoEditor.addSaveListener(this);
@@ -55,5 +54,6 @@ public class ModFileEditor extends JPanel implements SavesMods {
 			System.out.println("ID: "+IDs.getModel().getElementAt(i)+" Shortname: "+modInfo.shortName);
 			Globals.getModPack().addShortName(modInfo.shortName, (String) IDs.getModel().getElementAt(i));
 		}
+		Globals.saveCurrentPack();
 	}
 }
