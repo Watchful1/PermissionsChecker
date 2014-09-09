@@ -124,6 +124,10 @@ public class ModNameRegistry {
 		}
 	}
 
+	public boolean shortnameExists(String shortName) {
+		return shortNameMappings.containsValue(shortName);
+	}
+
 	public ModInfo getInfo(Mod mod) {
 		return getInfo(mod, null);
 	}

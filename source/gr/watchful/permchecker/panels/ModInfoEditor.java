@@ -128,15 +128,20 @@ public class ModInfoEditor extends JPanel {
 
 		modInfo.publicPolicy = publicPermType.getType();
 		if(modInfo.shortName == null || modInfo.shortName.equals("")) {
-			String result = ModPack.generateShortName(modInfo.modName).toLowerCase();
-			while(Globals.getInstance().nameRegistry.checkID(result) == null) {
-
+			String generated = ModPack.generateShortName(modInfo.modName).toLowerCase();
+			String result = generated;
+			while(Globals.getInstance().nameRegistry.shortnameExists(result)) {
+				result = (String) JOptionPane.showInputDialog(
+						Globals.getInstance().mainFrame, "Shortname exists, pick new shortname\n\nHit cancel to overwrite",
+						"New Shortname", JOptionPane.PLAIN_MESSAGE, null, null, result);
+				if(result == null) {
+					result = generated;
+					break;
+				}
 			}
-			result = (String) JOptionPane.showInputDialog(
-					Globals.getInstance().mainFrame, "Shortname exists, pick new shortname",
-					"New Shortname", JOptionPane.PLAIN_MESSAGE, null, null, result);
+			modInfo.shortName = result;
+			shortName.setText(result);
 		}
-		modInfo.shortName = shortName.getText();
 		
 		modInfo.customLink = customLink.getText();
 		modInfo.isPublicPerm = isPublic;
