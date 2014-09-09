@@ -11,17 +11,22 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import gr.watchful.permchecker.utils.FileUtils;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
+import javax.swing.*;
+
 public class ModFinder {
-	// We need a central place to add ID's to when we can't return what we want
+	// We need a central place to add ID's for when we can't return what we want
 	private ModFile otherMod;
+	private int rawClasses;
 
 	public ArrayList<ModFile> discoverModFiles(File folder) {
+		rawClasses = 0;
 		ArrayList<ModFile> modFiles = new ArrayList<>();
 
 		if(folder == null || !folder.exists()) return modFiles;
@@ -30,14 +35,14 @@ public class ModFinder {
 		for(File file : folder.listFiles()) {
 			if(file.isDirectory())  modFiles.addAll(discoverModFiles(file));
 			else {
-				/*int i = file.getName().lastIndexOf('.');
+				int i = file.getName().lastIndexOf('.');
 				if (i <= 0) continue;
 				String extension = file.getName().substring(i+1);
 				boolean good = false;
 				for(String type : Globals.modTypes) {
 					if(type.equals(extension)) good = true;
 				}
-				if(!good) continue; *///TODO Clumsy, need to work on
+				if(!good) continue;
 				try {
 					temp = processFile(file);
 					if (temp != null) modFiles.add(temp);
@@ -46,27 +51,41 @@ public class ModFinder {
 				}
 			}
 		}
-
+		if(rawClasses > 0) JOptionPane.showMessageDialog(Globals.getInstance().mainFrame, "Raw class files are present in the mods folder\n"+
+				"This is not supported by this tool and may cause problems in the FTB launcher");
 		return modFiles;
 	}
 
 	public ModFile processFile(File modArchive) throws IOException, ClassNotFoundException {
 		otherMod = new ModFile(modArchive);
 
-		ZipFile file = new ZipFile(modArchive);
-		Enumeration<? extends ZipEntry> files = file.entries();
-		while(files.hasMoreElements()) {
-			ZipEntry item = files.nextElement();
-			if(item.getName().equals("mcmod.info")) {
-				otherMod.mcmod = MetadataCollection.from(file.getInputStream(item), file.getName());
-			}
-			if(item.isDirectory() || !item.getName().endsWith("class")) continue;
+		String ext = FileUtils.getFileExtension(modArchive);
 
-			ClassReader reader = new ClassReader(file.getInputStream(item));
-			reader.accept(new ModClassVisitor(), 0);
+		if(ext.equals("jar") || ext.equals("zip") || ext.equals("disabled")) {
+			ZipFile file = new ZipFile(modArchive);
+			Enumeration<? extends ZipEntry> files = file.entries();
+			while(files.hasMoreElements()) {
+				ZipEntry item = files.nextElement();
+				if(item.getName().equals("mcmod.info")) {
+					otherMod.mcmod = MetadataCollection.from(file.getInputStream(item), file.getName());
+				}
+				if(item.isDirectory() || !item.getName().endsWith("class")) continue;
+
+				ClassReader reader = new ClassReader(file.getInputStream(item));
+				reader.accept(new ModClassVisitor(), 0);
+			}
+			file.close();
+			return otherMod;
+		} else if(ext.equals("litemod")) {
+			ZipFile file = new ZipFile(modArchive);
+			ZipEntry entry = file.getEntry("litemod.json");
+			if(entry == null) return null;
+			file.getInputStream(entry);
+			return null;
+		} else if(ext.equals("class")) {
+			rawClasses++;
 		}
-		file.close();
-		return otherMod;
+		return null;
 	}
 
 	public class ModClassVisitor extends ClassVisitor {

@@ -124,7 +124,7 @@ public class FileUtils {
 			zipFile.extractAll(outputLocation.getPath());
 			System.out.println("Unzip done");
 			return true;
-		} catch (ZipException e) {
+		} catch (Exception e) {
 			System.out.println("Unzip failed");
 			//e.printStackTrace();
 
@@ -176,7 +176,7 @@ public class FileUtils {
 			zipFile.addFolder(folder.getPath(), parameters);
 			System.out.println("Zip done");
 			return true;
-		} catch (ZipException e) {
+		} catch (Exception e) {
 			System.out.println("Zip failed");
 
 			Object[] options = {"Yes", "No"};
@@ -489,5 +489,14 @@ public class FileUtils {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public static String getFileExtension(File file) {
+		if(file == null) return null;
+		int extPos = file.getAbsolutePath().lastIndexOf(".");
+		int sepPos = file.getAbsolutePath().lastIndexOf(File.pathSeparator);
+		if(extPos == -1) return null;
+		if(sepPos > extPos) return null;
+		return file.getAbsolutePath().substring(extPos+1);
 	}
 }
