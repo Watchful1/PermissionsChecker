@@ -137,16 +137,20 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 			FileUtils.moveFile(Globals.getModPack().icon, new File(Globals.getInstance().preferences.exportFolder
 					+ File.separator + "static" + File.separator +
 					Globals.getModPack().getIconName()));
+			Globals.getModPack().icon = null;
 		}
 		if(Globals.getModPack().splash != null && Globals.getModPack().splash.exists()) {
 			FileUtils.moveFile(Globals.getModPack().splash, new File(Globals.getInstance().preferences.exportFolder
 					+ File.separator + "static" + File.separator +
 					Globals.getModPack().getSplashName()));
+			Globals.getModPack().splash = null;
 		}
 		if(Globals.getModPack().server != null && Globals.getModPack().server.exists()) {
 			FileUtils.moveFile(Globals.getModPack().server, new File(packExportFolder + File.separator +
 					Globals.getModPack().serverName));
+			Globals.getModPack().server = null;
 		}
+		Globals.modPackChanged(this, false);
 
 		System.out.println("Deleting working folder");
 		FileUtils.purgeDirectory(Globals.getInstance().preferences.workingFolder);
