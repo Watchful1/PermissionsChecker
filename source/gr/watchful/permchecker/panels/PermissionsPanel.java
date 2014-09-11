@@ -174,7 +174,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 			ModInfo modInfo = Globals.getInstance().nameRegistry.getInfo(goodMods.get(i), Globals.getModPack());
 
 			StringBuilder bldr2 = new StringBuilder();
-			bldr2.append("<a href=\"");
+			bldr2.append("<a color=\"aqua\" href=\"");
 			bldr2.append(modInfo.modLink);
 			bldr2.append("\">");
 			bldr2.append(modInfo.modName);
