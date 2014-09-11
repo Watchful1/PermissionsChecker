@@ -1,9 +1,12 @@
 package gr.watchful.permchecker.modhandling;
 
+import com.google.gson.JsonObject;
 import gr.watchful.permchecker.datastructures.*;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -12,6 +15,8 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import gr.watchful.permchecker.utils.FileUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -61,13 +66,40 @@ public class ModFinder {
 
 		String ext = FileUtils.getFileExtension(modArchive);
 
-		if(ext.equals("jar") || ext.equals("zip") || ext.equals("disabled")) {
+		if(ext.equals("jar") || ext.equals("zip") || ext.equals("litemod") || ext.equals("disabled")) {
 			ZipFile file = new ZipFile(modArchive);
 			Enumeration<? extends ZipEntry> files = file.entries();
 			while(files.hasMoreElements()) {
 				ZipEntry item = files.nextElement();
 				if(item.getName().equals("mcmod.info")) {
 					otherMod.mcmod = MetadataCollection.from(file.getInputStream(item), file.getName());
+				}
+				if(item.getName().equals("litemod.json")) {
+					BufferedReader streamReader = new BufferedReader(new InputStreamReader(file.getInputStream(item), "UTF-8"));
+					StringBuilder responseStrBuilder = new StringBuilder();
+
+					String inputStr;
+					while ((inputStr = streamReader.readLine()) != null)
+						responseStrBuilder.append(inputStr);
+					JSONObject litemodJSON;
+					try {
+						litemodJSON = new JSONObject(responseStrBuilder.toString());
+						String name = (String) litemodJSON.get("name");
+						otherMod.addID(name);
+					} catch (JSONException e) {
+						e.printStackTrace();
+						continue;
+					}
+				}
+				if(item.getName().equals("META-INF/MANIFEST.MF")) {
+					BufferedReader streamReader = new BufferedReader(new InputStreamReader(file.getInputStream(item), "UTF-8"));
+
+					String inputStr;
+					while ((inputStr = streamReader.readLine()) != null) {
+						if(inputStr.startsWith("TweakName:")) {
+							otherMod.addID(inputStr.split(" ")[1]);
+						}
+					}
 				}
 				if(item.isDirectory() || !item.getName().endsWith("class")) continue;
 
@@ -76,12 +108,6 @@ public class ModFinder {
 			}
 			file.close();
 			return otherMod;
-		} else if(ext.equals("litemod")) {
-			ZipFile file = new ZipFile(modArchive);
-			ZipEntry entry = file.getEntry("litemod.json");
-			if(entry == null) return null;
-			file.getInputStream(entry);
-			return null;
 		} else if(ext.equals("class")) {
 			rawClasses++;
 		}
