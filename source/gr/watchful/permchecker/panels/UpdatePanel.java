@@ -9,6 +9,7 @@ import gr.watchful.permchecker.utils.FileUtils;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -74,7 +75,19 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 
 		FileUtils.purgeDirectory(Globals.getInstance().preferences.workingFolder);
 		boolean temp = FileUtils.extractZipTo(file, Globals.getInstance().preferences.workingFolder);
-		if(temp && !Globals.getInstance().preferences.copyImportAssets) file.delete();
+		if(temp) {
+			File working = Globals.getInstance().preferences.workingFolder;
+			if(!(new File(working, "minecraft").exists())) {
+				for(File tempFolder : working.listFiles()) {
+					if(!tempFolder.isDirectory()) continue;
+					if((new File(tempFolder, "minecraft")).exists()) {
+						System.out.println("Found minecraft folder in subfolder, moving up");
+						FileUtils.moveFile(new File(tempFolder, "minecraft"), new File(working, "minecraft"));
+					}
+				}
+			}
+			if (!Globals.getInstance().preferences.copyImportAssets) file.delete();
+		}
 	}
 
 	/**
