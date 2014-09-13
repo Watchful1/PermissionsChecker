@@ -73,10 +73,10 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 
 	private void updateEditor(String list, int selected) {
 		if(list.equals("Good")) {
-			System.out.println(good.getSelected().modFile.fileName());
-			for(String id : good.getSelected().modFile.IDs.getArrayList()) {
+			//System.out.println(good.getSelected().modFile.fileName());
+			/*for(String id : good.getSelected().modFile.IDs.getArrayList()) {
 				System.out.println(id);
-			}
+			}*/
 			bad.clearSelection();
 			unknown.clearSelection();
 
@@ -86,10 +86,10 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 			modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(good.getSelected()), good.getSelected().shortName);
 		}
 		if(list.equals("Bad")) {
-			System.out.println(bad.getSelected().modFile.fileName());
-			for(String id : bad.getSelected().modFile.IDs.getArrayList()) {
+			//System.out.println(bad.getSelected().modFile.fileName());
+			/*for(String id : bad.getSelected().modFile.IDs.getArrayList()) {
 				System.out.println(id);
-			}
+			}*/
 			good.clearSelection();
 			unknown.clearSelection();
 
@@ -99,7 +99,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 			modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(bad.getSelected()), bad.getSelected().shortName);
 		}
 		if(list.equals("Unknown")) {
-			System.out.println(unknown.getSelected().fileName());
+			//System.out.println(unknown.getSelected().fileName());
 			good.clearSelection();
 			bad.clearSelection();
 

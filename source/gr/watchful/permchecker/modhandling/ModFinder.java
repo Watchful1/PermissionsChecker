@@ -103,7 +103,12 @@ public class ModFinder {
 				}
 				if(item.isDirectory() || !item.getName().endsWith("class")) continue;
 
-				ClassReader reader = new ClassReader(file.getInputStream(item));
+				ClassReader reader;
+				try {
+					reader = new ClassReader(file.getInputStream(item));
+				} catch (Exception e) {
+					continue;
+				}
 				reader.accept(new ModClassVisitor(), 0);
 			}
 			file.close();
