@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="PermChecker:jar">
-    <output-path>$PROJECT_DIR$/../../../Dropbox/Public</output-path>
+    <output-path>$USER_HOME$/Dropbox/Public</output-path>
     <root id="archive" name="PermChecker.jar">
       <element id="module-output" name="PermChecker" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/3.10-FINAL/42b365f90a4bedbf95944a409c8a25d5952bc3af/poi-ooxml-3.10-FINAL.jar" path-in-jar="/" />
