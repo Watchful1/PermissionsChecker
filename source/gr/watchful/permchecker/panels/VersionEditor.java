@@ -51,9 +51,11 @@ public class VersionEditor extends JPanel {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+				String tempVersion = "1.0.0";
+				if(model.getSize() > 0) tempVersion = model.get(0);
                 String result = (String) JOptionPane.showInputDialog(
                         Globals.getInstance().mainFrame,
-                        "", "New Version", JOptionPane.PLAIN_MESSAGE);
+                        "", "New Version", JOptionPane.PLAIN_MESSAGE, null, null, tempVersion);
                 if(result != null) {
                     if(result.matches("\\d(\\.\\d+)*")) {
                         addVersion(result);
