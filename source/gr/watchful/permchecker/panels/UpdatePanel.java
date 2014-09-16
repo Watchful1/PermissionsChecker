@@ -77,17 +77,46 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		boolean temp = FileUtils.extractZipTo(file, Globals.getInstance().preferences.workingFolder);
 		if(temp) {
 			File working = Globals.getInstance().preferences.workingFolder;
-			if(!(new File(working, "minecraft").exists())) {
+			if(getMinecraftFolder(working) == null) {
+				boolean found = false;
 				for(File tempFolder : working.listFiles()) {
 					if(!tempFolder.isDirectory()) continue;
-					if((new File(tempFolder, "minecraft")).exists()) {
+					if(getMinecraftFolder(tempFolder) != null) {
 						System.out.println("Found minecraft folder in subfolder, moving up");
 						FileUtils.moveFile(new File(tempFolder, "minecraft"), new File(working, "minecraft"));
+						found = true;
+						break;
 					}
+				}
+				if(!found) {
+					if(new File(working, "mods").exists()) {
+						System.out.println("Found mods folder in root, moving down");
+						File minecraftFolder = new File(working, "minecraft");
+						minecraftFolder.mkdirs();
+						for(File tempFile : working.listFiles()) {
+							if(!tempFile.getName().equals("minecraft")) {
+								tempFile.renameTo(new File(minecraftFolder, tempFile.getName()));
+							}
+						}
+					}
+				} else {
+					System.out.println("Couldn't find minecraft folder");
 				}
 			}
 			if (!Globals.getInstance().preferences.copyImportAssets) file.delete();
 		}
+	}
+
+	public static File getMinecraftFolder(File parentFolder) {
+		File minecraftFolder = new File(parentFolder, "minecraft");
+		if(minecraftFolder.exists()) return minecraftFolder;
+
+		File minecraftDotFolder = new File(parentFolder, ".minecraft");
+		if(minecraftDotFolder.exists()) {
+			minecraftDotFolder.renameTo(minecraftFolder);
+			return minecraftFolder;
+		}
+		return null;
 	}
 
 	/**
@@ -134,7 +163,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		String xml = FileUtils.buildXML(Globals.getModPack());
 		if(!FileUtils.writeFile(xml, new File(
 				Globals.getInstance().preferences.exportFolder+File.separator+"static"+
-				File.separator+Globals.getModPack().key+".xml"), true)) {
+				File.separator+Globals.getModPack().key+".xml"), false)) {
 			System.out.println("xml export failed");
 			return;
 		}

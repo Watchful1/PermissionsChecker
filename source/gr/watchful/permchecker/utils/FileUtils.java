@@ -499,4 +499,8 @@ public class FileUtils {
 		if(sepPos > extPos) return null;
 		return file.getAbsolutePath().substring(extPos+1);
 	}
+
+	public static void moveDirContents(File dir) {
+
+	}
 }
