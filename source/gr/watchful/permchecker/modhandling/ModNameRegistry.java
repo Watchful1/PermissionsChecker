@@ -127,19 +127,6 @@ public class ModNameRegistry {
 		}
 	}
 
-	public String checkMD5(String md5) {
-		return checkMD5(md5, null);
-	}
-
-	public String checkMD5(String md5, ModPack modPack) {
-		if(modPack != null && modPack.md5Mappings != null
-				&& modPack.md5Mappings.containsKey(md5)) {
-			return modPack.md5Mappings.get(md5);
-		} else {
-			return md5Mappings.get(md5);
-		}
-	}
-
 	public boolean shortnameExists(String shortName) {
 		return shortNameMappings.containsValue(shortName);
 	}
@@ -178,16 +165,20 @@ public class ModNameRegistry {
 
 		String result;
 		HashSet<String> identifiedIDs = new HashSet<>();
-		for(int i=0; i<modFile.IDs.getSize(); i++) {
-			result = checkID(modFile.IDs.get(i), modPack);
-			if(result == null) {
-				String md5 = FileUtils.getMD5(modFile.file);
-				if(md5 != null) {
-					result = checkMD5(md5, modPack);
-				}
+		if(modFile.IDs.getSize() > 0) {
+			for(int i=0; i<modFile.IDs.getSize(); i++) {
+				result = checkID(modFile.IDs.get(i), modPack);
+				if(result != null) identifiedIDs.add(result);
 			}
-			if(result != null) identifiedIDs.add(result);
+		} else {
+			String md5 = FileUtils.getMD5(modFile.file);
+			if(md5 != null) {
+				modFile.md5 = md5;
+				result = checkID(md5, modPack);
+				if(result != null) identifiedIDs.add(result);
+			}
 		}
+
 		for(String ID : identifiedIDs) {
 			mods.add(new Mod(modFile, ID));
 		}

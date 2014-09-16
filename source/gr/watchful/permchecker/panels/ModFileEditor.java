@@ -5,6 +5,7 @@ import gr.watchful.permchecker.datastructures.ModFile;
 import gr.watchful.permchecker.datastructures.ModInfo;
 import gr.watchful.permchecker.datastructures.SavesMods;
 import gr.watchful.permchecker.modhandling.ModNameRegistry;
+import gr.watchful.permchecker.utils.FileUtils;
 
 import java.awt.Dimension;
 
@@ -15,6 +16,7 @@ import javax.swing.JPanel;
 public class ModFileEditor extends JPanel implements SavesMods {
 	private NamedScrollingListPanel<String> names;
 	private NamedScrollingListPanel<String> IDs;
+	private ModFile modFile;
 	
 	private ModInfoEditor modInfoEditor;
 	
@@ -46,13 +48,23 @@ public class ModFileEditor extends JPanel implements SavesMods {
 		names.setModel(modFile.names);
 		IDs.setModel(modFile.IDs);
 		modInfoEditor.setMod(modFile.getInfo(), "");
+		this.modFile = modFile;
 	}
 
 	@Override
 	public void saveMod(ModInfo modInfo) {
-		for(int i=0; i<IDs.getModel().getSize(); i++) {
-			System.out.println("ID: "+IDs.getModel().getElementAt(i)+" Shortname: "+modInfo.shortName);
-			Globals.getModPack().addShortName(modInfo.shortName, (String) IDs.getModel().getElementAt(i));
+		if(IDs.getModel().getSize() > 0) {
+			for (int i = 0; i < IDs.getModel().getSize(); i++) {
+				//System.out.println("ID: "+IDs.getModel().getElementAt(i)+" Shortname: "+modInfo.shortName);
+				Globals.getModPack().addShortName(modInfo.shortName, (String) IDs.getModel().getElementAt(i));
+			}
+		} else if(modFile != null && modFile.md5 != null && !modFile.md5.equals("")) {
+			Globals.getInstance().preferences.unknownMods.put(modFile.md5, modFile.fileName());
+		} else if(modFile != null) {
+			String md5 = FileUtils.getMD5(modFile.file);
+			if(md5 != null) {
+				Globals.getInstance().preferences.unknownMods.put(md5, modFile.fileName());
+			}
 		}
 		Globals.saveCurrentPack();
 	}
