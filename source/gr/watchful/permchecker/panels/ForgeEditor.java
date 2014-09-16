@@ -13,11 +13,12 @@ import java.awt.event.FocusListener;
 
 public class ForgeEditor extends JPanel {
 	private JLabel label;
-	private JComboBox<ForgeType> forgeTypeEditor;
+	private JComboBox<String> forgeTypeEditor;
 	private JTextField forgeVersionEditor;
     private ChangeListener changeListener;
     private String oldVersion;
     private ForgeType oldType;
+	private String[] values = {"Recommended", "Latest"};
 
 	public ForgeEditor(String name) {
         this(name, null);
@@ -37,13 +38,14 @@ public class ForgeEditor extends JPanel {
 		label.setPreferredSize(new Dimension(90, 21));
 		this.add(label);
 
-		forgeTypeEditor = new JComboBox<>(ForgeType.values());
+		forgeTypeEditor = new JComboBox<>(values);
 		forgeTypeEditor.setMaximumSize(new Dimension(120, 21));
         forgeTypeEditor.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(oldType.equals(getForgeType())) return;
                 oldType = getForgeType();
+				setForgeVersion(-1);
                 notifyChanged();
             }
         });
@@ -81,7 +83,14 @@ public class ForgeEditor extends JPanel {
 	}
 
 	public ForgeType getForgeType() {
-		return (ForgeType) forgeTypeEditor.getSelectedItem();
+		if(getForgeVersion() != -1) {
+			return ForgeType.VERSION;
+		} else if(forgeTypeEditor.getSelectedItem().equals(values[0])) {
+			return ForgeType.RECOMMENDED;
+		} else if(forgeTypeEditor.getSelectedItem().equals(values[1])) {
+			return ForgeType.LATEST;
+		}
+		return null; //shouldn't happen
 	}
 
 	public int getForgeVersion() {
