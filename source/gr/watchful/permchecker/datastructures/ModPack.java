@@ -38,6 +38,7 @@ public class ModPack {
 	public String submitURL;
 
 	public HashMap<String, String> shortNameMappings;
+	public HashMap<String, String> md5Mappings;
 	public HashMap<String, ModInfo> modInfoMappings;
 	
 	public ModPack() {
@@ -60,6 +61,7 @@ public class ModPack {
 		if(modList == null) modList = new ArrayList<>();
 		if(forgeType == null) forgeType = ForgeType.RECOMMENDED;
 		if(shortNameMappings == null) shortNameMappings = new HashMap<>();
+		if(md5Mappings == null) md5Mappings = new HashMap<>();
 		if(modInfoMappings == null) modInfoMappings = new HashMap<>();
 	}
 	

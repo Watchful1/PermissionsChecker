@@ -1,6 +1,7 @@
 package gr.watchful.permchecker.modhandling;
 
 import gr.watchful.permchecker.datastructures.*;
+import gr.watchful.permchecker.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,11 +15,13 @@ public class ModNameRegistry {
 	public static String imageExtension;
 	
 	private HashMap<String, String> shortNameMappings;
+	private HashMap<String, String> md5Mappings;
 	private HashMap<String, ModInfo> modInfoMappings;
 	
 	public ModNameRegistry() {
-		shortNameMappings = new HashMap<String, String>();
-		modInfoMappings = new HashMap<String, ModInfo>();
+		shortNameMappings = new HashMap<>();
+		md5Mappings = new HashMap<>();
+		modInfoMappings = new HashMap<>();
 	}
 	
 	public void loadMappings(ArrayList<ArrayList<String>> infos, ArrayList<ArrayList<String>> mappings, String baseUrl, String extension) {
@@ -162,10 +165,20 @@ public class ModNameRegistry {
 
 		String result;
 		HashSet<String> identifiedIDs = new HashSet<>();
-		for(int i=0; i<modFile.IDs.getSize(); i++) {
-			result = checkID(modFile.IDs.get(i), modPack);
-			if(result != null) identifiedIDs.add(result);
+		if(modFile.IDs.getSize() > 0) {
+			for(int i=0; i<modFile.IDs.getSize(); i++) {
+				result = checkID(modFile.IDs.get(i), modPack);
+				if(result != null) identifiedIDs.add(result);
+			}
+		} else {
+			String md5 = FileUtils.getMD5(modFile.file);
+			if(md5 != null) {
+				modFile.md5 = md5;
+				result = checkID(md5, modPack);
+				if(result != null) identifiedIDs.add(result);
+			}
 		}
+
 		for(String ID : identifiedIDs) {
 			mods.add(new Mod(modFile, ID));
 		}

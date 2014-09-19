@@ -9,6 +9,11 @@ import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.*;
@@ -500,7 +505,32 @@ public class FileUtils {
 		return file.getAbsolutePath().substring(extPos+1);
 	}
 
-	public static void moveDirContents(File dir) {
+	public static String getMD5(File file) {
+		try (FileInputStream inputStream = new FileInputStream(file)) {
+			MessageDigest digest = MessageDigest.getInstance("MD5");
 
+			byte[] bytesBuffer = new byte[1024];
+			int bytesRead = -1;
+
+			while ((bytesRead = inputStream.read(bytesBuffer)) != -1) {
+				digest.update(bytesBuffer, 0, bytesRead);
+			}
+
+			byte[] hashedBytes = digest.digest();
+
+			return convertByteArrayToHexString(hashedBytes);
+		} catch (NoSuchAlgorithmException | IOException ex) {
+			System.out.println("Couldn't generate hash");
+			return null;
+		}
+	}
+
+	private static String convertByteArrayToHexString(byte[] arrayBytes) {
+		StringBuffer stringBuffer = new StringBuffer();
+		for (int i = 0; i < arrayBytes.length; i++) {
+			stringBuffer.append(Integer.toString((arrayBytes[i] & 0xff) + 0x100, 16)
+					.substring(1));
+		}
+		return stringBuffer.toString();
 	}
 }
