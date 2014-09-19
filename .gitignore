@@ -220,3 +220,5 @@ pip-log.txt
 build/
 .gradle/
 /PermChecker.iml
+
+outfilename
