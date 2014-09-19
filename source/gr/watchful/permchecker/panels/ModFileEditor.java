@@ -59,13 +59,12 @@ public class ModFileEditor extends JPanel implements SavesMods {
 				Globals.getModPack().addShortName(modInfo.shortName, (String) IDs.getModel().getElementAt(i));
 			}
 		} else if(modFile != null && modFile.md5 != null && !modFile.md5.equals("")) {
-			Globals.getInstance().preferences.unknownMods.put(modFile.md5, modFile.fileName());
+			Globals.getModPack().addShortName(modInfo.shortName, modFile.md5);
 		} else if(modFile != null) {
 			String md5 = FileUtils.getMD5(modFile.file);
 			if(md5 != null) {
-				Globals.getInstance().preferences.unknownMods.put(md5, modFile.fileName());
+				Globals.getModPack().addShortName(modInfo.shortName, md5);
 			}
 		}
-		Globals.saveCurrentPack();
 	}
 }

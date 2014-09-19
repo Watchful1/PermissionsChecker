@@ -38,7 +38,6 @@ public class ModPack {
 	public String submitURL;
 
 	public HashMap<String, String> shortNameMappings;
-	public HashMap<String, String> md5Mappings;
 	public HashMap<String, ModInfo> modInfoMappings;
 	
 	public ModPack() {
@@ -61,7 +60,6 @@ public class ModPack {
 		if(modList == null) modList = new ArrayList<>();
 		if(forgeType == null) forgeType = ForgeType.RECOMMENDED;
 		if(shortNameMappings == null) shortNameMappings = new HashMap<>();
-		if(md5Mappings == null) md5Mappings = new HashMap<>();
 		if(modInfoMappings == null) modInfoMappings = new HashMap<>();
 	}
 	
@@ -180,10 +178,14 @@ public class ModPack {
 	}
 
 	public void addShortName(String shortName, String modID) {
+		System.out.println("Saving ID "+modID+" as "+shortName);
 		shortNameMappings.put(modID, shortName);
+		dirty = true;
 	}
 
 	public void addModInfo(String shortName, ModInfo modInfo) {
+		System.out.println("Saving ModInfo "+modInfo.modName+" as "+shortName);
 		modInfoMappings.put(shortName, modInfo);
+		dirty = true;
 	}
 }

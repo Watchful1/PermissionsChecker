@@ -10,6 +10,6 @@ public class SimpleObjectComparator implements Comparator<Object> {
 			ModPack pack2 = (ModPack) o2;
 			if(pack1.name.equals(pack2.name)) return pack1.shortName.compareTo(pack2.shortName);
 			else return pack1.name.compareTo(pack2.name);
-		} else return o1.toString().compareTo(o2.toString());
+		} else return o1.toString().toLowerCase().compareTo(o2.toString().toLowerCase());
     }
 }

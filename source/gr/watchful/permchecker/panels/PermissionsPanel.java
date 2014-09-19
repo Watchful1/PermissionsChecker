@@ -83,7 +83,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 			CardLayout cardLayout = (CardLayout)(cards.getLayout());
 			cardLayout.show(cards, "MODEDITOR");
 
-			modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(good.getSelected()), good.getSelected().shortName);
+			modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(good.getSelected(), Globals.getModPack()), good.getSelected().shortName);
 		}
 		if(list.equals("Bad")) {
 			//System.out.println(bad.getSelected().modFile.fileName());
@@ -96,7 +96,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 			CardLayout cardLayout = (CardLayout)(cards.getLayout());
 			cardLayout.show(cards, "MODEDITOR");
 
-			modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(bad.getSelected()), bad.getSelected().shortName);
+			modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(bad.getSelected(), Globals.getModPack()), bad.getSelected().shortName);
 		}
 		if(list.equals("Unknown")) {
 			//System.out.println(unknown.getSelected().fileName());

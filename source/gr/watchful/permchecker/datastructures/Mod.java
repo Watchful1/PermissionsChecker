@@ -16,7 +16,7 @@ public class Mod {
 	}
 	
 	public String toString() {
-		ModInfo modInfo = Globals.getInstance().nameRegistry.getInfo(this);
+		ModInfo modInfo = Globals.getInstance().nameRegistry.getInfo(this, Globals.getModPack());
 		String priv = "";
 		if(permStatus == PRIVATE)  priv = "P) ";
 		if(modInfo == null || modInfo.modName == "Unknown") {
