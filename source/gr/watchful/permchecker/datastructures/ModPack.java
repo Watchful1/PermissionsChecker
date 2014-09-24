@@ -17,8 +17,8 @@ public class ModPack {
 	public String description;//simple
 	public String recommendedVersion;//simple, select from available
 	public String minecraftVersion;//simple, select from available
-	public ArrayList<String> versions;//add, simple. Remove, change rec version if necessary. Move TODO
-	transient public ArrayList<String> modList;//autocomputed, no interface
+	public ArrayList<ModPackVersion> versions;//add, simple. Remove, change rec version if necessary. Move TODO
+	public ArrayList<String> modList;//autocomputed, no interface
 	public ForgeType forgeType;
 	public int ForgeVersion;
     public boolean isPublic;
@@ -27,6 +27,9 @@ public class ModPack {
 	public String splashName;
 	public String serverName;
 	public String zipName;
+
+	public String warning;
+	public String animation;
 
 	transient public File icon;
 	transient public File splash;
@@ -54,9 +57,9 @@ public class ModPack {
 		if(key == null || key.equals("")) key = generateKey();
 		if(description == null) description = "";
 		if(versions == null) versions = new ArrayList<>();
-		if(versions.size() == 0) versions.add("1.0.0");
+		if(versions.size() == 0) versions.add(new ModPackVersion("1.0.0"));
 		if(recommendedVersion == null || recommendedVersion.equals(""))
-			recommendedVersion = versions.get(0);
+			recommendedVersion = versions.get(0).version;
 		if(minecraftVersion == null || minecraftVersion.equals("")) minecraftVersion = "1.6.4";
 		if(modList == null) modList = new ArrayList<>();
 		if(forgeType == null) forgeType = ForgeType.RECOMMENDED;
@@ -155,10 +158,10 @@ public class ModPack {
 	public String getStringVersions() {
 		if(versions.size() == 0) return "";
 		StringBuilder bldr = new StringBuilder();
-		bldr.append(versions.get(0));
+		bldr.append(versions.get(0).version);
 		for(int i=1; i<versions.size(); i++) {
 			bldr.append(";");
-			bldr.append(versions.get(i));
+			bldr.append(versions.get(i).version);
 		}
 		return bldr.toString();
 	}

@@ -16,8 +16,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.zip.*;
 
+import gr.watchful.permchecker.datastructures.ModPackVersion;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
@@ -398,6 +400,12 @@ public class FileUtils {
 		modpack.setAttribute("description", modPack.description);
 		modpack.setAttribute("mods", modPack.getModList());
 		modpack.setAttribute("oldVersions", modPack.getStringVersions());
+		if(modPack.animation != null && !modPack.animation.equals("")) {
+			modpack.setAttribute("animation", modPack.animation);
+		}
+		if(modPack.warning != null && !modPack.warning.equals("")) {
+			modpack.setAttribute("warning", modPack.warning);
+		}
 
 		rootElement.appendChild(modpack);
 
@@ -437,7 +445,6 @@ public class FileUtils {
 		Node nNode = doc.getElementsByTagName("modpack").item(0);
 
 		ModPack pack = null;
-		String[] temp;
 
 		if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
@@ -453,11 +460,34 @@ public class FileUtils {
 			pack.splashName = eElement.getAttribute("image");
 			pack.zipName = eElement.getAttribute("url");
 			pack.shortName = eElement.getAttribute("dir");
+			if(eElement.hasAttribute("warning")) pack.warning = eElement.getAttribute("warning");
+			else pack.warning = null;
+
+			if(eElement.hasAttribute("animation")) pack.animation = eElement.getAttribute("animation");
+			else pack.animation = null;
+
 			if(eElement.getAttribute("server").equals("")) pack.serverName = "";
 			else pack.serverName = eElement.getAttribute("server");
 
-			temp = eElement.getAttribute("oldVersions").split(";");
-			pack.versions = new ArrayList<>(Arrays.asList(temp));
+
+			HashMap<String, ModPackVersion> versionMap = new HashMap<>();
+			ArrayList<ModPackVersion> versions = new ArrayList<>();
+
+			String[] oldVersions = eElement.getAttribute("oldVersions").split(";");
+			for(String version : oldVersions) {
+				ModPackVersion temp = new ModPackVersion(version);
+				versionMap.put(version, temp);
+				versions.add(temp);
+			}
+
+			if(eElement.hasAttribute("customMCVersions")) {
+				String[] customMCVersions = eElement.getAttribute("oldVersions").split(";");
+				for(String version : customMCVersions) {
+					ModPackVersion temp = versionMap.get(version.split("\\^")[0]);
+					if(temp != null) temp.mcVersion = version.split("\\^")[1];
+				}
+			}
+			pack.versions = versions;
 		}
 
 		return pack;
