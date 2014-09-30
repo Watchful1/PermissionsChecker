@@ -110,7 +110,7 @@ public class mainClass extends JFrame implements ListsPacks {
 						JOptionPane.PLAIN_MESSAGE);
 				if(code == null || code.length() <= 0) return;
 
-				ModPack temp = FileUtils.packFromCode(code);
+				ModPack temp = FileUtils.packFromCode(code).get(0);
 				if(temp == null) {
 					System.out.println("Couldn't find code");
 					return;
@@ -183,6 +183,7 @@ public class mainClass extends JFrame implements ListsPacks {
     public void loadPacks(File folder) {
         if(!folder.exists() || !folder.isDirectory()) return;
         for(File pack : folder.listFiles()) {
+			System.out.println("Loading "+pack.getName());
             ModPack temp = ModPack.loadObject(pack);
             if(temp != null) {
                 modPacksModel.addElement(temp);
@@ -204,7 +205,7 @@ public class mainClass extends JFrame implements ListsPacks {
 
 	public boolean codeExists(String code, String currentPack) {
 		if(code == null || code.equals("")) return false;
-		ModPack pack = FileUtils.packFromCode(code);
+		ModPack pack = FileUtils.packFromCode(code).get(0);
 
 		if(pack != null && pack.shortName != null &&
 				!pack.shortName.equals("") && !currentPack.equals(pack.shortName)) return true;

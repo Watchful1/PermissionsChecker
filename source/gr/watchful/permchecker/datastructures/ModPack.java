@@ -155,17 +155,6 @@ public class ModPack {
 		return bldr.toString();
 	}
 
-	public String getStringVersions() {
-		if(versions.size() == 0) return "";
-		StringBuilder bldr = new StringBuilder();
-		bldr.append(versions.get(0).version);
-		for(int i=1; i<versions.size(); i++) {
-			bldr.append(";");
-			bldr.append(versions.get(i).version);
-		}
-		return bldr.toString();
-	}
-
 	public static boolean createShortName(ModPack pack) {
 		String result = generateShortName(pack.name);
 		while(Globals.getInstance().listsPacks.shortnameExists(result)) {

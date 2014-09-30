@@ -9,4 +9,8 @@ public class ModPackVersion {
 	public ModPackVersion(String version) {
 		this.version = version;
 	}
+
+	public String toString() {
+		return version;
+	}
 }
