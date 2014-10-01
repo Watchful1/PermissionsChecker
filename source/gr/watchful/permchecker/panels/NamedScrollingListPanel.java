@@ -55,9 +55,9 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 	
 	public void setModel(SortedListModel<T> model) {
 		list.setModel(model);
-		for(int i=0; i<list.getModel().getSize(); i++) {
+		/*for(int i=0; i<list.getModel().getSize(); i++) {
 			System.out.println(list.getModel().getElementAt(i));
-		}
+		}*/
 	}
 	
 	public SortedListModel<T> getModel()

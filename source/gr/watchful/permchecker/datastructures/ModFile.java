@@ -7,6 +7,7 @@ import java.io.File;
 public class ModFile {
 	public File file;
 	public MetadataCollection mcmod;
+	public String md5;
 
 	public SortedListModel<String> IDs = new SortedListModel<String>();
 	public SortedListModel<String> names = new SortedListModel<String>();
@@ -14,6 +15,7 @@ public class ModFile {
 	
 	public ModFile(File fileIn) {
 		file = fileIn;
+		md5 = "";
 	}
 	
 	public String fileName() {

@@ -178,10 +178,14 @@ public class ModPack {
 	}
 
 	public void addShortName(String shortName, String modID) {
+		System.out.println("Saving ID "+modID+" as "+shortName);
 		shortNameMappings.put(modID, shortName);
+		dirty = true;
 	}
 
 	public void addModInfo(String shortName, ModInfo modInfo) {
+		System.out.println("Saving ModInfo "+modInfo.modName+" as "+shortName);
 		modInfoMappings.put(shortName, modInfo);
+		dirty = true;
 	}
 }
