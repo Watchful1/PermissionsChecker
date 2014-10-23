@@ -33,7 +33,7 @@ package gr.watchful.permchecker.modhandling;
 
 /**
  * Describes an artifact version in terms of its components, converts it to/from a string and
- * compares two versions.
+ * compares two metaVersions.
  *
  * @author <a href="mailto:brett@apache.org">Brett Porter</a>
  */

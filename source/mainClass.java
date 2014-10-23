@@ -36,7 +36,7 @@ public class mainClass extends JFrame implements ListsPacks {
         Globals.getInstance().loadPreferences();
         Globals.getInstance().updateListings();
 
-		this.setTitle("Permissions Checker v 1.1.1"); // Set the window title
+		this.setTitle("Permissions Checker v 1.2.0 dev"); // Set the window title
 		this.setPreferredSize(new Dimension(1000, 600)); // and the initial size
 
         JPanel leftPanel = new JPanel();
@@ -183,7 +183,7 @@ public class mainClass extends JFrame implements ListsPacks {
     public void loadPacks(File folder) {
         if(!folder.exists() || !folder.isDirectory()) return;
         for(File pack : folder.listFiles()) {
-			System.out.println("Loading "+pack.getName());
+			//System.out.println("Loading "+pack.getName());
             ModPack temp = ModPack.loadObject(pack);
             if(temp != null) {
                 modPacksModel.addElement(temp);

@@ -6,7 +6,6 @@ import gr.watchful.permchecker.utils.FileUtils;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,7 +48,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 	public void setPack(ModPack pack) {
 		packName.setText(pack.name);
 		versionSelector.removeAllItems();
-		for(ModPackVersion version : pack.versions) {
+		for(ModPackVersion version : pack.metaVersions) {
 			versionSelector.addItem(version.version);
 		}
 		versionSelector.setSelectedItem(pack.recommendedVersion);

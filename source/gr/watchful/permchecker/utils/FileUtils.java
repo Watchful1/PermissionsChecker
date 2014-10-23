@@ -9,19 +9,13 @@ import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.zip.*;
 
 import gr.watchful.permchecker.datastructures.ModPackVersion;
 import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -402,14 +396,14 @@ public class FileUtils {
 			modpack.setAttribute("description", modPack.description);
 			modpack.setAttribute("mods", modPack.getModList());
 
-			if (modPack.versions.size() == 0) modpack.setAttribute("oldVersions", "");
+			if (modPack.metaVersions.size() == 0) modpack.setAttribute("oldVersions", "");
 			else {
 				StringBuilder versionListBldr = new StringBuilder();
 				StringBuilder mcVersionListBldr = new StringBuilder();
 				boolean firstMc = true;
 
-				for (int i = 0; i < modPack.versions.size(); i++) {
-					ModPackVersion temp = modPack.versions.get(i);
+				for (int i = 0; i < modPack.metaVersions.size(); i++) {
+					ModPackVersion temp = modPack.metaVersions.get(i);
 
 					if (i != 0) versionListBldr.append(";");
 					versionListBldr.append(temp.version);
@@ -516,7 +510,7 @@ public class FileUtils {
 						if (temp != null) temp.mcVersion = version.split("\\^")[1];
 					}
 				}
-				pack.versions = versions;
+				pack.metaVersions = versions;
 			}
 			packs.add(pack);
 		}

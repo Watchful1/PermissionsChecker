@@ -1,6 +1,5 @@
 package gr.watchful.permchecker.panels;
 
-import java.awt.*;
 import java.io.File;
 
 import gr.watchful.permchecker.datastructures.Globals;
@@ -109,7 +108,7 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		pack.key = keyField.getText(); // TODO detect changes here
 		pack.description = descriptionField.getText();
 		pack.minecraftVersion = minecraftVersionSelector.getVersion();
-		pack.versions = versionEditor.getVersions();
+		pack.metaVersions = versionEditor.getVersions();
 		pack.recommendedVersion = versionEditor.getRecommendedVersion();
 		pack.forgeType = forgeEditor.getForgeType();
 		pack.ForgeVersion = forgeEditor.getForgeVersion();
@@ -130,7 +129,7 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		keyField.setText(pack.key);
 		descriptionField.setText(pack.description);
 		minecraftVersionSelector.setVersion(pack.minecraftVersion);
-		versionEditor.setVersions(pack.versions);
+		versionEditor.setVersions(pack.metaVersions);
 		versionEditor.setRecommendedVersion(pack.recommendedVersion);
 		forgeEditor.setForgeType(pack.forgeType);
 		forgeEditor.setForgeVersion(pack.ForgeVersion);
@@ -186,7 +185,7 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		} else if(e.getSource().equals(minecraftVersionSelector)) {
 			Globals.getModPack().minecraftVersion = minecraftVersionSelector.getVersion();
 		} else if(e.getSource().equals(versionEditor)) {
-			Globals.getModPack().versions = versionEditor.getVersions();
+			Globals.getModPack().metaVersions = versionEditor.getVersions();
 			Globals.getModPack().recommendedVersion = versionEditor.getRecommendedVersion();
 		} else if(e.getSource().equals(forgeEditor)) {
 			Globals.getModPack().forgeType = forgeEditor.getForgeType();

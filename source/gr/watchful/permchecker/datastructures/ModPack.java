@@ -17,7 +17,8 @@ public class ModPack {
 	public String description;//simple
 	public String recommendedVersion;//simple, select from available
 	public String minecraftVersion;//simple, select from available
-	public ArrayList<ModPackVersion> versions;//add, simple. Remove, change rec version if necessary. Move TODO
+	public ArrayList<ModPackVersion> metaVersions;//add, simple. Remove, change rec version if necessary. Move TODO
+	public ArrayList<String> versions;//legacy
 	public ArrayList<String> modList;//autocomputed, no interface
 	public ForgeType forgeType;
 	public int ForgeVersion;
@@ -56,10 +57,10 @@ public class ModPack {
 		if(shortName == null) shortName = "";
 		if(key == null || key.equals("")) key = generateKey();
 		if(description == null) description = "";
-		if(versions == null) versions = new ArrayList<>();
-		if(versions.size() == 0) versions.add(new ModPackVersion("1.0.0"));
+		if(metaVersions == null) metaVersions = new ArrayList<>();
+		if(metaVersions.size() == 0) metaVersions.add(new ModPackVersion("1.0.0"));
 		if(recommendedVersion == null || recommendedVersion.equals(""))
-			recommendedVersion = versions.get(0).version;
+			recommendedVersion = metaVersions.get(0).version;
 		if(minecraftVersion == null || minecraftVersion.equals("")) minecraftVersion = "1.6.4";
 		if(modList == null) modList = new ArrayList<>();
 		if(forgeType == null) forgeType = ForgeType.RECOMMENDED;
@@ -94,7 +95,14 @@ public class ModPack {
 	public static ModPack loadObject(File saveFile) {
 		if(!saveFile.exists()) return null;
 		ModPack temp = (ModPack) FileUtils.readObject(saveFile, new ModPack());
+		if(temp.versions != null) {
+			temp.metaVersions = new ArrayList<>();
+			for(String version : temp.versions) {
+				temp.metaVersions.add(new ModPackVersion(version));
+			}
+		}
 		temp.init();
+		temp.versions = null;
 		return temp;
 	}
 
