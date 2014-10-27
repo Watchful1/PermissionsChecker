@@ -48,7 +48,7 @@ public class RecommendedVersionEditor extends JPanel {
     }
 
     /**
-     * You must set the available versions in the VersionEditor before using this
+     * You must set the available metaVersions in the VersionEditor before using this
      */
     public void setRecommendedVersion(String version) {
         items.setSelectedItem(version);

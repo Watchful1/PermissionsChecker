@@ -17,8 +17,9 @@ public class ModPack {
 	public String description;//simple
 	public String recommendedVersion;//simple, select from available
 	public String minecraftVersion;//simple, select from available
-	public ArrayList<String> versions;//add, simple. Remove, change rec version if necessary. Move TODO
-	transient public ArrayList<String> modList;//autocomputed, no interface
+	public ArrayList<ModPackVersion> metaVersions;//add, simple. Remove, change rec version if necessary. Move TODO
+	public ArrayList<String> versions;//legacy
+	public ArrayList<String> modList;//autocomputed, no interface
 	public ForgeType forgeType;
 	public int ForgeVersion;
     public boolean isPublic;
@@ -27,6 +28,9 @@ public class ModPack {
 	public String splashName;
 	public String serverName;
 	public String zipName;
+
+	public String warning;
+	public String animation;
 
 	transient public File icon;
 	transient public File splash;
@@ -52,12 +56,17 @@ public class ModPack {
 		if(shortName == null) shortName = "";
 		if(key == null || key.equals("")) key = generateKey();
 		if(description == null) description = "";
-		if(versions == null) versions = new ArrayList<>();
-		if(versions.size() == 0) versions.add("1.0.0");
+		if(metaVersions == null) metaVersions = new ArrayList<>();
+		if(metaVersions.size() == 0) metaVersions.add(new ModPackVersion("1.0.0"));
 		if(recommendedVersion == null || recommendedVersion.equals(""))
+<<<<<<< HEAD
+			recommendedVersion = metaVersions.get(0).version;
+		if(minecraftVersion == null || minecraftVersion.equals("")) minecraftVersion = "1.6.4";
+=======
 			recommendedVersion = versions.get(0);
 		if(minecraftVersion == null || minecraftVersion.equals(""))
 			minecraftVersion = Globals.getInstance().preferences.defaultMinecraftVersion;
+>>>>>>> master-local
 		if(modList == null) modList = new ArrayList<>();
 		if(forgeType == null) forgeType = ForgeType.RECOMMENDED;
 		if(shortNameMappings == null) shortNameMappings = new HashMap<>();
@@ -90,7 +99,14 @@ public class ModPack {
 	public static ModPack loadObject(File saveFile) {
 		if(!saveFile.exists()) return null;
 		ModPack temp = (ModPack) FileUtils.readObject(saveFile, new ModPack());
+		if(temp.versions != null) {
+			temp.metaVersions = new ArrayList<>();
+			for(String version : temp.versions) {
+				temp.metaVersions.add(new ModPackVersion(version));
+			}
+		}
 		temp.init();
+		temp.versions = null;
 		return temp;
 	}
 
@@ -147,17 +163,6 @@ public class ModPack {
 			}
 			bldr.append("; ");
 			bldr.append(mod);
-		}
-		return bldr.toString();
-	}
-
-	public String getStringVersions() {
-		if(versions.size() == 0) return "";
-		StringBuilder bldr = new StringBuilder();
-		bldr.append(versions.get(0));
-		for(int i=1; i<versions.size(); i++) {
-			bldr.append(";");
-			bldr.append(versions.get(i));
 		}
 		return bldr.toString();
 	}

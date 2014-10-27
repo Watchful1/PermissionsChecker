@@ -9,17 +9,13 @@ import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.zip.*;
+import java.util.HashMap;
 
+import gr.watchful.permchecker.datastructures.ModPackVersion;
 import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -330,6 +326,7 @@ public class FileUtils {
 		try {
 			tempObject = gson.fromJson(JSON, object.getClass());
 		} catch (JsonSyntaxException excp) {
+			System.out.println("returning null");
 			return null;
 		}
 		return tempObject;
@@ -369,7 +366,7 @@ public class FileUtils {
 		return true;
 	}
 
-	public static String buildXML(ModPack modPack) {
+	public static String buildXML(ArrayList<ModPack> modPacks) {
 		Document doc = null;
 		try {
 			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
@@ -379,27 +376,59 @@ public class FileUtils {
 		Element rootElement = doc.createElement("modpacks");
 		doc.appendChild(rootElement);
 
-		Element modpack = doc.createElement("modpack");
+		for(ModPack modPack : modPacks) {
+			Element modpack = doc.createElement("modpack");
 
-		modpack.setAttribute("name", modPack.name);
-		modpack.setAttribute("author", modPack.author);
-		modpack.setAttribute("version", modPack.recommendedVersion);
-		modpack.setAttribute("repoVersion", modPack.recommendedVersion.replace(".", "_"));
-		modpack.setAttribute("logo", modPack.getIconName());
-		modpack.setAttribute("url", modPack.getZipName());
-		modpack.setAttribute("image", modPack.getSplashName());
-		modpack.setAttribute("dir", modPack.shortName);
-		modpack.setAttribute("mcVersion", modPack.minecraftVersion);
-		if (modPack.serverName != null && !modPack.serverName.equals("")) {
-			modpack.setAttribute("serverPack", modPack.serverName);
-		} else {
-			modpack.setAttribute("serverPack", "");
+			modpack.setAttribute("name", modPack.name);
+			modpack.setAttribute("author", modPack.author);
+			modpack.setAttribute("version", modPack.recommendedVersion);
+			modpack.setAttribute("repoVersion", modPack.recommendedVersion.replace(".", "_"));
+			modpack.setAttribute("logo", modPack.getIconName());
+			modpack.setAttribute("url", modPack.getZipName());
+			modpack.setAttribute("image", modPack.getSplashName());
+			modpack.setAttribute("dir", modPack.shortName);
+			modpack.setAttribute("mcVersion", modPack.minecraftVersion);
+			if (modPack.serverName != null && !modPack.serverName.equals("")) {
+				modpack.setAttribute("serverPack", modPack.serverName);
+			} else {
+				modpack.setAttribute("serverPack", "");
+			}
+			modpack.setAttribute("description", modPack.description);
+			modpack.setAttribute("mods", modPack.getModList());
+
+			if (modPack.metaVersions.size() == 0) modpack.setAttribute("oldVersions", "");
+			else {
+				StringBuilder versionListBldr = new StringBuilder();
+				StringBuilder mcVersionListBldr = new StringBuilder();
+				boolean firstMc = true;
+
+				for (int i = 0; i < modPack.metaVersions.size(); i++) {
+					ModPackVersion temp = modPack.metaVersions.get(i);
+
+					if (i != 0) versionListBldr.append(";");
+					versionListBldr.append(temp.version);
+
+					if (temp.mcVersion != null && !temp.mcVersion.equals("")) {
+						if (firstMc) firstMc = false;
+						else mcVersionListBldr.append(";");
+
+						mcVersionListBldr.append(temp.version + "^" + temp.mcVersion);
+					}
+				}
+				modpack.setAttribute("oldVersions", versionListBldr.toString());
+
+				if (!firstMc) modpack.setAttribute("customMCVersions", mcVersionListBldr.toString());
+			}
+
+			if (modPack.animation != null && !modPack.animation.equals("")) {
+				modpack.setAttribute("animation", modPack.animation);
+			}
+			if (modPack.warning != null && !modPack.warning.equals("")) {
+				modpack.setAttribute("warning", modPack.warning);
+			}
+
+			rootElement.appendChild(modpack);
 		}
-		modpack.setAttribute("description", modPack.description);
-		modpack.setAttribute("mods", modPack.getModList());
-		modpack.setAttribute("oldVersions", modPack.getStringVersions());
-
-		rootElement.appendChild(modpack);
 
 		// write the content into xml file
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -421,7 +450,7 @@ public class FileUtils {
 		return "";
 	}
 
-	public static ModPack readXML(String string) {
+	public static ArrayList<ModPack> readXML(String string) {
 		DocumentBuilder dBuilder;
 		Document doc = null;
 		try {
@@ -434,36 +463,62 @@ public class FileUtils {
 
 		doc.getDocumentElement().normalize();
 
-		Node nNode = doc.getElementsByTagName("modpack").item(0);
+		ArrayList<ModPack> packs = new ArrayList<>();
+		for(int i=0; i<doc.getElementsByTagName("modpack").getLength(); i++) {
+			Node nNode = doc.getElementsByTagName("modpack").item(0);
 
-		ModPack pack = null;
-		String[] temp;
+			ModPack pack = null;
 
-		if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
-			Element eElement = (Element) nNode;
+				Element eElement = (Element) nNode;
 
-			pack = new ModPack();
-			pack.name = eElement.getAttribute("name");
-			pack.author = eElement.getAttribute("author");
-			pack.recommendedVersion = eElement.getAttribute("version");
-			pack.minecraftVersion = eElement.getAttribute("mcVersion");
-			pack.description = eElement.getAttribute("description");
-			pack.iconName = eElement.getAttribute("logo");
-			pack.splashName = eElement.getAttribute("image");
-			pack.zipName = eElement.getAttribute("url");
-			pack.shortName = eElement.getAttribute("dir");
-			if(eElement.getAttribute("server").equals("")) pack.serverName = "";
-			else pack.serverName = eElement.getAttribute("server");
+				pack = new ModPack();
+				pack.name = eElement.getAttribute("name");
+				pack.author = eElement.getAttribute("author");
+				pack.recommendedVersion = eElement.getAttribute("version");
+				pack.minecraftVersion = eElement.getAttribute("mcVersion");
+				pack.description = eElement.getAttribute("description");
+				pack.iconName = eElement.getAttribute("logo");
+				pack.splashName = eElement.getAttribute("image");
+				pack.zipName = eElement.getAttribute("url");
+				pack.shortName = eElement.getAttribute("dir");
+				if (eElement.hasAttribute("warning")) pack.warning = eElement.getAttribute("warning");
+				else pack.warning = null;
 
-			temp = eElement.getAttribute("oldVersions").split(";");
-			pack.versions = new ArrayList<>(Arrays.asList(temp));
+				if (eElement.hasAttribute("animation")) pack.animation = eElement.getAttribute("animation");
+				else pack.animation = null;
+
+				if (eElement.getAttribute("server").equals("")) pack.serverName = "";
+				else pack.serverName = eElement.getAttribute("server");
+
+
+				HashMap<String, ModPackVersion> versionMap = new HashMap<>();
+				ArrayList<ModPackVersion> versions = new ArrayList<>();
+
+				String[] oldVersions = eElement.getAttribute("oldVersions").split(";");
+				for (String version : oldVersions) {
+					ModPackVersion temp = new ModPackVersion(version);
+					versionMap.put(version, temp);
+					versions.add(temp);
+				}
+
+				if (eElement.hasAttribute("customMCVersions")) {
+					String[] customMCVersions = eElement.getAttribute("customMCVersions").split(";");
+					for (String version : customMCVersions) {
+						ModPackVersion temp = versionMap.get(version.split("\\^")[0]);
+						if (temp != null) temp.mcVersion = version.split("\\^")[1];
+					}
+				}
+				pack.metaVersions = versions;
+			}
+			packs.add(pack);
 		}
 
-		return pack;
+		return packs;
 	}
 
-	public static ModPack packFromCode(String code) {
+	public static ArrayList<ModPack> packFromCode(String code) {
 		if(code == null || code.length() <= 0) return null;
 
 		String xml = FileUtils.downloadToString(Globals.ftbRepoUrl+"static/"+code+".xml");

@@ -1,19 +1,16 @@
 package gr.watchful.permchecker.panels;
 
-import gr.watchful.permchecker.datastructures.ForgeType;
-import gr.watchful.permchecker.datastructures.Globals;
-import gr.watchful.permchecker.datastructures.ModPack;
-import gr.watchful.permchecker.datastructures.UsesPack;
+import gr.watchful.permchecker.datastructures.*;
 import gr.watchful.permchecker.utils.FileUtils;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 
 public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 	private LabelField packName;
@@ -51,8 +48,8 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 	public void setPack(ModPack pack) {
 		packName.setText(pack.name);
 		versionSelector.removeAllItems();
-		for(String version : pack.versions) {
-			versionSelector.addItem(version);
+		for(ModPackVersion version : pack.metaVersions) {
+			versionSelector.addItem(version.version);
 		}
 		versionSelector.setSelectedItem(pack.recommendedVersion);
 	}
@@ -160,7 +157,9 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 				(Globals.getModPack().serverName == null || Globals.getModPack().serverName.equals(""))) {
 			Globals.getModPack().serverName = Globals.getModPack().shortName + "Server.zip";
 		}
-		String xml = FileUtils.buildXML(Globals.getModPack());
+		ArrayList<ModPack> temp = new ArrayList<>();
+		temp.add(Globals.getModPack());
+		String xml = FileUtils.buildXML(temp);
 		if(!FileUtils.writeFile(xml, new File(
 				Globals.getInstance().preferences.exportFolder+File.separator+"static"+
 				File.separator+Globals.getModPack().key+".xml"), false)) {
