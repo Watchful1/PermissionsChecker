@@ -45,10 +45,17 @@ public class ModFileEditor extends JPanel implements SavesMods {
 	}
 	
 	public void setModFile(ModFile modFile) {
-		names.setModel(modFile.names);
-		IDs.setModel(modFile.IDs);
-		modInfoEditor.setMod(modFile.getInfo(), "");
-		this.modFile = modFile;
+		if(modFile == null) {
+			names.getModel().clear();
+			IDs.getModel().clear();
+			modInfoEditor.setMod(null, "");
+			this.modFile = null;
+		} else {
+			names.setModel(modFile.names);
+			IDs.setModel(modFile.IDs);
+			modInfoEditor.setMod(modFile.getInfo(), "");
+			this.modFile = modFile;
+		}
 	}
 
 	@Override
