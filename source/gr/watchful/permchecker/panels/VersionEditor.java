@@ -1,6 +1,8 @@
 package gr.watchful.permchecker.panels;
 
 import gr.watchful.permchecker.datastructures.Globals;
+import gr.watchful.permchecker.datastructures.ModPack;
+import gr.watchful.permchecker.datastructures.ModPackVersion;
 import gr.watchful.permchecker.datastructures.SortedListModel;
 
 import javax.swing.*;
@@ -11,72 +13,76 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class VersionEditor extends JPanel {
-    private JLabel label;
-    private JList<String> list;
-    private SortedListModel<String> model;
+	private JLabel label;
+	private JList<String> list;
+	private SortedListModel<String> model;
 	private int recommendedIndex;
-    private ChangeListener changeListener;
+	private ChangeListener changeListener;
 
-    public VersionEditor(String name) {
-        this(name, null);
-    }
+	private HashMap<String, ModPackVersion> metaMap;
 
-    public VersionEditor(String name, ChangeListener changeListener) {
-        this.changeListener = changeListener;
+	public VersionEditor(String name) {
+		this(name, null);
+	}
 
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.setAlignmentX(0);
+	public VersionEditor(String name, ChangeListener changeListener) {
+		this.changeListener = changeListener;
 
-        label = new JLabel(name);
-        label.setMinimumSize(new Dimension(90, 21));
-        label.setMaximumSize(new Dimension(90, 21));
-        label.setPreferredSize(new Dimension(90, 21));
-        this.add(label);
+		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		this.setAlignmentX(0);
+
+		label = new JLabel(name);
+		label.setMinimumSize(new Dimension(90, 21));
+		label.setMaximumSize(new Dimension(90, 21));
+		label.setPreferredSize(new Dimension(90, 21));
+		this.add(label);
 
 		recommendedIndex = -1;
+		metaMap = new HashMap<>();
 
-        model = new SortedListModel<>();
-        list = new JList(model);
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        JScrollPane scrollPane = new JScrollPane(list);
-        scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
-        this.add(scrollPane);
+		model = new SortedListModel<>();
+		list = new JList(model);
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane scrollPane = new JScrollPane(list);
+		scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
+		this.add(scrollPane);
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        JButton addButton = new JButton("+");
-        addButton.setMaximumSize(new Dimension(42, 30));
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+		JButton addButton = new JButton("+");
+		addButton.setMaximumSize(new Dimension(42, 30));
+		addButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
 				String tempVersion = "1.0.0";
 				if(model.getSize() > 0) tempVersion = model.get(0);
-                String result = (String) JOptionPane.showInputDialog(
-                        Globals.getInstance().mainFrame,
-                        "", "New Version", JOptionPane.PLAIN_MESSAGE, null, null, tempVersion);
-                if(result != null) {
-                    if(result.matches("\\d(\\.\\d+)*")) {
-                        addVersion(result);
-                    } else {
-                        JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
-                                "Version must only include numbers and periods");
-                    }
-                }
-            }
-        });
-        buttonPanel.add(addButton);
+				String result = (String) JOptionPane.showInputDialog(
+						Globals.getInstance().mainFrame,
+						"", "New Version", JOptionPane.PLAIN_MESSAGE, null, null, tempVersion);
+				if(result != null) {
+					if(result.matches("\\d(\\.\\d+)*")) {
+						addVersion(result);
+					} else {
+						JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+								"Version must only include numbers and periods");
+					}
+				}
+			}
+		});
+		buttonPanel.add(addButton);
 
-        JButton removeButton = new JButton("-");
-        removeButton.setMaximumSize(new Dimension(42, 30));
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                removeSelectedVersion();
-            }
-        });
-        buttonPanel.add(removeButton);
+		JButton removeButton = new JButton("-");
+		removeButton.setMaximumSize(new Dimension(42, 30));
+		removeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				removeSelectedVersion();
+			}
+		});
+		buttonPanel.add(removeButton);
 
 		JButton recommendButton = new JButton("*");
 		recommendButton.setMaximumSize(new Dimension(42, 30));
@@ -89,24 +95,24 @@ public class VersionEditor extends JPanel {
 		});
 		buttonPanel.add(recommendButton);
 
-        this.add(buttonPanel);
-    }
+		this.add(buttonPanel);
+	}
 
-    private void addVersion(String newVersion) {
-		for(String version : getVersions()) {
-			if(version.equals(newVersion)) {
+	private void addVersion(String newVersion) {
+		for(ModPackVersion version : getVersions()) {
+			if(version.version.equals(newVersion)) {
 				System.out.println("Version "+newVersion+" already exists, can't add");
 				return;
 			}
 		}
-        model.add(0, newVersion);
+		model.add(0, newVersion);
 		if(recommendedIndex != -1) recommendedIndex++;
 		setRecommendedIndex(0, true);
-        notifyChanged();
-    }
+		notifyChanged();
+	}
 
-    private void removeSelectedVersion() {
-        if(list.getSelectedIndex() > -1) {
+	private void removeSelectedVersion() {
+		if(list.getSelectedIndex() > -1) {
 			int previousSelected = list.getSelectedIndex();
 			model.remove(previousSelected);
 			if(model.getSize() == 0) {
@@ -116,23 +122,33 @@ public class VersionEditor extends JPanel {
 			} else if(recommendedIndex > previousSelected) {
 				recommendedIndex--;
 			}
-            notifyChanged();
-        }
-    }
+			notifyChanged();
+		}
+	}
 
-    public ArrayList<String> getVersions() {
+	public ArrayList<ModPackVersion> getVersions() {
 		ArrayList<String> temp = model.getArrayList();
 		if(recommendedIndex != -1 && model.getSize() != 0) temp.set(recommendedIndex, temp.get(recommendedIndex).replaceAll("\\s\\*",""));
-        return temp;
-    }
+		ArrayList<ModPackVersion> out = new ArrayList<>();
+		for(String version : temp) {
+			if(metaMap.containsKey(version)) {
+				out.add(metaMap.get(version));
+			} else {
+				out.add(new ModPackVersion(version));
+			}
+		}
+		return out;
+	}
 
-    public void setVersions(ArrayList<String> versions) {
+	public void setVersions(ArrayList<ModPackVersion> versions) {
 		recommendedIndex = -1;
-        model.clear();
-        for(String version : versions) {
-            model.addElement(version);
-        }
-    }
+		metaMap.clear();
+		model.clear();
+		for(ModPackVersion version : versions) {
+			model.addElement(version.version);
+			metaMap.put(version.version, version);
+		}
+	}
 
 	public void setRecommendedVersion(String recommendedVersion) {
 		if(recommendedVersion == null) return;
@@ -157,7 +173,7 @@ public class VersionEditor extends JPanel {
 		model.setElement(model.get(index)+" *", index);
 		recommendedIndex = index;
 		list.repaint();
-        if(!first && !silent) notifyChanged();
+		if(!first && !silent) notifyChanged();
 	}
 
 	public String getRecommendedVersion() {
@@ -165,8 +181,8 @@ public class VersionEditor extends JPanel {
 		return model.get(recommendedIndex).replaceAll("\\s\\*","");
 	}
 
-    public void notifyChanged() {
-        if(changeListener == null) return;
-        changeListener.stateChanged(new ChangeEvent(this));
-    }
+	public void notifyChanged() {
+		if(changeListener == null) return;
+		changeListener.stateChanged(new ChangeEvent(this));
+	}
 }
