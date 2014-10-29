@@ -59,14 +59,9 @@ public class ModPack {
 		if(metaVersions == null) metaVersions = new ArrayList<>();
 		if(metaVersions.size() == 0) metaVersions.add(new ModPackVersion("1.0.0"));
 		if(recommendedVersion == null || recommendedVersion.equals(""))
-<<<<<<< HEAD
 			recommendedVersion = metaVersions.get(0).version;
-		if(minecraftVersion == null || minecraftVersion.equals("")) minecraftVersion = "1.6.4";
-=======
-			recommendedVersion = versions.get(0);
 		if(minecraftVersion == null || minecraftVersion.equals(""))
 			minecraftVersion = Globals.getInstance().preferences.defaultMinecraftVersion;
->>>>>>> master-local
 		if(modList == null) modList = new ArrayList<>();
 		if(forgeType == null) forgeType = ForgeType.RECOMMENDED;
 		if(shortNameMappings == null) shortNameMappings = new HashMap<>();
