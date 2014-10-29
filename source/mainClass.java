@@ -36,7 +36,11 @@ public class mainClass extends JFrame implements ListsPacks {
         Globals.getInstance().loadPreferences();
         Globals.getInstance().updateListings();
 
+<<<<<<< HEAD
 		this.setTitle("Permissions Checker v 1.2.0 dev "); // Set the window title
+=======
+		this.setTitle("Permissions Checker v 1.1.2"); // Set the window title
+>>>>>>> master-local
 		this.setPreferredSize(new Dimension(1000, 600)); // and the initial size
 
         JPanel leftPanel = new JPanel();

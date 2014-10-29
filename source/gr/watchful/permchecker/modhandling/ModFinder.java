@@ -109,7 +109,11 @@ public class ModFinder {
 				} catch (Exception e) {
 					continue;
 				}
-				reader.accept(new ModClassVisitor(), 0);
+				try {
+					reader.accept(new ModClassVisitor(), 0);
+				} catch (Exception e) {
+					continue;
+				}
 			}
 			file.close();
 			return otherMod;

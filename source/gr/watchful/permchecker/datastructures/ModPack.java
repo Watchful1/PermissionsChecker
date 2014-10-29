@@ -42,7 +42,6 @@ public class ModPack {
 	public String submitURL;
 
 	public HashMap<String, String> shortNameMappings;
-	public HashMap<String, String> md5Mappings;
 	public HashMap<String, ModInfo> modInfoMappings;
 	
 	public ModPack() {
@@ -60,12 +59,17 @@ public class ModPack {
 		if(metaVersions == null) metaVersions = new ArrayList<>();
 		if(metaVersions.size() == 0) metaVersions.add(new ModPackVersion("1.0.0"));
 		if(recommendedVersion == null || recommendedVersion.equals(""))
+<<<<<<< HEAD
 			recommendedVersion = metaVersions.get(0).version;
 		if(minecraftVersion == null || minecraftVersion.equals("")) minecraftVersion = "1.6.4";
+=======
+			recommendedVersion = versions.get(0);
+		if(minecraftVersion == null || minecraftVersion.equals(""))
+			minecraftVersion = Globals.getInstance().preferences.defaultMinecraftVersion;
+>>>>>>> master-local
 		if(modList == null) modList = new ArrayList<>();
 		if(forgeType == null) forgeType = ForgeType.RECOMMENDED;
 		if(shortNameMappings == null) shortNameMappings = new HashMap<>();
-		if(md5Mappings == null) md5Mappings = new HashMap<>();
 		if(modInfoMappings == null) modInfoMappings = new HashMap<>();
 	}
 	
@@ -180,10 +184,14 @@ public class ModPack {
 	}
 
 	public void addShortName(String shortName, String modID) {
+		System.out.println("Saving ID "+modID+" as "+shortName);
 		shortNameMappings.put(modID, shortName);
+		dirty = true;
 	}
 
 	public void addModInfo(String shortName, ModInfo modInfo) {
+		System.out.println("Saving ModInfo "+modInfo.modName+" as "+shortName);
 		modInfoMappings.put(shortName, modInfo);
+		dirty = true;
 	}
 }
