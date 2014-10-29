@@ -1,8 +1,6 @@
 package gr.watchful.permchecker.panels;
 
 import gr.watchful.permchecker.datastructures.Globals;
-import gr.watchful.permchecker.datastructures.ModPack;
-import gr.watchful.permchecker.datastructures.ModPackVersion;
 import gr.watchful.permchecker.datastructures.SortedListModel;
 
 import javax.swing.*;
@@ -13,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 public class VersionEditor extends JPanel {
     private JLabel label;
@@ -21,8 +18,6 @@ public class VersionEditor extends JPanel {
     private SortedListModel<String> model;
 	private int recommendedIndex;
     private ChangeListener changeListener;
-
-	private HashMap<String, ModPackVersion> metaMap;
 
     public VersionEditor(String name) {
         this(name, null);
@@ -41,7 +36,6 @@ public class VersionEditor extends JPanel {
         this.add(label);
 
 		recommendedIndex = -1;
-		metaMap = new HashMap<>();
 
         model = new SortedListModel<>();
         list = new JList(model);
@@ -99,8 +93,8 @@ public class VersionEditor extends JPanel {
     }
 
     private void addVersion(String newVersion) {
-		for(ModPackVersion version : getVersions()) {
-			if(version.version.equals(newVersion)) {
+		for(String version : getVersions()) {
+			if(version.equals(newVersion)) {
 				System.out.println("Version "+newVersion+" already exists, can't add");
 				return;
 			}
@@ -126,27 +120,17 @@ public class VersionEditor extends JPanel {
         }
     }
 
-    public ArrayList<ModPackVersion> getVersions() {
+    public ArrayList<String> getVersions() {
 		ArrayList<String> temp = model.getArrayList();
 		if(recommendedIndex != -1 && model.getSize() != 0) temp.set(recommendedIndex, temp.get(recommendedIndex).replaceAll("\\s\\*",""));
-		ArrayList<ModPackVersion> out = new ArrayList<>();
-		for(String version : temp) {
-			if(metaMap.containsKey(version)) {
-				out.add(metaMap.get(version));
-			} else {
-				out.add(new ModPackVersion(version));
-			}
-		}
-        return out;
+        return temp;
     }
 
-    public void setVersions(ArrayList<ModPackVersion> versions) {
+    public void setVersions(ArrayList<String> versions) {
 		recommendedIndex = -1;
-		metaMap.clear();
         model.clear();
-        for(ModPackVersion version : versions) {
-            model.addElement(version.version);
-			metaMap.put(version.version, version);
+        for(String version : versions) {
+            model.addElement(version);
         }
     }
 
