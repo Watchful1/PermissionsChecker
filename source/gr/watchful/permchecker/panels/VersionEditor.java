@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class VersionEditor extends JPanel {
 	private JLabel label;
 	private JList<String> list;
-	private SortedListModel<String> model;
+	private SortedListModel<String>  model;
 	private int recommendedIndex;
 	private ChangeListener changeListener;
 
