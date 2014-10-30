@@ -166,18 +166,22 @@ public class FileUtils {
 		}
 	}
 	
-	public static boolean zipFolderTo(File folder, File outputLocation) {FileOutputStream fOut = null;
+	public static boolean zipFolderTo(File folder, File outputLocation) {
+		FileOutputStream fOut = null;
 		BufferedOutputStream bOut = null;
 		ZipArchiveOutputStream tOut = null;
 		try {
+			outputLocation.mkdirs();
+			outputLocation.delete();
+
 			fOut = new FileOutputStream(outputLocation);
 			bOut = new BufferedOutputStream(fOut);
 			tOut = new ZipArchiveOutputStream(bOut);
-			addFileToZip(tOut, folder, "");
+			for(File file : folder.listFiles()) {
+				addFileToZip(tOut, file, "");
+			}
 
 			/*
-			outputLocation.mkdirs();
-			outputLocation.delete();
 
 			ZipFile zipFile = new ZipFile(outputLocation);
 
@@ -189,6 +193,7 @@ public class FileUtils {
 			zipFile.addFolder(folder.getPath(), parameters);*/
 		} catch (Exception e) {
 			System.out.println("Zip failed");
+			e.printStackTrace();
 
 			Object[] options = {"Yes", "No"};
 			int n = JOptionPane.showOptionDialog(Globals.getInstance().mainFrame,
