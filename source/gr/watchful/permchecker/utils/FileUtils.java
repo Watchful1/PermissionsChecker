@@ -1,29 +1,19 @@
 package gr.watchful.permchecker.utils;
 
-import java.awt.*;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import gr.watchful.permchecker.datastructures.ModPackVersion;
-import net.lingala.zip4j.core.ZipFile;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import gr.watchful.permchecker.datastructures.ForgeType;
 import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModPack;
+import gr.watchful.permchecker.datastructures.ModPackVersion;
+import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.utils.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,6 +28,19 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.awt.*;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FileUtils {
 	public static void copyFolder(File sourceFolder, File destinationFolder) {
@@ -164,9 +167,22 @@ public class FileUtils {
 	}
 	
 	public static boolean zipFolderTo(File folder, File outputLocation) {
+		FileOutputStream fOut = null;
+		BufferedOutputStream bOut = null;
+		ZipArchiveOutputStream tOut = null;
 		try {
 			outputLocation.mkdirs();
 			outputLocation.delete();
+
+			fOut = new FileOutputStream(outputLocation);
+			bOut = new BufferedOutputStream(fOut);
+			tOut = new ZipArchiveOutputStream(bOut);
+			for(File file : folder.listFiles()) {
+				addFileToZip(tOut, file, "");
+			}
+
+			/*
+
 			ZipFile zipFile = new ZipFile(outputLocation);
 
 			ZipParameters parameters = new ZipParameters();
@@ -174,11 +190,10 @@ public class FileUtils {
 			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
 			parameters.setIncludeRootFolder(false);
 
-			zipFile.addFolder(folder.getPath(), parameters);
-			System.out.println("Zip done");
-			return true;
+			zipFile.addFolder(folder.getPath(), parameters);*/
 		} catch (Exception e) {
 			System.out.println("Zip failed");
+			e.printStackTrace();
 
 			Object[] options = {"Yes", "No"};
 			int n = JOptionPane.showOptionDialog(Globals.getInstance().mainFrame,
@@ -205,6 +220,42 @@ public class FileUtils {
 				}
 			}
 			return false;
+		} finally {
+			try {
+				tOut.finish();
+				tOut.close();
+				bOut.close();
+				fOut.close();
+			} catch (IOException e) {
+				System.out.println("Closing of resources in zip method failed");
+			}
+			System.out.println("Zip done");
+			return true;
+		}
+	}
+
+	private static void addFileToZip(ZipArchiveOutputStream zOut, File file, String base) throws IOException {
+		String entryName = base + file.getName();
+		ZipArchiveEntry zipEntry = new ZipArchiveEntry(file, entryName);
+		zOut.putArchiveEntry(zipEntry);
+		if (file.isFile()) {
+			FileInputStream fInputStream = null;
+			try {
+				fInputStream = new FileInputStream(file);
+				IOUtils.copy(fInputStream, zOut);
+				zOut.closeArchiveEntry();
+			} finally {
+				fInputStream.close();
+			}
+
+		} else {
+			zOut.closeArchiveEntry();
+			File[] children = file.listFiles();
+			if (children != null) {
+				for (File child : children) {
+					addFileToZip(zOut, child, entryName + "/");
+				}
+			}
 		}
 	}
 
