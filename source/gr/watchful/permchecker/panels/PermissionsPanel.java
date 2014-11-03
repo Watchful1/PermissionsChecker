@@ -20,6 +20,8 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 	private SortedListModel<Mod> badMods;
 	private SortedListModel<ModFile> unknownMods;
 	private ArrayList<ModFile> knownModFiles;
+	private DisabledPanel disabledPanel;
+	private JLayeredPane layeredPanel;
 	private NamedScrollingListPanel<Mod> good;
 	private NamedScrollingListPanel<Mod> bad;
 	private NamedScrollingListPanel<ModFile> unknown;
@@ -27,6 +29,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 	private ModEditor modEditor;
 	private ModFileEditor modFileEditor;
 	private ModFinder modFinder;
+	private JButton parseButton;
 
 	public PermissionsPanel() {
 		goodMods = new SortedListModel<>();
@@ -35,12 +38,32 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		modFinder = new ModFinder();
 		Globals.getInstance().rebuildsMods = this;
 
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setLayout(new BorderLayout());
+
+		layeredPanel = new JLayeredPane();
+		layeredPanel.setLayout(new OverlayLayout(layeredPanel));
 
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
 		mainPanel.setAlignmentX(0f);
-		this.add(mainPanel);
+
+		disabledPanel = new DisabledPanel(mainPanel);
+		disabledPanel.setOpaque(true);
+		layeredPanel.add(disabledPanel);
+
+		parseButton = new JButton("Parse Pack");
+		parseButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				parsePack();
+			}
+		});
+		parseButton.setOpaque(true);
+		parseButton.setAlignmentX(0.5f);
+		parseButton.setAlignmentY(0.5f);
+		layeredPanel.add(parseButton);
+
+		this.add(layeredPanel, BorderLayout.CENTER);
 
 		good = new NamedScrollingListPanel<>("Good", 100, goodMods);
 		good.addListener(this);
@@ -110,8 +133,17 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		}
 	}
 
+	private void setDisabled(boolean isDisabled) {
+		if(isDisabled) {
+			layeredPanel.moveToFront(parseButton);
+		} else {
+			layeredPanel.moveToFront(disabledPanel);
+		}
+		disabledPanel.setEnabled(!isDisabled);
+	}
+
 	public void updatePack(ModPack modPack) {
-		//TODO
+		setDisabled(true);
 	}
 
 	public void parsePack() {
@@ -122,6 +154,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 				Globals.getInstance().preferences.workingFolder+File.separator+"minecraft"+File.separator+"mods"));
 		System.out.println("Found "+knownModFiles.size()+" files");
 		recheckMods();
+		setDisabled(false);
 	}
 
 	public void recheckMods() {
