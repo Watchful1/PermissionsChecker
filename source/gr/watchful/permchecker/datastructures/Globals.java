@@ -79,6 +79,7 @@ public class Globals {
 			System.out.println("Can't save prefs as appStore could not be created");
 			return;
 		}
+		System.out.println("Saving prefs");
 		FileUtils.saveObject(Globals.getInstance().preferences, new File(appStore +
 				File.separator + "preferences.conf"));
 	}

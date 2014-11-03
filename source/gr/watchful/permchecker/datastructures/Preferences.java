@@ -11,9 +11,11 @@ public class Preferences {
 	transient public File saveFolder;
 	transient public File workingFolder;
 	transient public File exportFolder;
+	transient public File defaultOpenFolder;
 	public String saveFolderPath;
 	public String workingFolderPath;
 	public String exportFolderPath;
+	public String defaultOpenFolderPath;
 	public ArrayList<String> minecraftVersions;
 	public String defaultMinecraftVersion;
 	public String parsedPackShortName;
@@ -29,10 +31,12 @@ public class Preferences {
 		if(saveFolderPath == null || saveFolderPath.equals("")) saveFolderPath = appStore+File.separator+"packs";
 		if(workingFolderPath == null || workingFolderPath.equals("")) workingFolderPath = appStore+File.separator+"working";
 		if(exportFolderPath == null || exportFolderPath.equals("")) exportFolderPath = appStore+File.separator+"export";
+		if(defaultOpenFolderPath == null || defaultOpenFolderPath.equals("")) defaultOpenFolderPath = System.getProperty("user.home");
 
         saveFolder = new File(saveFolderPath);
         workingFolder = new File(workingFolderPath);
 		exportFolder = new File(exportFolderPath);
+		defaultOpenFolder = new File(defaultOpenFolderPath);
 
 		if(minecraftVersions == null) {
 			minecraftVersions = new ArrayList<>();
@@ -58,5 +62,10 @@ public class Preferences {
 		else if(dotCapital.exists()) dotCapital.renameTo(normal);
 		else if(dot.exists()) dot.renameTo(normal);
 		return normal;
+	}
+
+	public void setDefaultOpenFolder(File folder) {
+		defaultOpenFolder = folder;
+		defaultOpenFolderPath = folder.getAbsolutePath();
 	}
 }

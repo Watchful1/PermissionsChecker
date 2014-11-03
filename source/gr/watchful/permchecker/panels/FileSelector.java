@@ -1,5 +1,7 @@
 package gr.watchful.permchecker.panels;
 
+import gr.watchful.permchecker.datastructures.Globals;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -50,11 +52,17 @@ public class FileSelector extends JPanel {
         selectButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home")); //TODO change this to the working folder
+                JFileChooser fileChooser = new JFileChooser(Globals.getInstance().preferences.defaultOpenFolder);
                 fileChooser.setFileFilter(new FileNameExtensionFilter(allowedType+" files", allowedType));
                 int returnVal = fileChooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File result = fileChooser.getSelectedFile();
+
+					if(result.getParentFile().compareTo(Globals.getInstance().preferences.defaultOpenFolder) != 0) {
+						Globals.getInstance().preferences.setDefaultOpenFolder(result.getParentFile());
+						Globals.getInstance().savePreferences();
+					}
+
                     setFile(result);
                 }
             }
