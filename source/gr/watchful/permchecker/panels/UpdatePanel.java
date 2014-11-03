@@ -47,6 +47,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 
 	public void setPack(ModPack pack) {
 		packName.setText(pack.name);
+		selector.clearSelection();
 		versionSelector.removeAllItems();
 		for(ModPackVersion version : pack.metaVersions) {
 			versionSelector.addItem(version.version);
