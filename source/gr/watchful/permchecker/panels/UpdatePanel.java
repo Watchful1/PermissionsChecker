@@ -101,6 +101,8 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 					System.out.println("Couldn't find minecraft folder");
 				}
 			}
+			System.out.println("At delete line");
+			System.out.println(Globals.getInstance().preferences.copyImportAssets);
 			if (!Globals.getInstance().preferences.copyImportAssets) file.delete();
 		}
 	}
