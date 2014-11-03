@@ -200,7 +200,7 @@ public class mainClass extends JFrame implements ListsPacks {
         modPacksModel.addElement(pack);
         modPacksList.setSelected(modPacksModel.getSize()-1);
         modPacksList.sortKeepSelected();
-        modPacksPanel.setPack(pack);
+        Globals.setModPack(pack);
     }
 
 	public boolean codeExists(String code, String currentPack) {

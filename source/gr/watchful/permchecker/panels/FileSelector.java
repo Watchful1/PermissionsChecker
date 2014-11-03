@@ -62,9 +62,18 @@ public class FileSelector extends JPanel {
         this.add(selectButton);
     }
 
+	public void clearSelection() {
+		status.setText("No file selected");
+		status.setForeground(Color.BLACK);
+		file = null;
+	}
+
     public void setFile(File fileIn) {
-        file = fileIn;
-        if(file == null || !file.exists()) return;
+        if(fileIn == null || !fileIn.exists()) {
+			clearSelection();
+			return;
+		}
+		file = fileIn;
         int i = file.getName().lastIndexOf('.');
         String ext = "file";
         if(i >= 0) {
