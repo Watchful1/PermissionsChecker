@@ -16,6 +16,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -122,15 +123,6 @@ public class mainClass extends JFrame implements ListsPacks {
 		});
 		menu.add(newPackFromCode);
 
-		JMenuItem checkPack = new JMenuItem("Check pack");
-		checkPack.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				permissionsPanel.parsePack();
-			}
-		});
-		menu.add(checkPack);
-
 		JMenuItem openFolder = new JMenuItem("Open appdata");
 		openFolder.addActionListener(new ActionListener() {
 			@Override
@@ -205,10 +197,13 @@ public class mainClass extends JFrame implements ListsPacks {
 
 	public boolean codeExists(String code, String currentPack) {
 		if(code == null || code.equals("")) return false;
-		ModPack pack = FileUtils.packFromCode(code).get(0);
+		ArrayList<ModPack> packs = FileUtils.packFromCode(code);
 
-		if(pack != null && pack.shortName != null &&
-				!pack.shortName.equals("") && !currentPack.equals(pack.shortName)) return true;
+		if(packs != null) {
+			ModPack pack = packs.get(0);
+			if(pack.shortName != null &&
+					!pack.shortName.equals("") && !currentPack.equals(pack.shortName)) return true;
+		}
 
 		for(int i=0; i<modPacksList.getModel().getSize(); i++) {
 			ModPack newPack = modPacksList.getModel().get(i);
