@@ -69,6 +69,7 @@ public class ModFinder {
 		if(ext.equals("jar") || ext.equals("zip") || ext.equals("litemod") || ext.equals("disabled")) {
 			ZipFile file = new ZipFile(modArchive);
 			Enumeration<? extends ZipEntry> files = file.entries();
+			boolean hasClassFiles = false;
 			while(files.hasMoreElements()) {
 				ZipEntry item = files.nextElement();
 				if(item.getName().equals("mcmod.info")) {
@@ -102,6 +103,7 @@ public class ModFinder {
 					}
 				}
 				if(item.isDirectory() || !item.getName().endsWith("class")) continue;
+				hasClassFiles = true;
 
 				ClassReader reader;
 				try {
@@ -116,7 +118,8 @@ public class ModFinder {
 				}
 			}
 			file.close();
-			return otherMod;
+			if(hasClassFiles) return otherMod;
+			else return null;
 		} else if(ext.equals("class")) {
 			rawClasses++;
 		}
