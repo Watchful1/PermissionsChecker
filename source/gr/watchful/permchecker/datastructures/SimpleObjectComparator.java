@@ -3,6 +3,16 @@ package gr.watchful.permchecker.datastructures;
 import java.util.Comparator;
 
 public class SimpleObjectComparator implements Comparator<Object> {
+	boolean useRawNames;
+
+	public SimpleObjectComparator() {
+		useRawNames = false;
+	}
+
+	public SimpleObjectComparator(boolean useRawNames) {
+		this.useRawNames = useRawNames;
+	}
+
     @Override
     public int compare(Object o1, Object o2) {
 		if(o1.getClass().equals(ModPack.class) && o2.getClass().equals(ModPack.class)) {
@@ -16,7 +26,7 @@ public class SimpleObjectComparator implements Comparator<Object> {
 			Mod mod2 = (Mod) o2;
 			if(mod1.permStatus == Mod.PRIVATE && mod2.permStatus != Mod.PRIVATE) return -1;
 			else if(mod2.permStatus == Mod.PRIVATE && mod1.permStatus != Mod.PRIVATE) return 1;
-			else return mod1.toString().compareToIgnoreCase(mod2.toString());
+			else return mod1.toString(useRawNames).compareToIgnoreCase(mod2.toString(useRawNames));
 		} else return o1.toString().toLowerCase().compareTo(o2.toString().toLowerCase());
     }
 }

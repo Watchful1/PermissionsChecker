@@ -76,6 +76,8 @@ public class ModInfo {
 		switch (num) {
 			case OPEN:
 				return "Open";
+			case FTB:
+				return "FTB";
 			case NOTIFY:
 				return "Notify";
 			case REQUEST:

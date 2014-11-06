@@ -200,6 +200,40 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		badMods.sort(new SimpleObjectComparator());
 	}
 
+	public boolean promptPermissionsGood() {
+		if(badMods.getSize() > 0 || unknownMods.getSize() > 0) {
+			StringBuilder bldr = new StringBuilder();
+			if(badMods.getSize() > 0) {
+				bldr.append(badMods.getSize());
+				if(badMods.getSize() == 1) {
+					bldr.append(" mod has missing permission\n");
+				} else {
+					bldr.append(" mods have missing permissions\n");
+				}
+			}
+			if(unknownMods.getSize() > 0) {
+				bldr.append(unknownMods.getSize());
+				if(unknownMods.getSize() == 1) {
+					bldr.append(" file was not identified\n");
+				} else {
+					bldr.append(" files were not identified\n");
+				}
+			}
+
+			Object[] options = {"Ignore Missing Permissions", "Cancel"};
+			int n = JOptionPane.showOptionDialog(Globals.getInstance().mainFrame,
+					bldr.toString(),
+					"Missing Permissions",
+					JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					options,
+					options[1]);
+			if(n == 0) return true;
+			else return false;
+		} else return true;
+	}
+
 	public void writeFile() {
 		//TODO check for no modpack
 		File infoFile = new File(Globals.getInstance().preferences.getWorkingMinecraftFolder()+File.separator+"perms.txt");
@@ -215,8 +249,13 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		bldr.append(" pack\n\n");
 
 		Globals.getModPack().modList.clear();
-		for(int i=0; i<goodMods.getSize(); i++) {
-			ModInfo modInfo = Globals.getInstance().nameRegistry.getInfo(goodMods.get(i), Globals.getModPack());
+		SortedListModel<Mod> allMods = new SortedListModel<>();
+		allMods.addAll(goodMods.getArrayList());
+		allMods.addAll(badMods.getArrayList());
+		allMods.sort(new SimpleObjectComparator(true));
+
+		for(int i=0; i<allMods.getSize(); i++) {
+			ModInfo modInfo = Globals.getInstance().nameRegistry.getInfo(allMods.get(i), Globals.getModPack());
 
 			StringBuilder bldr2 = new StringBuilder();
 			bldr2.append("<a color=\"aqua\" href=\"");
@@ -252,21 +291,34 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 				}
 			}
 
-			switch(modInfo.getPolicy(Globals.getModPack().isPublic)) {
-				case ModInfo.NOTIFY:
-					bldr.append(" The author has been notified, ");
-					bldr.append(modInfo.customLink);
-					bldr.append(".");
-					break;
-				case ModInfo.REQUEST:
-				case ModInfo.CLOSED:
-					bldr.append(" Permission has been obtained from the author, ");
-					bldr.append(modInfo.customLink);
-					bldr.append(".");
-					break;
+			if(modInfo.customLink.equals("") && modInfo.getPolicy(Globals.getModPack().isPublic) != ModInfo.OPEN) {
+				bldr.append(" No permission has been listed.");
+			} else {
+				switch (modInfo.getPolicy(Globals.getModPack().isPublic)) {
+					case ModInfo.NOTIFY:
+						bldr.append(" The author has been notified, ");
+						bldr.append(modInfo.customLink);
+						bldr.append(".");
+						break;
+					case ModInfo.REQUEST:
+					case ModInfo.CLOSED:
+					case ModInfo.UNKNOWN:
+						bldr.append(" Permission has been obtained from the author, ");
+						bldr.append(modInfo.customLink);
+						bldr.append(".");
+						break;
+				}
 			}
 
 			bldr.append("\n");
+		}
+		if(unknownMods.getSize() > 0) {
+			bldr.append("\n");
+			for(int i=0; i < unknownMods.getSize(); i++) {
+				bldr.append("The file ");
+				bldr.append(unknownMods.get(i).fileName());
+				bldr.append(" could not be identified");
+			}
 		}
 
 		FileUtils.writeFile(bldr.toString(), infoFile);

@@ -140,6 +140,10 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 	public void exportPack() {
 		Globals.saveCurrentPack();
 		permPanel.parsePack();
+		if(!permPanel.promptPermissionsGood()) {
+			System.out.println("Export canceled");
+			return;
+		}
 		permPanel.writeFile();
 
 		boolean success = true;
