@@ -31,13 +31,14 @@ public class mainClass extends JFrame implements ListsPacks {
     private ModPack oldSelection;
 
 	public mainClass() {
+		long startTime = System.nanoTime();
         Globals.getInstance().mainFrame = this;
 		Globals.getInstance().listsPacks = this;
         Globals.getInstance().initializeFolders();
         Globals.getInstance().loadPreferences();
         Globals.getInstance().updateListings();
 
-		this.setTitle("Permissions Checker v 1.1.4"); // Set the window title
+		this.setTitle("Permissions Checker v 1.1.5 dev"); // Set the window title
 		this.setPreferredSize(new Dimension(1000, 600)); // and the initial size
 
         JPanel leftPanel = new JPanel();
@@ -46,7 +47,7 @@ public class mainClass extends JFrame implements ListsPacks {
         modPacksModel = new SortedListModel<>();
         loadPacks(Globals.getInstance().preferences.saveFolder);
 
-        modPacksList = new NamedScrollingListPanel<>("ModPacks", 200, modPacksModel);
+        modPacksList = new NamedScrollingListPanel<>("ModPacks", 200, modPacksModel, true);
         modPacksList.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         modPacksPanel = new ModPacksPanel(modPacksList);
@@ -166,6 +167,9 @@ public class mainClass extends JFrame implements ListsPacks {
 		pack();
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setVisible(true);
+
+		long endTime = System.nanoTime();
+		System.out.println("Startup took: " + (endTime - startTime) / 1000000);
 	}
 	
 	private static boolean isMinecraftDir(File file) {

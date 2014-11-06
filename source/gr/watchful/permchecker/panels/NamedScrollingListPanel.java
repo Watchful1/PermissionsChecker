@@ -6,15 +6,11 @@ import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -22,20 +18,40 @@ import javax.swing.event.ListSelectionListener;
 @SuppressWarnings("serial")
 public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionListener {
 	private JList<T> list;
+	private SortedListModel<T> model;
 	private String name = "";
 	private ArrayList<NamedScrollingListPanelListener> listeners;
-	
+
 	public NamedScrollingListPanel(String name, int size, SortedListModel<T> model) {
+		this(name, size, model, false);
+	}
+	
+	public NamedScrollingListPanel(String name, int size, final SortedListModel<T> model, boolean enableFiltering) {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setMinimumSize(new Dimension(size, 50));
 		this.setMaximumSize(new Dimension(size, Integer.MAX_VALUE));
 		this.setPreferredSize(new Dimension(size, 500));
+
+		this.model = model;
+
 		if(name != null) {
             JLabel nameLabel = new JLabel(name);
             nameLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
 			this.add(nameLabel);
 
 			this.name = name;
+		}
+
+		if(enableFiltering) {
+			final JTextField filterField = new JTextField();
+			filterField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
+			filterField.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					updateFilter(filterField.getText());
+				}
+			});
+			this.add(filterField);
 		}
 		
 		list = new JList<T>(model);
@@ -47,6 +63,10 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 		JScrollPane scrList = new JScrollPane();
         scrList.getViewport().setView(list);
         this.add(scrList);
+	}
+
+	private void updateFilter(String filter) {
+		model.updateFilter(filter);
 	}
 	
 	public void addListener(NamedScrollingListPanelListener listener) {

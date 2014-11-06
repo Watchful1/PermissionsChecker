@@ -6,46 +6,94 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class SortedListModel<T> extends AbstractListModel {
-	private ArrayList<T> list;
+	private ArrayList<T> fullList;
+	private ArrayList<T> filteredlist;
+	private String filter;
+	public boolean blockUpdates;
 
 	public SortedListModel() {
-		list = new ArrayList<>();
+		fullList = new ArrayList<>();
+		filteredlist = new ArrayList<>();
+		filter = "";
+		blockUpdates = false;
+	}
+
+	public boolean isFiltered() {
+		return !filter.equals("");
+	}
+
+	public void updateFilter() {
+		updateFilter(filter);
+	}
+
+	public void updateFilter(String newFilter) {
+		filter = newFilter;
+
+		filteredlist.clear();
+
+		if(filter.equals("")) {
+			filteredlist.addAll(fullList);
+			if(!blockUpdates) fireContentsChanged(this, 0, filteredlist.size());
+		} else {
+			for(T item : fullList) {
+				if(matchesFilter(item)) filteredlist.add(item);
+			}
+			if(!blockUpdates) fireContentsChanged(this, 0, fullList.size());
+		}
+	}
+
+	public boolean matchesFilter(T item) {
+		return item.toString().toLowerCase().contains(filter.toLowerCase());
 	}
 
 	public void add(int index, T element) {
-		list.add(index, element);
-		fireIntervalAdded(this, index, index);
+		fullList.add(index, element);
+		if(isFiltered() && matchesFilter(element)) updateFilter();
+		else if(!blockUpdates) fireIntervalAdded(this, index, index);
 	}
 
 	public void addElement(T element) {
-		list.add(element);
-		fireIntervalAdded(this, list.size() - 1, list.size() - 1);
+		fullList.add(element);
+		if(isFiltered() && matchesFilter(element)) updateFilter();
+		else if(!blockUpdates) fireIntervalAdded(this, fullList.size() - 1, fullList.size() - 1);
 	}
 
 	public void addAll(ArrayList<T> array) {
 		for(T element : array) {
-			addElement(element);
+			fullList.add(element);
 		}
+		if(isFiltered()) updateFilter();
+		else if(!blockUpdates) fireIntervalAdded(this, 0, fullList.size() - 1);
 	}
 
 	public void setElement(T element, int index) {
-		list.set(index, element);
+		fullList.set(index, element);
+		if(isFiltered() && matchesFilter(element)) updateFilter();
+		else if(!blockUpdates) fireContentsChanged(this, index, index);
 	}
 
 	public void remove(int index) {
-		list.remove(index);
-		fireIntervalRemoved(this, index, index);
+		if(isFiltered()) {
+			T item = filteredlist.get(index);
+			filteredlist.remove(index);
+			fullList.remove(item);
+		} else {
+			fullList.remove(index);
+		}
+		if(!blockUpdates) fireIntervalRemoved(this, index, index);
 	}
 
 	public void clear() {
-		int temp = list.size() - 1;
-		list.clear();
-		fireIntervalRemoved(this, 0, (temp < 0) ? 0 : temp);
+		int temp = fullList.size() - 1;
+		fullList.clear();
+		filteredlist.clear();
+		if(!blockUpdates) fireIntervalRemoved(this, 0, (temp < 0) ? 0 : temp);
 	}
 
 	@Override
 	public int getSize() {
-		return list.size();
+		if(isFiltered()) return filteredlist.size();
+		else return fullList.size();
 	}
 
 	public boolean isEmpty() {
@@ -54,7 +102,8 @@ public class SortedListModel<T> extends AbstractListModel {
 
 	@Override
 	public Object getElementAt(int index) {
-		return list.get(index);
+		if(isFiltered()) return filteredlist.get(index);
+		else return fullList.get(index);
 	}
 
 	public T get(int index) {
@@ -62,18 +111,37 @@ public class SortedListModel<T> extends AbstractListModel {
 	}
 
 	public int getIndexByString(T object) {
-		for(int i=0; i<list.size(); i++) {
-			if(list.get(i).toString().equals(object.toString())) return i;
+		if(isFiltered()) {
+			for(int i=0; i<filteredlist.size(); i++) {
+				if(filteredlist.get(i).toString().equals(object.toString())) return i;
+			}
+		} else {
+			for(int i=0; i<fullList.size(); i++) {
+				if(fullList.get(i).toString().equals(object.toString())) return i;
+			}
 		}
 		return -1;
 	}
 
+	/**
+	 * Always returns the non-filtered list
+	 * @return
+	 */
 	public ArrayList<T> getArrayList() {
-		return (ArrayList<T>) list.clone();
+		return (ArrayList<T>) fullList.clone();
 	}
 
 	public void sort(Comparator comparator) {
-		Collections.sort(list, comparator);
-		fireContentsChanged(this, 0, list.size());
+		Collections.sort(fullList, comparator);
+
+		boolean cache = blockUpdates;
+		blockUpdates = true;
+		if(isFiltered()) updateFilter();
+		blockUpdates = cache;
+
+		if(!blockUpdates) {
+			if(isFiltered()) fireContentsChanged(this, 0, filteredlist.size());
+			else fireContentsChanged(this, 0, fullList.size());
+		}
 	}
 }
