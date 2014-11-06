@@ -97,7 +97,7 @@ public class ModFinder {
 
 					String inputStr;
 					while ((inputStr = streamReader.readLine()) != null) {
-						if(inputStr.startsWith("TweakName:")) {
+						if(inputStr.startsWith("TweakClass:")) {
 							otherMod.addID(inputStr.split(" ")[1]);
 						}
 					}
