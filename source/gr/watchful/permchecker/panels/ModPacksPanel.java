@@ -21,9 +21,9 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 	private MinecraftVersionSelector minecraftVersionSelector;
 	private VersionEditor versionEditor;
 	private ForgeEditor forgeEditor;
-	private FileSelector iconSelector;
-	private FileSelector splashSelector;
-	private FileSelector serverSelector;
+	//private FileSelector iconSelector;
+	//private FileSelector splashSelector;
+	//private FileSelector serverSelector;
 
 	private ModPack oldPack;
 
@@ -55,12 +55,12 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		this.add(versionEditor);
 		forgeEditor = new ForgeEditor("Forge", this);
 		this.add(forgeEditor);
-		iconSelector = new FileSelector("Icon", 150, "png", this);
+		/*iconSelector = new FileSelector("Icon", 150, "png", this);
 		this.add(iconSelector);
 		splashSelector = new FileSelector("Splash", 150, "png", this);
 		this.add(splashSelector);
 		serverSelector = new FileSelector("Server", -1, "zip", this);
-		this.add(serverSelector);
+		this.add(serverSelector);*/
 	}
 	
 	public void savePack(ModPack packIn) {
@@ -112,9 +112,9 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		pack.recommendedVersion = versionEditor.getRecommendedVersion();
 		pack.forgeType = forgeEditor.getForgeType();
 		pack.ForgeVersion = forgeEditor.getForgeVersion();
-		pack.icon = iconSelector.getFile();
+		/*pack.icon = iconSelector.getFile();
 		pack.splash = splashSelector.getFile();
-		pack.server = serverSelector.getFile();
+		pack.server = serverSelector.getFile();*/
 
 		modPacksList.sortKeepSelected();
 
@@ -133,9 +133,9 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		versionEditor.setRecommendedVersion(pack.recommendedVersion);
 		forgeEditor.setForgeType(pack.forgeType);
 		forgeEditor.setForgeVersion(pack.ForgeVersion);
-		iconSelector.setFile(pack.icon);
+		/*iconSelector.setFile(pack.icon);
 		splashSelector.setFile(pack.splash);
-		serverSelector.setFile(pack.server);
+		serverSelector.setFile(pack.server);*/
 	}
 
 	@Override
@@ -190,7 +190,7 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		} else if(e.getSource().equals(forgeEditor)) {
 			Globals.getModPack().forgeType = forgeEditor.getForgeType();
 			Globals.getModPack().ForgeVersion = forgeEditor.getForgeVersion();
-		} else if(e.getSource().equals(iconSelector)) {
+		/*} else if(e.getSource().equals(iconSelector)) {
 			if(fileChanged(iconSelector)) {
 				Globals.getModPack().icon = iconSelector.getFile();
 			}
@@ -201,7 +201,7 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		} else if(e.getSource().equals(serverSelector)) {
 			if(fileChanged(serverSelector)) {
 				Globals.getModPack().server = serverSelector.getFile();
-			}
+			}*/
 		} else {
 			changed = false;
 		}

@@ -10,11 +10,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 	private LabelField packName;
 	private FileSelector selector;
+	private FileSelector iconSelector;
+	private FileSelector splashSelector;
+	private FileSelector serverSelector;
 	JComboBox<String> versionSelector;
 	public PermissionsPanel permPanel;//TODO really should be a better way to do this
 
@@ -29,6 +34,12 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 
         selector = new FileSelector("Zip", -1, "zip", this);
         this.add(selector);
+		iconSelector = new FileSelector("Icon", 150, "png", this);
+		this.add(iconSelector);
+		splashSelector = new FileSelector("Splash", 150, "png", this);
+		this.add(splashSelector);
+		serverSelector = new FileSelector("Server", -1, "zip", this);
+		this.add(serverSelector);
 
         versionSelector = new JComboBox<>();
 		versionSelector.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
@@ -48,11 +59,27 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 	public void setPack(ModPack pack) {
 		packName.setText(pack.name);
 		selector.clearSelection();
+		iconSelector.setFile(pack.icon);
+		splashSelector.setFile(pack.splash);
+		serverSelector.setFile(pack.server);
 		versionSelector.removeAllItems();
 		for(ModPackVersion version : pack.metaVersions) {
 			versionSelector.addItem(version.version);
 		}
 		versionSelector.setSelectedItem(pack.recommendedVersion);
+	}
+
+	public boolean fileChanged(FileSelector fileSelector) {
+		File tempLocation = new File(Globals.getInstance().preferences.exportFolder +
+				File.separator + "temp" + File.separator + fileSelector.getFile().getName());
+		if(fileSelector.getFile().equals(tempLocation)) return false;
+		if(Globals.getInstance().preferences.copyImportAssets) {
+			FileUtils.copyFile(fileSelector.getFile(), tempLocation);
+		} else {
+			FileUtils.moveFile(fileSelector.getFile(), tempLocation);
+		}
+		fileSelector.setFile(tempLocation);
+		return true;
 	}
 
 	public void extractPack(File file) {
@@ -75,6 +102,22 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		boolean temp = FileUtils.extractZipTo(file, Globals.getInstance().preferences.workingFolder);
 		if(temp) {
 			File working = Globals.getInstance().preferences.workingFolder;
+
+			File[] images = working.listFiles(new FileFilter() {
+				@Override
+				public boolean accept(File pathname) {
+					return FileUtils.getFileExtension(pathname).equals("png");
+				}
+			});
+			for(File image : images) {
+				String name = image.getName().toLowerCase();
+				if(name.contains("icon")) {
+					iconSelector.setFile(image);
+				} else if(name.contains("splash")) {
+					splashSelector.setFile(image);
+				}
+			}
+
 			if(getMinecraftFolder(working) == null) {
 				boolean found = false;
 				for(File tempFolder : working.listFiles()) {
@@ -204,7 +247,31 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		extractPack(selector.getFile());
+		if(e.getSource().equals(selector)) {
+			extractPack(selector.getFile());
+			return;
+		}
+
+		if(Globals.getModPack() == null) return;
+		boolean changed = true;
+		if(e.getSource().equals(iconSelector)) {
+			if(fileChanged(iconSelector)) {
+				Globals.getModPack().icon = iconSelector.getFile();
+			}
+		} else if(e.getSource().equals(splashSelector)) {
+			if(fileChanged(splashSelector)) {
+				Globals.getModPack().splash = splashSelector.getFile();
+			}
+		} else if(e.getSource().equals(serverSelector)) {
+			if(fileChanged(serverSelector)) {
+				Globals.getModPack().server = serverSelector.getFile();
+			}
+		} else {
+			changed = false; //just in case
+		}
+		if(changed) {
+			Globals.modPackChanged(this, true);
+		}
 	}
 
 	@Override
