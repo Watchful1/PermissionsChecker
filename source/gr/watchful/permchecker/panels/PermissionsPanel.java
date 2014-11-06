@@ -254,6 +254,11 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		allMods.addAll(badMods.getArrayList());
 		allMods.sort(new SimpleObjectComparator(true));
 
+		//Hard code Forge in. TODO fix this if we ever need to add support for only loading other tweaks
+		Mod forge = new Mod(null, "forge");
+		forge.permStatus = Mod.PUBLIC;
+		allMods.add(0, forge);
+
 		for(int i=0; i<allMods.getSize(); i++) {
 			ModInfo modInfo = Globals.getInstance().nameRegistry.getInfo(allMods.get(i), Globals.getModPack());
 
