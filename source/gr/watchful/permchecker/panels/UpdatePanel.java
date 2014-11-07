@@ -106,14 +106,17 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 			File[] images = working.listFiles(new FileFilter() {
 				@Override
 				public boolean accept(File pathname) {
-					return FileUtils.getFileExtension(pathname).equals("png");
+					String ext = FileUtils.getFileExtension(pathname);
+					if(ext == null || ext.equals("")) return false;
+
+					return ext.equals("png");
 				}
 			});
 			for(File image : images) {
 				String name = image.getName().toLowerCase();
-				if(name.contains("icon")) {
+				if(name.contains("icon") || name.contains("small")) {
 					iconSelector.setFile(image);
-				} else if(name.contains("splash")) {
+				} else if(name.contains("splash") || name.contains("big") || name.contains("banner")) {
 					splashSelector.setFile(image);
 				}
 			}
@@ -227,50 +230,49 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 					+ File.separator + "static" + File.separator +
 					Globals.getModPack().getIconName()));
 			Globals.getModPack().icon = null;
+			iconSelector.clearSelection();//kinda hacky
 		}
 		if(Globals.getModPack().splash != null && Globals.getModPack().splash.exists()) {
 			FileUtils.moveFile(Globals.getModPack().splash, new File(Globals.getInstance().preferences.exportFolder
 					+ File.separator + "static" + File.separator +
 					Globals.getModPack().getSplashName()));
 			Globals.getModPack().splash = null;
+			splashSelector.clearSelection();//kinda hacky
 		}
 		if(Globals.getModPack().server != null && Globals.getModPack().server.exists()) {
 			FileUtils.moveFile(Globals.getModPack().server, new File(packExportFolder + File.separator +
 					Globals.getModPack().serverName));
 			Globals.getModPack().server = null;
+			serverSelector.clearSelection();//kinda hacky
 		}
 		Globals.modPackChanged(this, false);
 
 		System.out.println("Deleting working folder");
 		FileUtils.purgeDirectory(Globals.getInstance().preferences.workingFolder);
+		selector.clearSelection();
 	}
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		if(e.getSource().equals(selector)) {
+			if(selector.getFile() == null) return;
 			extractPack(selector.getFile());
 			return;
 		}
 
 		if(Globals.getModPack() == null) return;
-		boolean changed = true;
 		if(e.getSource().equals(iconSelector)) {
-			if(fileChanged(iconSelector)) {
+			if(iconSelector.getFile() == null || fileChanged(iconSelector)) {
 				Globals.getModPack().icon = iconSelector.getFile();
 			}
 		} else if(e.getSource().equals(splashSelector)) {
-			if(fileChanged(splashSelector)) {
+			if(splashSelector.getFile() == null || fileChanged(splashSelector)) {
 				Globals.getModPack().splash = splashSelector.getFile();
 			}
 		} else if(e.getSource().equals(serverSelector)) {
-			if(fileChanged(serverSelector)) {
+			if(serverSelector.getFile() == null || fileChanged(serverSelector)) {
 				Globals.getModPack().server = serverSelector.getFile();
 			}
-		} else {
-			changed = false; //just in case
-		}
-		if(changed) {
-			Globals.modPackChanged(this, true);
 		}
 	}
 

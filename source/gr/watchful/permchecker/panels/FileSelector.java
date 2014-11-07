@@ -18,6 +18,7 @@ public class FileSelector extends JPanel {
     private JLabel label;
     private JLabel status;
     private JButton selectButton;
+	private JButton cancelButton;
     private File file;
     private int maxKilobytes;
     private String allowedType;
@@ -68,12 +69,23 @@ public class FileSelector extends JPanel {
             }
         });
         this.add(selectButton);
+
+		cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setFile(null);
+			}
+		});
+		this.add(cancelButton);
     }
 
 	public void clearSelection() {
 		status.setText("No file selected");
 		status.setForeground(Color.BLACK);
 		file = null;
+		cancelButton.setEnabled(false);
+		notifyChanged();
 	}
 
     public void setFile(File fileIn) {
@@ -81,6 +93,7 @@ public class FileSelector extends JPanel {
 			clearSelection();
 			return;
 		}
+		cancelButton.setEnabled(true);
 		file = fileIn;
         int i = file.getName().lastIndexOf('.');
         String ext = "file";

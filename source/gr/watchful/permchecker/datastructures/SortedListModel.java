@@ -63,7 +63,7 @@ public class SortedListModel<T> extends AbstractListModel {
 			fullList.add(element);
 		}
 		if(isFiltered()) updateFilter();
-		else if(!blockUpdates) fireIntervalAdded(this, 0, fullList.size() - 1);
+		else if(!blockUpdates) fireIntervalAdded(this, 0, (fullList.size() - 1 < 0) ? 0 : fullList.size() - 1);
 	}
 
 	public void setElement(T element, int index) {
