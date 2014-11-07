@@ -129,7 +129,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 					extraFiles.add(image);
 				}
 			}
-			if(!(icon && splash)) {
+			if(!(icon && splash) && extraFiles.size() > 0) {
 				Object[] options = {"Yes", "No"};
 				int n = JOptionPane.showOptionDialog(Globals.getInstance().mainFrame,
 						"Found extra png files\nShould we move them to your import folder?",
