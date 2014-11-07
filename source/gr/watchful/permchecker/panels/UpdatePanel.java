@@ -112,12 +112,38 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 					return ext.equals("png");
 				}
 			});
+			boolean icon = false;
+			boolean splash = false;
+			ArrayList<File> extraFiles = new ArrayList<>();
 			for(File image : images) {
 				String name = image.getName().toLowerCase();
-				if(name.contains("icon") || name.contains("small")) {
+				if((name.contains("icon") || name.contains("small")) && !icon) {
+					icon = true;
+					System.out.println("Found an icon");
 					iconSelector.setFile(image);
-				} else if(name.contains("splash") || name.contains("big") || name.contains("banner")) {
+				} else if((name.contains("splash") || name.contains("big") || name.contains("banner")) && !splash) {
+					splash = true;
+					System.out.println("Found a splash");
 					splashSelector.setFile(image);
+				} else {
+					extraFiles.add(image);
+				}
+			}
+			if(!(icon && splash)) {
+				Object[] options = {"Yes", "No"};
+				int n = JOptionPane.showOptionDialog(Globals.getInstance().mainFrame,
+						"Found extra png files\nShould we move them to your import folder?",
+						"Extra png's",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE,
+						null,
+						options,
+						options[1]);
+				if(n == 0) {
+					for(File extra : extraFiles) {
+						FileUtils.moveFile(extra,
+								new File(Globals.getInstance().preferences.defaultOpenFolder, extra.getName()), false);
+					}
 				}
 			}
 

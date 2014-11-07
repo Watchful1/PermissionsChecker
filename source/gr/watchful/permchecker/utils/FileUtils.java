@@ -104,7 +104,10 @@ public class FileUtils {
 
 	public static void moveFile(File sourceFile, File destinationFile, boolean overwrite) {
 		if(!sourceFile.exists()) return;
-		if(destinationFile.exists() && !overwrite) return;
+		if(destinationFile.exists() && !overwrite) {
+			System.out.println("Destination file exists, aborting");
+			return;
+		}
 		System.out.println("Moving file from: "+sourceFile.getAbsolutePath());
 		System.out.println("To: "+destinationFile.getAbsolutePath());
 		if(destinationFile.exists()) destinationFile.delete();
