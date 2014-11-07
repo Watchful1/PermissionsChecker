@@ -32,13 +32,16 @@ public class mainClass extends JFrame implements ListsPacks {
 
 	public mainClass() {
 		long startTime = System.nanoTime();
+		//System.out.println("Time 1: " + (System.nanoTime() - startTime) / 1000000);
         Globals.getInstance().mainFrame = this;
 		Globals.getInstance().listsPacks = this;
         Globals.getInstance().initializeFolders();
         Globals.getInstance().loadPreferences();
+		long tempTime = System.nanoTime();
         Globals.getInstance().updateListings();
+		System.out.println("Perm listings update took: " + (System.nanoTime() - tempTime) / 1000000);
 
-		this.setTitle("Permissions Checker v 1.1.5"); // Set the window title
+		this.setTitle("Permissions Checker v 1.1.6"); // Set the window title
 		this.setPreferredSize(new Dimension(1000, 600)); // and the initial size
 
         JPanel leftPanel = new JPanel();

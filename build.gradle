@@ -101,7 +101,7 @@ dependencies {
 	compile 'dom4j:dom4j:1.6.1'
     compile 'org.apache.xmlbeans:xmlbeans:2.6.0'
 	compile 'org.apache.poi:poi:3.10-FINAL'
-	compile 'org.apache.poi:poi-ooxml:3.10-FINAL'
+    compile 'org.apache.poi:poi-ooxml:3.10-FINAL'
     compile 'org.apache.poi:poi-ooxml-schemas:3.10-FINAL'
     compile 'org.json:json:20090211'
     compile 'org.apache.commons:commons-compress:1.3'

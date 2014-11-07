@@ -137,7 +137,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		if(isDisabled) {
 			layeredPanel.moveToFront(parseButton);
 		} else {
-			layeredPanel.moveToFront(disabledPanel);
+			layeredPanel.moveToBack(parseButton);
 		}
 		disabledPanel.setEnabled(!isDisabled);
 	}
