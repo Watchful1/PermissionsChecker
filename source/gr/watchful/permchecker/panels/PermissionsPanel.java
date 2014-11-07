@@ -91,7 +91,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 	}
 
 	public void selectionChanged(NamedSelectionEvent event) {
-		updateEditor(event.getParentName(),event.getSelected());
+		updateEditor(event.getParentName(), event.getSelected());
 	}
 
 	private void updateEditor(String list, int selected) {
@@ -142,8 +142,12 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		disabledPanel.setEnabled(!isDisabled);
 	}
 
-	public void updatePack(ModPack modPack) {
+	public void invalidateContents() {
 		setDisabled(true);
+	}
+
+	public void updatePack(ModPack modPack) {
+		invalidateContents();
 	}
 
 	public void parsePack() {

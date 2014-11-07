@@ -148,6 +148,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 				}
 			}
 			if (!Globals.getInstance().preferences.copyImportAssets) file.delete();
+			permPanel.invalidateContents();
 		}
 	}
 

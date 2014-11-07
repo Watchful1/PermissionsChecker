@@ -90,6 +90,7 @@ public class mainClass extends JFrame implements ListsPacks {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 Globals.getInstance().updateListings();
+				permissionsPanel.invalidateContents();
             }
         });
         menu.add(updatePerms);
