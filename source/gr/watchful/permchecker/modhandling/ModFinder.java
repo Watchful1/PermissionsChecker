@@ -31,6 +31,10 @@ public class ModFinder {
 	private int rawClasses;
 
 	public ArrayList<ModFile> discoverModFiles(File folder) {
+		return discoverModFiles(folder, false);
+	}
+
+	public ArrayList<ModFile> discoverModFiles(File folder, boolean silent) {
 		rawClasses = 0;
 		ArrayList<ModFile> modFiles = new ArrayList<>();
 
@@ -38,7 +42,7 @@ public class ModFinder {
 
 		ModFile temp;
 		for(File file : folder.listFiles()) {
-			if(file.isDirectory())  modFiles.addAll(discoverModFiles(file));
+			if(file.isDirectory())  modFiles.addAll(discoverModFiles(file, true));
 			else {
 				int i = file.getName().lastIndexOf('.');
 				if (i <= 0) continue;
@@ -56,7 +60,7 @@ public class ModFinder {
 				}
 			}
 		}
-		if(rawClasses > 0) JOptionPane.showMessageDialog(Globals.getInstance().mainFrame, "Raw class files are present in the mods folder\n"+
+		if(rawClasses > 0 && !silent) JOptionPane.showMessageDialog(Globals.getInstance().mainFrame, "Raw class files are present in the mods folder\n"+
 				"This is not supported by this tool and may cause problems in the FTB launcher");
 		return modFiles;
 	}
