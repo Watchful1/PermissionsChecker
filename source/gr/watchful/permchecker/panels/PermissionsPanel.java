@@ -49,7 +49,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 
 		disabledPanel = new DisabledPanel(mainPanel);
 		disabledPanel.setOpaque(true);
-		layeredPanel.add(disabledPanel);
+		layeredPanel.add(disabledPanel, JLayeredPane.DEFAULT_LAYER);
 
 		parseButton = new JButton("Parse Pack");
 		parseButton.addActionListener(new ActionListener() {
@@ -61,7 +61,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		parseButton.setOpaque(true);
 		parseButton.setAlignmentX(0.5f);
 		parseButton.setAlignmentY(0.5f);
-		layeredPanel.add(parseButton);
+		layeredPanel.add(parseButton, JLayeredPane.DEFAULT_LAYER);
 
 		this.add(layeredPanel, BorderLayout.CENTER);
 
@@ -136,8 +136,10 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 	private void setDisabled(boolean isDisabled) {
 		if(isDisabled) {
 			layeredPanel.moveToFront(parseButton);
+			parseButton.setVisible(true);
 		} else {
-			layeredPanel.moveToBack(parseButton);
+			layeredPanel.moveToFront(disabledPanel);
+			parseButton.setVisible(false);
 		}
 		disabledPanel.setEnabled(!isDisabled);
 	}

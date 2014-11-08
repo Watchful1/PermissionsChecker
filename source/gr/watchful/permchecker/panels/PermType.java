@@ -51,6 +51,7 @@ public class PermType extends JPanel {
 		type = ModInfo.UNKNOWN;
 		
 		text = new JTextArea(unknownText);
+		text.setOpaque(true);
 		text.setBackground(unknown);
 		text.setLineWrap(true);
 		text.setWrapStyleWord(true);
