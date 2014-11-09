@@ -71,7 +71,12 @@ public class ModFinder {
 		String ext = FileUtils.getFileExtension(modArchive);
 
 		if(ext.equals("jar") || ext.equals("zip") || ext.equals("litemod") || ext.equals("disabled")) {
-			ZipFile file = new ZipFile(modArchive);
+			ZipFile file;
+			try {
+				file = new ZipFile(modArchive);
+			} catch (Exception e) {
+				return null;
+			}
 			Enumeration<? extends ZipEntry> files = file.entries();
 			boolean hasClassFiles = false;
 			while(files.hasMoreElements()) {
