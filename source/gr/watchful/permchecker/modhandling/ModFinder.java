@@ -71,6 +71,7 @@ public class ModFinder {
 		String ext = FileUtils.getFileExtension(modArchive);
 
 		if(ext.equals("jar") || ext.equals("zip") || ext.equals("litemod") || ext.equals("disabled")) {
+			//System.out.println(modArchive.getName());
 			ZipFile file;
 			try {
 				file = new ZipFile(modArchive);
@@ -127,8 +128,16 @@ public class ModFinder {
 				}
 			}
 			file.close();
-			if(hasClassFiles) return otherMod;
-			else return null;
+			if(hasClassFiles) {
+				/*for(int i=0; i< otherMod.IDs.getSize(); i++) {
+					System.out.println("    "+otherMod.IDs.get(i));
+				}*/
+				return otherMod;
+			}
+			else {
+				//System.out.println("    Nothing found");
+				return null;
+			}
 		} else if(ext.equals("class")) {
 			rawClasses++;
 		}

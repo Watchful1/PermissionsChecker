@@ -27,9 +27,11 @@ public class ModNameRegistry {
 	public void loadMappings(ArrayList<ArrayList<String>> infos, ArrayList<ArrayList<String>> mappings, String baseUrl, String extension) {
 		imageBaseUrl = baseUrl;
 		imageExtension = extension;
-		
+
+		int i=0;
 		for(ArrayList<String> row : infos) {
-			if(row.size() > 9 && row.get(2) != null && !row.get(2).equals("")) {
+			i++;
+			if(row.size() >= 6 && row.get(2) != null && !row.get(2).equals("")) {
 				ModInfo info = new ModInfo(row.get(2));
 				info.officialSpreadsheet = true;
 				info.modName = row.get(0);//set name
@@ -105,6 +107,20 @@ public class ModNameRegistry {
 				}
 				
 				modInfoMappings.put(row.get(2), info);
+				//System.out.println(row.get(2));
+			} else {
+				/*System.out.println(row);
+				System.out.println(i);
+				if(row.size() <= 7) {
+					System.out.println("Short");
+				} else if(row.get(2) == null) {
+					System.out.println(row.get(0));
+					System.out.println("Null");
+				} else if(row.get(2).equals("")) {
+					System.out.println("Blank");
+				} else {
+					System.out.println(row.get(2));
+				}*/
 			}
 		}
 		for(ArrayList<String> row : mappings) {
