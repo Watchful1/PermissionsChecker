@@ -1,5 +1,6 @@
 package gr.watchful.permchecker.panels;
 
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModFile;
 import gr.watchful.permchecker.datastructures.ModInfo;

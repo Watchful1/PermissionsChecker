@@ -74,6 +74,7 @@ public class ModPack {
 	
 	public Boolean saveThisObject() {
 		if(Globals.getInstance().preferences.saveFolder == null) return false;
+		else if(name != null && name.equals("Unnamed")) return false;
 		else if(shortName == null || shortName.equals("")) {
 			if(createShortName(this)) Globals.getInstance().changeFlag = true;
 			else return false;

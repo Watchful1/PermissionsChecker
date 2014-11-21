@@ -155,7 +155,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 	public void parsePack() {
 		modEditor.setMod(null, "");
 		modFileEditor.setModFile(null);
-		System.out.println("Parsing");
+		System.out.println("Parsing "+Globals.getModPack().name);
 		knownModFiles = modFinder.discoverModFiles(new File(
 				Globals.getInstance().preferences.workingFolder+File.separator+"minecraft"+File.separator+"mods"));
 		System.out.println("Found "+knownModFiles.size()+" files");

@@ -109,8 +109,8 @@ public class ModNameRegistry {
 				modInfoMappings.put(row.get(2), info);
 				//System.out.println(row.get(2));
 			} else {
+				//System.out.println(i);
 				/*System.out.println(row);
-				System.out.println(i);
 				if(row.size() <= 7) {
 					System.out.println("Short");
 				} else if(row.get(2) == null) {
