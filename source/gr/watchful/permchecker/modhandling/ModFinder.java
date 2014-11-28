@@ -54,8 +54,15 @@ public class ModFinder {
 				if(!good) continue;
 				try {
 					temp = processFile(file);
-					if (temp != null) modFiles.add(temp);
+					if (temp != null) {
+						/*System.out.println(temp.fileName()+" has "+temp.IDs.getSize()+" ids");
+						for(int j=0; j<temp.IDs.getSize(); j++) {
+							System.out.println("    "+temp.IDs.get(j));
+						}*/
+						modFiles.add(temp);
+					}
 				} catch (IOException | ClassNotFoundException e) {
+					//System.out.println(file.getName());
 					modFiles.add(new ModFile(file));
 				}
 			}
@@ -108,6 +115,8 @@ public class ModFinder {
 					String inputStr;
 					while ((inputStr = streamReader.readLine()) != null) {
 						if(inputStr.startsWith("TweakClass:")) {
+							otherMod.addID(inputStr.split(" ")[1]);
+						} else if(inputStr.startsWith("Main-Class:")) {
 							otherMod.addID(inputStr.split(" ")[1]);
 						}
 					}
