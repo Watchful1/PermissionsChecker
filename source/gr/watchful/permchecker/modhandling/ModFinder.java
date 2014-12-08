@@ -176,7 +176,8 @@ public class ModFinder {
 
 		@Override
 		public AnnotationVisitor visitAnnotation(String name, boolean runtime) {
-			if (name.equals("Lcpw/mods/fml/common/Mod;")) {
+			if (name.equals("Lcpw/mods/fml/common/Mod;") || name.equals("Lnet/minecraftforge/fml/common/Mod;") ||
+					name.equals("Lorg/spongepowered/api/plugin/Plugin;")) {
 				return new ModAnnotationVisitor();
 			} else {
 				return new AnnotationVisitor(Opcodes.ASM4) {};
@@ -214,8 +215,10 @@ public class ModFinder {
 				id = value.toString();
 			} else if(key.equals("name")) {
 				name = value.toString();
-			}else if(key.equals("version")) {
+			} else if(key.equals("version")) {
 				version = value.toString();
+			} else if(key.equals("id")) {
+				id = value.toString();
 			}
 		}
 
