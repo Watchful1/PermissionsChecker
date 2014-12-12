@@ -2,6 +2,7 @@ package gr.watchful.permchecker.panels;
 
 import gr.watchful.permchecker.datastructures.*;
 import gr.watchful.permchecker.utils.FileUtils;
+import sun.net.www.content.image.png;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -103,19 +104,27 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		if(temp) {
 			File working = Globals.getInstance().preferences.workingFolder;
 
-			File[] images = working.listFiles(new FileFilter() {
+			FileFilter pngFilter = new FileFilter() {
 				@Override
 				public boolean accept(File pathname) {
+					if(pathname.isDirectory()) return false;
 					String ext = FileUtils.getFileExtension(pathname);
-					if(ext == null || ext.equals("")) return false;
-
+					if (ext == null) return false;
 					return ext.equals("png");
 				}
-			});
+			};
+
+			FileFilter dirFilter = new FileFilter() {
+				@Override
+				public boolean accept(File pathname) {
+					return pathname.isDirectory();
+				}
+			};
+
 			boolean icon = false;
 			boolean splash = false;
 			ArrayList<File> extraFiles = new ArrayList<>();
-			for(File image : images) {
+			for(File image : working.listFiles(pngFilter)) {
 				String name = image.getName().toLowerCase();
 				if((name.contains("icon") || name.contains("small")) && !icon) {
 					icon = true;
@@ -129,10 +138,27 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 					extraFiles.add(image);
 				}
 			}
+			if(!(icon && splash)) {
+				for(File dir : working.listFiles(dirFilter)) {
+					for(File image : dir.listFiles(pngFilter)) {
+						String name = image.getName().toLowerCase();
+						if((name.contains("icon") || name.contains("small")) && !icon) {
+							icon = true;
+							System.out.println("Found an icon");
+							iconSelector.setFile(image);
+						} else if((name.contains("splash") || name.contains("big") || name.contains("banner")) && !splash) {
+							splash = true;
+							System.out.println("Found a splash");
+							splashSelector.setFile(image);
+						}
+					}
+				}
+			}
+
 			if(!(icon && splash) && extraFiles.size() > 0) {
 				Object[] options = {"Yes", "No"};
 				int n = JOptionPane.showOptionDialog(Globals.getInstance().mainFrame,
-						"Found extra png files\nShould we move them to your import folder?",
+						"Found " + extraFiles.size() + " extra png files\nShould we move them to your import folder?",
 						"Extra png's",
 						JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE,
@@ -166,6 +192,16 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 						for(File tempFile : working.listFiles()) {
 							if(!tempFile.getName().equals("minecraft")) {
 								tempFile.renameTo(new File(minecraftFolder, tempFile.getName()));
+							}
+						}
+					} else {
+						for(File tempFolder : working.listFiles()) {
+							if(tempFolder.isDirectory()) {
+								if(new File(tempFolder, "mods").exists()) {
+									System.out.println("Found mods in non-minecraft subfolder, renaming parent");
+									FileUtils.moveFile(tempFolder, new File(working, "minecraft"));
+									break;
+								}
 							}
 						}
 					}
