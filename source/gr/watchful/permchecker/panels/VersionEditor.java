@@ -63,7 +63,7 @@ public class VersionEditor extends JPanel {
 						Globals.getInstance().mainFrame,
 						"", "New Version", JOptionPane.PLAIN_MESSAGE, null, null, tempVersion);
 				if(result != null) {
-					if(result.matches("\\d(\\.\\d+)*")) {
+					if(result.matches("\\d+(\\.\\d+)*")) {
 						addVersion(result);
 					} else {
 						JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
