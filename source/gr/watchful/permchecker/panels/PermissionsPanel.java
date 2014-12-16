@@ -186,12 +186,17 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		}
 		Globals.getInstance().savePreferences();
 		ModInfo temp;
+		if(Globals.getModPack() == null) System.out.println("Parsing with null pack");
+		else System.out.println("Parsing with pack perms "+Globals.getModPack().modInfoMappings.toString());
 		for(Mod mod : modStorage.mods.values()) {
 			if(mod.shortName.equals("ignore")) continue; // Ignore non-mod files
 			temp = Globals.getInstance().nameRegistry.getInfo(mod, Globals.getModPack());
 			if(temp == null) {
 				unknownMods.addElement(mod.modFile);
 			} else {
+				if(temp.shortName.equals("witchery")) {
+					System.out.println(temp.customLink);
+				}
 				if (temp.hasPublic()) {
 					mod.permStatus = Mod.PUBLIC;
 					goodMods.addElement(mod);

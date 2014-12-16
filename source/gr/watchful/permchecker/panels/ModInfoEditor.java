@@ -118,19 +118,21 @@ public class ModInfoEditor extends JPanel {
 			return;
 		}
 
-		modInfo.officialSpreadsheet = false;
+		ModInfo tempInfo = new ModInfo("");
 
-		modInfo.modName = name.getText();
-		modInfo.modAuthor = author.getText();
-		modInfo.modLink = link.getText();
-		modInfo.licenseLink = licensePermissionLink.getText();
-		modInfo.licenseImage = licenseImageLink.getText();
+		tempInfo.officialSpreadsheet = false;
 
-		modInfo.publicPolicy = publicPermType.getType();
-		if(modInfo.shortName == null || modInfo.shortName.equals("")) {
-			String generated = ModPack.generateShortName(modInfo.modName).toLowerCase();
+		tempInfo.modName = name.getText();
+		tempInfo.modAuthor = author.getText();
+		tempInfo.modLink = link.getText();
+		tempInfo.licenseLink = licensePermissionLink.getText();
+		tempInfo.licenseImage = licenseImageLink.getText();
+
+		tempInfo.publicPolicy = publicPermType.getType();
+		if(tempInfo.shortName == null || tempInfo.shortName.equals("")) {
+			String generated = ModPack.generateShortName(tempInfo.modName).toLowerCase();
 			String result = generated;
-			while(Globals.getInstance().nameRegistry.shortnameExists(result)) {
+			/*while(Globals.getInstance().nameRegistry.shortnameExists(result)) {
 				result = (String) JOptionPane.showInputDialog(
 						Globals.getInstance().mainFrame, "Shortname exists, pick new shortname\n\nHit cancel to overwrite",
 						"New Shortname", JOptionPane.PLAIN_MESSAGE, null, null, result);
@@ -138,19 +140,19 @@ public class ModInfoEditor extends JPanel {
 					result = generated;
 					break;
 				}
-			}
-			modInfo.shortName = result;
+			}*/
+			tempInfo.shortName = result;
 			shortName.setText(result);
 		}
-		
-		modInfo.customLink = customLink.getText();
-		modInfo.isPublicPerm = isPublic;
 
-		Globals.getModPack().addModInfo(getShortName(), modInfo);
+		tempInfo.customLink = customLink.getText();
+		tempInfo.isPublicPerm = isPublic;
+
+		Globals.getModPack().addModInfo(getShortName(), tempInfo);
 		
 		updateEditableCustom();
 		
-		notifySaveListeners(modInfo);
+		notifySaveListeners(tempInfo);
 		
 		Globals.getInstance().rebuildsMods.recheckMods();
 	}
