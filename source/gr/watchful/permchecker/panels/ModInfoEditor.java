@@ -132,15 +132,6 @@ public class ModInfoEditor extends JPanel {
 		if(tempInfo.shortName == null || tempInfo.shortName.equals("")) {
 			String generated = ModPack.generateShortName(tempInfo.modName).toLowerCase();
 			String result = generated;
-			/*while(Globals.getInstance().nameRegistry.shortnameExists(result)) {
-				result = (String) JOptionPane.showInputDialog(
-						Globals.getInstance().mainFrame, "Shortname exists, pick new shortname\n\nHit cancel to overwrite",
-						"New Shortname", JOptionPane.PLAIN_MESSAGE, null, null, result);
-				if(result == null) {
-					result = generated;
-					break;
-				}
-			}*/
 			tempInfo.shortName = result;
 			shortName.setText(result);
 		}
