@@ -154,10 +154,8 @@ public class ModNameRegistry {
 	public ModInfo getInfo(Mod mod, ModPack modPack) {
 		if(modPack != null && modPack.modInfoMappings != null
 				&& modPack.modInfoMappings.containsKey(mod.shortName)) {
-			System.out.println("Found mod info in pack store "+modPack.modInfoMappings.get(mod.shortName).customLink);
 			return modPack.modInfoMappings.get(mod.shortName);
 		} else {
-			if(mod.shortName.equals("witchery")) System.out.println("Found witchery in main store with perm "+modInfoMappings.get(mod.shortName).customLink);
 			return modInfoMappings.get(mod.shortName);
 		}
 	}
