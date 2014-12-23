@@ -66,6 +66,23 @@ public class ModPack {
 		if(forgeType == null) forgeType = ForgeType.RECOMMENDED;
 		if(shortNameMappings == null) shortNameMappings = new HashMap<>();
 		if(modInfoMappings == null) modInfoMappings = new HashMap<>();
+		ArrayList<String> badNames = new ArrayList<>();
+
+		for(ModInfo modInfo : modInfoMappings.values()) {
+			if(modInfo.officialSpreadsheet) {
+				if(modInfo.customLink != null && (modInfo.customLink.equals(modInfo.licenseImage) ||
+						modInfo.customLink.equals(modInfo.privateLicenseImage))) {
+					badNames.add(modInfo.shortName);
+				} else {
+					modInfo.officialSpreadsheet = false;
+				}
+				dirty = true;
+			}
+		}
+		for(String name : badNames) {
+			modInfoMappings.remove(name);
+			shortNameMappings.remove(name);
+		}
 	}
 	
 	public String toString() {
