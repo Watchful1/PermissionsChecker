@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/PermChecker.iml" filepath="$PROJECT_DIR$/PermChecker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PermissionsChecker.iml" filepath="$PROJECT_DIR$/PermissionsChecker.iml" />
     </modules>
   </component>
 </project>
-

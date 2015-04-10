@@ -1,29 +1,21 @@
 package gr.watchful.permchecker.modhandling;
 
-import com.google.gson.JsonObject;
-import gr.watchful.permchecker.datastructures.*;
+import gr.watchful.permchecker.datastructures.Globals;
+import gr.watchful.permchecker.datastructures.ModFile;
+import gr.watchful.permchecker.utils.FileUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.objectweb.asm.*;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
-
-import gr.watchful.permchecker.utils.FileUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-
-import javax.swing.*;
 
 public class ModFinder {
 	// We need a central place to add ID's for when we can't return what we want
