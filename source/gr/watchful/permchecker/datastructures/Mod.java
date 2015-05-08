@@ -17,32 +17,10 @@ public class Mod {
 	
 	public String toString() {
 		ModInfo modInfo = Globals.getInstance().nameRegistry.getInfo(this, Globals.getModPack());
-		String priv = "";
-		if(permStatus == PRIVATE)  priv = "P) ";
 		if(modInfo == null || modInfo.modName == "Unknown") {
-			return priv+shortName;
+			return shortName;
 		} else {
-			return priv+modInfo.modName;
-		}
-	}
-
-	public String toString(boolean useRawName) {
-		if(useRawName) {
-			ModInfo modInfo = Globals.getInstance().nameRegistry.getInfo(this, Globals.getModPack());
-			if(modInfo == null || modInfo.modName == "Unknown") {
-				return shortName;
-			} else {
-				return modInfo.modName;
-			}
-		} else {
-			ModInfo modInfo = Globals.getInstance().nameRegistry.getInfo(this, Globals.getModPack());
-			String priv = "";
-			if(permStatus == PRIVATE)  priv = "P) ";
-			if(modInfo == null || modInfo.modName == "Unknown") {
-				return priv+shortName;
-			} else {
-				return priv+modInfo.modName;
-			}
+			return modInfo.modName;
 		}
 	}
 }

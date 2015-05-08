@@ -1,5 +1,6 @@
 package gr.watchful.permchecker.panels;
 
+import java.awt.*;
 import java.io.File;
 
 import gr.watchful.permchecker.datastructures.Globals;
@@ -21,6 +22,7 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 	private MinecraftVersionSelector minecraftVersionSelector;
 	private VersionEditor versionEditor;
 	private ForgeEditor forgeEditor;
+    private PublicField publicField;
 	//private FileSelector iconSelector;
 	//private FileSelector splashSelector;
 	//private FileSelector serverSelector;
@@ -53,8 +55,16 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		this.add(minecraftVersionSelector);
 		versionEditor = new VersionEditor("Version", this);
 		this.add(versionEditor);
+
+        JPanel horizHolder = new JPanel();
+        horizHolder.setAlignmentX(0);
+        horizHolder.setLayout(new BoxLayout(horizHolder, BoxLayout.X_AXIS));
 		forgeEditor = new ForgeEditor("Forge", this);
-		this.add(forgeEditor);
+        horizHolder.add(forgeEditor);
+        horizHolder.add(Box.createRigidArea(new Dimension(60,1)));
+        publicField = new PublicField(this);
+        horizHolder.add(publicField);
+        this.add(horizHolder);
 		/*iconSelector = new FileSelector("Icon", 150, "png", this);
 		this.add(iconSelector);
 		splashSelector = new FileSelector("Splash", 150, "png", this);
@@ -133,6 +143,7 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		versionEditor.setRecommendedVersion(pack.recommendedVersion);
 		forgeEditor.setForgeType(pack.forgeType);
 		forgeEditor.setForgeVersion(pack.ForgeVersion);
+        publicField.setPublic(pack.isPublic);
 		/*iconSelector.setFile(pack.icon);
 		splashSelector.setFile(pack.splash);
 		serverSelector.setFile(pack.server);*/
@@ -190,6 +201,8 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		} else if(e.getSource().equals(forgeEditor)) {
 			Globals.getModPack().forgeType = forgeEditor.getForgeType();
 			Globals.getModPack().ForgeVersion = forgeEditor.getForgeVersion();
+        } else if(e.getSource().equals(publicField)) {
+            Globals.getModPack().isPublic = publicField.isPublic();
 		/*} else if(e.getSource().equals(iconSelector)) {
 			if(fileChanged(iconSelector)) {
 				Globals.getModPack().icon = iconSelector.getFile();

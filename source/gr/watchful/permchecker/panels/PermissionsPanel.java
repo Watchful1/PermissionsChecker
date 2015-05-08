@@ -194,16 +194,13 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 			if(temp == null) {
 				unknownMods.addElement(mod.modFile);
 			} else {
-				if(temp.shortName.equals("witchery")) {
-					System.out.println(temp.customLink);
-				}
 				if (temp.hasPublic()) {
 					mod.permStatus = Mod.PUBLIC;
 					goodMods.addElement(mod);
 				} else if (temp.hasPrivate()) {
-					Globals.getModPack().isPublic = false;
 					mod.permStatus = Mod.PRIVATE;
-					goodMods.addElement(mod);
+                    if(Globals.getModPack().isPublic) badMods.addElement(mod);
+                    else goodMods.addElement(mod);
 				} else {
 					badMods.addElement(mod);
 				}
@@ -266,7 +263,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		SortedListModel<Mod> allMods = new SortedListModel<>();
 		allMods.addAll(goodMods.getArrayList());
 		allMods.addAll(badMods.getArrayList());
-		allMods.sort(new SimpleObjectComparator(true));
+		allMods.sort(new SimpleObjectComparator());
 
 		//Hard code Forge in. TODO fix this if we ever need to add support for only loading other tweaks
 		Mod forge = new Mod(null, "forge");

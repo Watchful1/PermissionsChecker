@@ -2,7 +2,7 @@ package gr.watchful.permchecker.panels;
 
 import gr.watchful.permchecker.datastructures.Globals;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -11,10 +11,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -43,7 +40,6 @@ public class LabelField extends JPanel {
 		this.add(label);
 		
 		textField = new JTextField();
-		textField.setMinimumSize(new Dimension(300 - label.getMinimumSize().width, 21));
 		textField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 21));
         textField.addFocusListener(new FocusListener() {
             @Override
