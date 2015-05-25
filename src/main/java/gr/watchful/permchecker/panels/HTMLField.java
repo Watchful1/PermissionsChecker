@@ -81,6 +81,7 @@ public class HTMLField extends JPanel {
 
     public void setText(String in) {
         textField.setText(in);
+        oldText = in;
     }
 
     public String getText() {

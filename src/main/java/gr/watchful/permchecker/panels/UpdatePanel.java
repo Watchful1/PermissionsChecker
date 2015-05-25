@@ -19,7 +19,8 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 	private LabelField packName;
 	private FileSelector selector;
 	private FileSelector iconSelector;
-	private FileSelector splashSelector;
+    private FileSelector splashSelector;
+    private FileSelector squareSelector;
 	private FileSelector serverSelector;
 	JComboBox<String> versionSelector;
 	public PermissionsPanel permPanel;//TODO really should be a better way to do this
@@ -37,8 +38,10 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
         this.add(selector);
 		iconSelector = new FileSelector("Icon", 150, "png", this);
 		this.add(iconSelector);
-		splashSelector = new FileSelector("Splash", 150, "png", this);
-		this.add(splashSelector);
+        splashSelector = new FileSelector("Splash", 150, "png", this);
+        this.add(splashSelector);
+        squareSelector = new FileSelector("Square", 150, "png", this);
+        this.add(squareSelector);
 		serverSelector = new FileSelector("Server", -1, "zip", this);
 		this.add(serverSelector);
 
@@ -61,7 +64,8 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		packName.setText(pack.name);
 		selector.clearSelection();
 		iconSelector.setFile(pack.icon);
-		splashSelector.setFile(pack.splash);
+        splashSelector.setFile(pack.splash);
+        squareSelector.setFile(pack.square);
 		serverSelector.setFile(pack.server);
 		versionSelector.removeAllItems();
 		for(ModPackVersion version : pack.metaVersions) {
@@ -293,13 +297,20 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 			Globals.getModPack().icon = null;
 			iconSelector.clearSelection();//kinda hacky
 		}
-		if(Globals.getModPack().splash != null && Globals.getModPack().splash.exists()) {
-			FileUtils.moveFile(Globals.getModPack().splash, new File(Globals.getInstance().preferences.exportFolder
-					+ File.separator + "static" + File.separator +
-					Globals.getModPack().getSplashName()));
-			Globals.getModPack().splash = null;
-			splashSelector.clearSelection();//kinda hacky
-		}
+        if(Globals.getModPack().splash != null && Globals.getModPack().splash.exists()) {
+            FileUtils.moveFile(Globals.getModPack().splash, new File(Globals.getInstance().preferences.exportFolder
+                    + File.separator + "static" + File.separator +
+                    Globals.getModPack().getSplashName()));
+            Globals.getModPack().splash = null;
+            splashSelector.clearSelection();//kinda hacky
+        }
+        if(Globals.getModPack().square != null && Globals.getModPack().square.exists()) {
+            FileUtils.moveFile(Globals.getModPack().square, new File(Globals.getInstance().preferences.exportFolder
+                    + File.separator + "static" + File.separator +
+                    Globals.getModPack().getSquareName()));
+            Globals.getModPack().square = null;
+            squareSelector.clearSelection();//kinda hacky
+        }
 		if(Globals.getModPack().server != null && Globals.getModPack().server.exists()) {
 			FileUtils.moveFile(Globals.getModPack().server, new File(packExportFolder + File.separator +
 					Globals.getModPack().serverName));
@@ -326,10 +337,14 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 			if(iconSelector.getFile() == null || fileChanged(iconSelector)) {
 				Globals.getModPack().icon = iconSelector.getFile();
 			}
-		} else if(e.getSource().equals(splashSelector)) {
-			if(splashSelector.getFile() == null || fileChanged(splashSelector)) {
-				Globals.getModPack().splash = splashSelector.getFile();
-			}
+        } else if(e.getSource().equals(splashSelector)) {
+            if(splashSelector.getFile() == null || fileChanged(splashSelector)) {
+                Globals.getModPack().splash = splashSelector.getFile();
+            }
+        } else if(e.getSource().equals(squareSelector)) {
+            if(squareSelector.getFile() == null || fileChanged(squareSelector)) {
+                Globals.getModPack().square = squareSelector.getFile();
+            }
 		} else if(e.getSource().equals(serverSelector)) {
 			if(serverSelector.getFile() == null || fileChanged(serverSelector)) {
 				Globals.getModPack().server = serverSelector.getFile();

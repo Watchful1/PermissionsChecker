@@ -439,7 +439,7 @@ public class FileUtils {
 			modpack.setAttribute("repoVersion", modPack.recommendedVersion.replace(".", "_"));
 			modpack.setAttribute("logo", modPack.getIconName());
 			modpack.setAttribute("url", modPack.getZipName());
-			modpack.setAttribute("image", modPack.getSplashName());
+            modpack.setAttribute("image", modPack.getSplashName());
 			modpack.setAttribute("dir", modPack.shortName);
 			modpack.setAttribute("mcVersion", modPack.minecraftVersion);
 			if (modPack.serverName != null && !modPack.serverName.equals("")) {
@@ -447,6 +447,9 @@ public class FileUtils {
 			} else {
 				modpack.setAttribute("serverPack", "");
 			}
+            if (modPack.square != null && !modPack.squareName.equals("")) {
+                modpack.setAttribute("squareImage", modPack.squareName);
+            }
 			modpack.setAttribute("description", modPack.description);
 			modpack.setAttribute("mods", modPack.getModList());
 

@@ -25,7 +25,8 @@ public class ModPack {
     public boolean isPublic;
 
 	public String iconName;
-	public String splashName;
+    public String splashName;
+    public String squareName;
 	public String serverName;
 	public String zipName;
 
@@ -33,7 +34,8 @@ public class ModPack {
 	public String animation;
 
 	transient public File icon;
-	transient public File splash;
+    transient public File splash;
+    transient public File square;
 	transient public File server;
 	transient public boolean dirty;
 	
@@ -155,10 +157,15 @@ public class ModPack {
 		return iconName;
 	}
 
-	public String getSplashName() {
-		if(splashName == null || splashName.equals("")) splashName = shortName+"Splash"+".png";
-		return splashName;
-	}
+    public String getSplashName() {
+        if(splashName == null || splashName.equals("")) splashName = shortName+"Splash"+".png";
+        return splashName;
+    }
+
+    public String getSquareName() {
+        if(squareName == null || squareName.equals("")) squareName = shortName+"Square"+".png";
+        return squareName;
+    }
 
 	public String getZipName() {
 		if(zipName == null || zipName.equals("")) zipName = shortName+".zip";
