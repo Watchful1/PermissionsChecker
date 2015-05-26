@@ -180,7 +180,13 @@ public class FileUtils {
 			fOut = new FileOutputStream(outputLocation);
 			bOut = new BufferedOutputStream(fOut);
 			tOut = new ZipArchiveOutputStream(bOut);
+
+            String[] patterns = {".*\\.DS_Store"};
+
 			for(File file : folder.listFiles()) {
+                for(String pattern : patterns) {
+                    if(file.getName().matches(pattern)) continue;
+                }
 				addFileToZip(tOut, file, "");
 			}
 
@@ -537,11 +543,14 @@ public class FileUtils {
 				pack.minecraftVersion = eElement.getAttribute("mcVersion");
 				pack.description = eElement.getAttribute("description");
 				pack.iconName = eElement.getAttribute("logo");
-				pack.splashName = eElement.getAttribute("image");
+                pack.splashName = eElement.getAttribute("image");
 				pack.zipName = eElement.getAttribute("url");
 				pack.shortName = eElement.getAttribute("dir");
 				if (eElement.hasAttribute("warning")) pack.warning = eElement.getAttribute("warning");
 				else pack.warning = null;
+
+                if (eElement.hasAttribute("squareImage")) pack.squareName = eElement.getAttribute("squareImage");
+                else pack.squareName = null;
 
 				if (eElement.hasAttribute("animation")) pack.animation = eElement.getAttribute("animation");
 				else pack.animation = null;
