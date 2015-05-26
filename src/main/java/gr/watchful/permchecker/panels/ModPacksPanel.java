@@ -178,17 +178,10 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		} else if(e.getSource().equals(authorField)) {
 			Globals.getModPack().author = authorField.getText();
 		} else if(e.getSource().equals(keyField)) {
-			if(keyField.getText() == null || keyField.getText().equals("")) return;
-			while(Globals.getInstance().listsPacks.codeExists(keyField.getText(), shortNameField.getText())) {
-				String result = (String) JOptionPane.showInputDialog(
-						Globals.getInstance().mainFrame, "Key exists, pick new key",
-						"New key", JOptionPane.PLAIN_MESSAGE, null, null, keyField.getText());
-				if(result == null || result.equals("")) {
-					keyField.setText(Globals.getModPack().key);
-					return;
-				}
-				else keyField.setText(result);
-			}
+            if(checkValidKey(keyField.getText()) == null) {
+                keyField.setText(Globals.getModPack().key);
+                return;
+            }
 
 			Globals.getModPack().key = keyField.getText();
 		} else if(e.getSource().equals(descriptionField)) {
@@ -223,4 +216,22 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		}
 
 	}
+
+    private String checkValidKey(String key) {
+        String message = "";
+        if(key == null || key.equals("") || !ModPack.isValidKey(key)) {
+            message = "Key is not valid, pick a new key";
+        } else if(Globals.getInstance().listsPacks.codeExists(key, shortNameField.getText())) {
+            message = "Key exists, pick a new key";
+        }
+        if(!message.equals("")) {
+            String result = (String) JOptionPane.showInputDialog(
+                    Globals.getInstance().mainFrame, message,
+                    "New key", JOptionPane.PLAIN_MESSAGE, null, null, key);
+            if(result == null) return null;
+            return checkValidKey(result);
+        }
+        keyField.setText(key);
+        return key;
+    }
 }

@@ -42,6 +42,7 @@ public class ModPack {
 	public Time lastEdited;
 	public ArrayList<String> submitters;
 	public String submitURL;
+    public File storageLocation;
 
 	public HashMap<String, String> shortNameMappings;
 	public HashMap<String, ModInfo> modInfoMappings;
@@ -110,16 +111,28 @@ public class ModPack {
         }
 		FileUtils.saveObject(pack, saveFile);
 	}
+
+    public void reloadObject() {
+
+    }
 	
 	public static ModPack loadObject(File saveFile) {
 		if(!saveFile.exists()) return null;
-		ModPack temp = (ModPack) FileUtils.readObject(saveFile, new ModPack());
+        if(!FileUtils.getFileExtension(saveFile).equals("json")) return null;
+        ModPack temp;
+        try {
+            temp = (ModPack) FileUtils.readObject(saveFile, new ModPack());
+        } catch (Exception e) {
+            System.out.println("Failed to read "+saveFile.getName());
+            return null;
+        }
 		if(temp.versions != null) {
 			temp.metaVersions = new ArrayList<>();
 			for(String version : temp.versions) {
 				temp.metaVersions.add(new ModPackVersion(version));
 			}
 		}
+        temp.storageLocation = saveFile;
 		temp.init();
 		temp.versions = null;
 		return temp;
@@ -137,6 +150,10 @@ public class ModPack {
         StringBuilder sb = new StringBuilder(len);
         for( int i = 0; i < len; i++ ) sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
         return sb.toString();
+    }
+
+    public static Boolean isValidKey(String key) {
+        return !key.matches(".*[^0-9A-Za-z].*");
     }
 
 	public boolean equals(Object object) {
