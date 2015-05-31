@@ -1,11 +1,14 @@
 package gr.watchful.permchecker.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import gr.watchful.permchecker.datastructures.ForgeType;
 import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModPack;
 import gr.watchful.permchecker.datastructures.ModPackVersion;
+import jdk.nashorn.internal.parser.JSONParser;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
@@ -415,16 +418,31 @@ public class FileUtils {
 			if (forgeType.equals(ForgeType.RECOMMENDED)) forgeUrl = forgeUrl.concat("recommended");
 			else forgeUrl = forgeUrl.concat("latest");
 		} else forgeUrl = forgeUrl.concat(Integer.toString(forgeVersion));
+        File jsonFile = new File(minecraftFolder+File.separator+"pack.json");
 		try {
 			System.out.println("URL: "+forgeUrl);
-			downloadToFile(new URL(forgeUrl), new File(minecraftFolder+File.separator+"pack.json"));
+			downloadToFile(new URL(forgeUrl), jsonFile);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
 					"Pack.json add failed");
 			return false;
 		}
+        if(!isValidJson(readFile(jsonFile))) {
+            JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+                    "Pack.json was added, but is not valid json");
+            return false;
+        }
 		return true;
 	}
+
+    public static boolean isValidJson(String json) {
+        try {
+            new JsonParser().parse(json);
+        } catch (JsonParseException e) {
+            return false;
+        }
+        return true;
+    }
 
 	public static String buildXML(ArrayList<ModPack> modPacks) {
 		Document doc = null;
