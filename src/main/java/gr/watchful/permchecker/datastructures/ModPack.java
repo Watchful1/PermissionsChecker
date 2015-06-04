@@ -206,6 +206,15 @@ public class ModPack {
             bldr.append("</a>");
             bldr.append(" by ");
             bldr.append(modInfo.modAuthor);
+
+            if(modInfo.customLink != null && !modInfo.customLink.equals("")) {
+                bldr.append(" - ");
+                bldr.append("<a color=\"aqua\" href=\"");
+                bldr.append(modInfo.customLink);
+                bldr.append("\">");
+                bldr.append("Granted");
+                bldr.append("</a>");
+            }
         }
 		return bldr.toString();
 	}
