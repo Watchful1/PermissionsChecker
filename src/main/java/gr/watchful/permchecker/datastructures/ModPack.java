@@ -19,7 +19,6 @@ public class ModPack {
 	public String minecraftVersion;//simple, select from available
 	public ArrayList<ModPackVersion> metaVersions;//add, simple. Remove, change rec version if necessary. Move TODO
 	public ArrayList<String> versions;//legacy
-	public ArrayList<String> modList;//autocomputed, no interface
     public ArrayList<String> mods;
     public ArrayList<String> unknownModIDs;
 	public ForgeType forgeType;
@@ -67,7 +66,6 @@ public class ModPack {
 			recommendedVersion = metaVersions.get(0).version;
 		if(minecraftVersion == null || minecraftVersion.equals(""))
 			minecraftVersion = Globals.getInstance().preferences.defaultMinecraftVersion;
-        if(modList == null) modList = new ArrayList<>();
         if(mods == null) mods = new ArrayList<>();
         if(unknownModIDs == null) unknownModIDs = new ArrayList<>();
 		if(forgeType == null) forgeType = ForgeType.RECOMMENDED;

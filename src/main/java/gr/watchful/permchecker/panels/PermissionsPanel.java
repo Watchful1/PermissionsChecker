@@ -267,7 +267,6 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		else bldr.append("private");
 		bldr.append(" pack\n\n");
 
-		Globals.getModPack().modList.clear();
 		SortedListModel<Mod> allMods = new SortedListModel<>();
 		allMods.addAll(goodMods.getArrayList());
 		allMods.addAll(badMods.getArrayList());
@@ -280,16 +279,6 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 
 		for(int i=0; i<allMods.getSize(); i++) {
 			ModInfo modInfo = Globals.getInstance().nameRegistry.getInfo(allMods.get(i), Globals.getModPack());
-
-			StringBuilder bldr2 = new StringBuilder();
-			bldr2.append("<a color=\"aqua\" href=\"");
-			bldr2.append(modInfo.modLink);
-			bldr2.append("\">");
-			bldr2.append(modInfo.modName);
-			bldr2.append("</a>");
-			bldr2.append(" by ");
-			bldr2.append(modInfo.modAuthor);
-			Globals.getModPack().modList.add(bldr2.toString());
 
 			bldr.append("(");
 			bldr.append(ModInfo.getStringPolicy(modInfo.getPolicy(Globals.getModPack().isPublic)));
