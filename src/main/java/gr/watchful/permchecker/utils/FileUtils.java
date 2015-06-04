@@ -423,6 +423,7 @@ public class FileUtils {
 			System.out.println("URL: "+forgeUrl);
 			downloadToFile(new URL(forgeUrl), jsonFile);
 		} catch (IOException e) {
+            e.printStackTrace();
 			JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
 					"Pack.json add failed");
 			return false;

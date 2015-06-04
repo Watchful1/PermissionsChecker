@@ -195,16 +195,20 @@ public class ModPack {
 
 	public String getModList() {
 		StringBuilder bldr = new StringBuilder();
-		Boolean first = true;
-		for(String mod : modList) {
-			if(first) {
-				first = false;
-				bldr.append(mod);
-				continue;
-			}
-			bldr.append("; ");
-			bldr.append(mod);
-		}
+
+        for(String shortName : mods) {
+            ModInfo modInfo = Globals.getInstance().nameRegistry.getInfo(shortName, Globals.getModPack());
+
+            if(bldr.length() != 0) bldr.append("; ");
+
+            bldr.append("<a color=\"aqua\" href=\"");
+            bldr.append(modInfo.modLink);
+            bldr.append("\">");
+            bldr.append(modInfo.modName);
+            bldr.append("</a>");
+            bldr.append(" by ");
+            bldr.append(modInfo.modAuthor);
+        }
 		return bldr.toString();
 	}
 

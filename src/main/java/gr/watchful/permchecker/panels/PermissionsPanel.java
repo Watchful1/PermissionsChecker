@@ -168,19 +168,26 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		badMods.clear();
 		unknownMods.clear();
 
+        ModPack pack = Globals.getModPack();
+        pack.mods.clear();
+        pack.unknownModIDs.clear();
+
 		ModStorage modStorage = Globals.getInstance().nameRegistry.compileMods(knownModFiles, Globals.getModPack());
 		unknownMods.addAll(modStorage.modFiles);
 		for(ModFile modFile : modStorage.modFiles) {
 			if(modFile.IDs.getSize() > 0) {
 				for (String ID : modFile.IDs.getArrayList()) {
 					Globals.getInstance().preferences.unknownMods.put(ID, modFile.fileName());
+                    pack.unknownModIDs.add(ID);
 				}
 			} else if(modFile.md5 != null && !modFile.md5.equals("")) {
 				Globals.getInstance().preferences.unknownMods.put(modFile.md5, modFile.fileName());
+                pack.unknownModIDs.add(modFile.md5);
 			} else {
 				String md5 = FileUtils.getMD5(modFile.file);
 				if(md5 != null) {
 					Globals.getInstance().preferences.unknownMods.put(md5, modFile.fileName());
+                    pack.unknownModIDs.add(md5);
 				}
 			}
 		}
@@ -190,6 +197,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		else System.out.println("Parsing with pack perms "+Globals.getModPack().modInfoMappings.toString());
 		for(Mod mod : modStorage.mods.values()) {
 			if(mod.shortName.equals("ignore")) continue; // Ignore non-mod files
+            pack.mods.add(mod.shortName);
 			temp = Globals.getInstance().nameRegistry.getInfo(mod, Globals.getModPack());
 			if(temp == null) {
 				unknownMods.addElement(mod.modFile);

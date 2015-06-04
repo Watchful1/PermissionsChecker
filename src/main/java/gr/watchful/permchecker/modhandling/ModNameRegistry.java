@@ -152,13 +152,17 @@ public class ModNameRegistry {
 	}
 	
 	public ModInfo getInfo(Mod mod, ModPack modPack) {
-		if(modPack != null && modPack.modInfoMappings != null
-				&& modPack.modInfoMappings.containsKey(mod.shortName)) {
-			return modPack.modInfoMappings.get(mod.shortName);
-		} else {
-			return modInfoMappings.get(mod.shortName);
-		}
+		return getInfo(mod.shortName, modPack);
 	}
+
+    public ModInfo getInfo(String shortName, ModPack modPack) {
+        if(modPack != null && modPack.modInfoMappings != null
+                && modPack.modInfoMappings.containsKey(shortName)) {
+            return modPack.modInfoMappings.get(shortName);
+        } else {
+            return modInfoMappings.get(shortName);
+        }
+    }
 
 	public ModStorage compileMods(ArrayList<ModFile> modFiles, ModPack modPack) {
 		ModStorage modStorage = new ModStorage();
