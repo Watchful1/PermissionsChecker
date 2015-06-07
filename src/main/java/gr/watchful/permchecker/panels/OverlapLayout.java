@@ -1,10 +1,9 @@
 package gr.watchful.permchecker.panels;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  *  The <code>OverlapLayout</code> class is a layout manager that

@@ -1,19 +1,11 @@
 package gr.watchful.permchecker.panels;
 
-import java.awt.Component;
-import java.awt.Container;
+import javax.swing.*;
+import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.swing.JComponent;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
 
 /**
  * A collection of utility methods for Swing.

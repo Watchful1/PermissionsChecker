@@ -1,8 +1,5 @@
 package gr.watchful.permchecker.panels;
 
-import java.awt.*;
-import java.io.File;
-
 import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModPack;
 import gr.watchful.permchecker.datastructures.UsesPack;
@@ -11,6 +8,8 @@ import gr.watchful.permchecker.utils.FileUtils;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.io.File;
 
 @SuppressWarnings("serial")
 public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {

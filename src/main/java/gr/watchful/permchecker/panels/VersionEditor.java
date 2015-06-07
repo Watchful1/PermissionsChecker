@@ -1,7 +1,6 @@
 package gr.watchful.permchecker.panels;
 
 import gr.watchful.permchecker.datastructures.Globals;
-import gr.watchful.permchecker.datastructures.ModPack;
 import gr.watchful.permchecker.datastructures.ModPackVersion;
 import gr.watchful.permchecker.datastructures.SortedListModel;
 
@@ -12,7 +11,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class VersionEditor extends JPanel {

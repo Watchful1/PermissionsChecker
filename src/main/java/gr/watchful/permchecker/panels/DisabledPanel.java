@@ -1,15 +1,10 @@
 package gr.watchful.permchecker.panels;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
-import javax.swing.*;
-import javax.swing.border.*;
 
 /*
  *  The DisablePanel will simulate the usage of a "Glass Pane" except that the

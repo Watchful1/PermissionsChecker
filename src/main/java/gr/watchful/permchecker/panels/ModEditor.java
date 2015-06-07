@@ -2,10 +2,8 @@ package gr.watchful.permchecker.panels;
 
 import gr.watchful.permchecker.datastructures.ModInfo;
 
-import java.awt.Dimension;
-
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
 
 @SuppressWarnings("serial")
 public class ModEditor extends JPanel {

@@ -2,19 +2,10 @@ package gr.watchful.permchecker.panels;
 
 import gr.watchful.permchecker.datastructures.ModInfo;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextArea;
 
 @SuppressWarnings("serial")
 public class PermType extends JPanel {

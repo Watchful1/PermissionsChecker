@@ -2,7 +2,6 @@ package gr.watchful.permchecker.panels;
 
 import gr.watchful.permchecker.datastructures.*;
 import gr.watchful.permchecker.utils.FileUtils;
-import sun.net.www.content.image.png;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -12,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {

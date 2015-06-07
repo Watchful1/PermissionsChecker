@@ -12,6 +12,10 @@
 
 package gr.watchful.permchecker.modhandling;
 
+import com.google.common.collect.Maps;
+import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import gr.watchful.permchecker.datastructures.ModMetadata;
 
 import java.io.IOException;
@@ -20,16 +24,6 @@ import java.io.InputStreamReader;
 import java.util.Map;
 
 //import com.google.common.base.Throwables;
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 //import cpw.mods.fml.common.versioning.ArtifactVersion;
 //import cpw.mods.fml.common.versioning.VersionParser;
 

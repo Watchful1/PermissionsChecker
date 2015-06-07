@@ -2,8 +2,6 @@ package gr.watchful.permchecker.panels;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Vector;
 
 public class RecommendedVersionEditor extends JPanel {
     private JLabel label;

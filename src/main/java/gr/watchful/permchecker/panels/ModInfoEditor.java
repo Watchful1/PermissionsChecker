@@ -1,17 +1,15 @@
 package gr.watchful.permchecker.panels;
 
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-
-import javax.swing.*;
-
 import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModInfo;
 import gr.watchful.permchecker.datastructures.ModPack;
 import gr.watchful.permchecker.datastructures.SavesMods;
-import gr.watchful.permchecker.modhandling.ModNameRegistry;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class ModInfoEditor extends JPanel {

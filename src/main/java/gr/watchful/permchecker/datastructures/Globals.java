@@ -1,15 +1,14 @@
 package gr.watchful.permchecker.datastructures;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-
 import gr.watchful.permchecker.modhandling.ModNameRegistry;
 import gr.watchful.permchecker.utils.FileUtils;
 import gr.watchful.permchecker.utils.OsTypes;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
 
 public class Globals {
 	private static volatile Globals instance = null;

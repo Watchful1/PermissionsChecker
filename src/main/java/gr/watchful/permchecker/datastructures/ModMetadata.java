@@ -12,15 +12,12 @@
 
 package gr.watchful.permchecker.datastructures;
 
-import gr.watchful.permchecker.modhandling.ArtifactVersion;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-//import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
+
+//import com.google.common.base.Joiner;
 
 //import cpw.mods.fml.common.functions.ModNameFunction;
 //import cpw.mods.fml.common.versioning.ArtifactVersion;

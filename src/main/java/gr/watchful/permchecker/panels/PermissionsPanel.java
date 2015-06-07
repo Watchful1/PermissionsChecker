@@ -12,7 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 @SuppressWarnings("serial")
 public class PermissionsPanel extends JPanel implements NamedScrollingListPanelListener, RebuildsMods, UsesPack {

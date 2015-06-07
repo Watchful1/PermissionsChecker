@@ -1,7 +1,5 @@
 package gr.watchful.permchecker.panels;
 
-import gr.watchful.permchecker.datastructures.Globals;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -9,10 +7,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 public class PublicField extends JPanel {
 	private JToggleButton toggleButton;

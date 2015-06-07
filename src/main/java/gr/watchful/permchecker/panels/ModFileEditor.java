@@ -6,10 +6,8 @@ import gr.watchful.permchecker.datastructures.ModInfo;
 import gr.watchful.permchecker.datastructures.SavesMods;
 import gr.watchful.permchecker.utils.FileUtils;
 
-import java.awt.Dimension;
-
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
 
 @SuppressWarnings("serial")
 public class ModFileEditor extends JPanel implements SavesMods {
