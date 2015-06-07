@@ -125,10 +125,6 @@ public class Globals {
             System.out.println("Unable to parse permissions json");
             return false;
         }
-        System.out.println("LENGTH: "+modInfos.length);
-        for(ModInfo modInfo : modInfos) {
-            System.out.println(modInfo.shortName);
-        }
         nameRegistry.loadMappings(modInfos, "https://dl.dropboxusercontent.com/u/27836116/FTBPermissionsImages/", "png");
 
 		return true;

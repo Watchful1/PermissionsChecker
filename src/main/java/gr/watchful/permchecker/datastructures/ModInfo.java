@@ -34,19 +34,25 @@ public class ModInfo {
 	public ModInfo(String shortName) {
 		officialSpreadsheet = false;
 		this.shortName = shortName;
-		modName = "Unknown";
-		modAuthor = "Unknown";
-		modLink = "None";
-		modVersion = "Unknown";
-		publicPolicy = UNKNOWN;
-		privatePolicy = UNKNOWN;
-		licenseLink = "";
-		licenseImage = "";
-		privateLicenseLink = "";
-		privateLicenseImage = "";
-		customLink = "";
 		isPublicPerm = false;
+
+        init();
 	}
+
+    public void init() {
+        if(shortName == null || shortName.equals("")) System.out.println("Trying to init a ModInfo with a null shortname, this is bad");
+        if(modName == null || modName.equals("")) modName = "Unknown";
+        if(modAuthor == null || modAuthor.equals("")) modAuthor = "Unknown";
+        if(modLink == null || modLink.equals("")) modLink = "None";
+        if(modVersion == null || modVersion.equals("")) modVersion = "Unknown";
+        if(publicPolicy == 0) publicPolicy = UNKNOWN;
+        if(privatePolicy == 0) privatePolicy = UNKNOWN;
+        if(licenseLink == null) licenseLink = "";
+        if(licenseImage == null) licenseImage = "";
+        if(privateLicenseLink == null) privateLicenseLink = "";
+        if(privateLicenseImage == null) privateLicenseImage = "";
+        if(customLink == null) customLink = "";
+    }
 
 	public boolean hasPublic() {
 		if(publicPolicy == OPEN || publicPolicy == FTB) return true;

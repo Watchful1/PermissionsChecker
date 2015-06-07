@@ -26,6 +26,8 @@ public class ModNameRegistry {
         imageBaseUrl = baseUrl;
         imageExtension = extension;
 
+        System.out.println("Loading " + modInfos.length + " mods");
+
         for(ModInfo modInfo : modInfos) {
             if(modInfo.shortName == null) {
                 System.out.println("Skipping, no shortname");
@@ -51,6 +53,7 @@ public class ModNameRegistry {
                 bldr.delete(bldr.length()-2, bldr.length());
                 modInfo.modAuthor = bldr.toString();
             }
+            modInfo.init();
             modInfoMappings.put(modInfo.shortName, modInfo);
         }
     }
