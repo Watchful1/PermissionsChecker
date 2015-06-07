@@ -22,8 +22,6 @@ dependencies {
     compile 'net.lingala.zip4j:zip4j:1.2.4'
     compile 'org.ow2.asm:asm:5.0.2'
     compile 'org.apache.xmlbeans:xmlbeans:2.6.0'
-    compile 'org.apache.poi:poi:3.11'
-    compile 'org.apache.poi:poi-ooxml:3.11'
     compile 'org.json:json:20090211'
     compile 'org.apache.commons:commons-compress:1.3'
 }

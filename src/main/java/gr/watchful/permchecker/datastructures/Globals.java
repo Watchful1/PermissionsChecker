@@ -6,7 +6,6 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import gr.watchful.permchecker.modhandling.ModNameRegistry;
-import gr.watchful.permchecker.utils.ExcelUtils;
 import gr.watchful.permchecker.utils.FileUtils;
 import gr.watchful.permchecker.utils.OsTypes;
 
@@ -133,34 +132,6 @@ public class Globals {
         }
         nameRegistry.loadMappings(modInfos, "https://dl.dropboxusercontent.com/u/27836116/FTBPermissionsImages/", "png");
 
-/*		permFile = new File(appStore.getPath() + File.separator + "Permissions.xlsx");
-		if (!permFile.exists()) {
-			try {
-				permFile.createNewFile();
-			} catch (IOException e) {
-				System.out.println("Could not create Permissions.xlsx");
-				return false;
-			}
-		}
-
-		try {
-			FileUtils.downloadToFile(new URL(permUrl), permFile);
-		} catch (IOException e) {
-			System.out.println("Could not download perm file");
-			return false;
-		}
-
-		ArrayList<ArrayList<String>> infos;
-		ArrayList<ArrayList<String>> mappings;
-		try {
-			infos = ExcelUtils.toArray(permFile, 1);
-			mappings = ExcelUtils.toArray(permFile, 2);
-		} catch (IOException e) {
-			System.out.println("Could not read perm json");
-			return false;
-		}
-		infos.remove(0);//remove the first row, it contains column titles
-		nameRegistry.loadMappings(infos, mappings, infos.get(15).get(14), infos.get(15).get(15));*/
 		return true;
 	}
 
