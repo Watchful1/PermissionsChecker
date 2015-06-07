@@ -35,8 +35,21 @@ public class ModNameRegistry {
                 System.out.println("Skipping, no id's: "+modInfo.shortName);
                 continue;
             }
+
             for(String modid : modInfo.modids) {
                 shortNameMappings.put(modid, modInfo.shortName);
+            }
+
+            if(modInfo.modAuthors == null || modInfo.modAuthors.length == 0) {
+                System.out.println("No authors for: "+modInfo.shortName);
+            } else {
+                StringBuilder bldr = new StringBuilder();
+                for (String author : modInfo.modAuthors) {
+                    bldr.append(author);
+                    bldr.append(", ");
+                }
+                bldr.delete(bldr.length()-2, bldr.length());
+                modInfo.modAuthor = bldr.toString();
             }
             modInfoMappings.put(modInfo.shortName, modInfo);
         }
