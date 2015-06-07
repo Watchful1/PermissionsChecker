@@ -1,12 +1,12 @@
 package gr.watchful.permchecker.datastructures;
 
 public class ModInfo {
-	public static final int OPEN = 0;
-	public static final int NOTIFY = 1;
-	public static final int REQUEST = 2;
-	public static final int CLOSED = 3;
-	public static final int FTB = 4;
-	public static final int UNKNOWN = 5;
+	public static final int OPEN = 0; //1
+	public static final int NOTIFY = 1; //2
+	public static final int REQUEST = 2; //3
+	public static final int CLOSED = 3; //5
+	public static final int FTB = 4; //4
+	public static final int UNKNOWN = 5; //6
 	
 	public boolean officialSpreadsheet;
 	
@@ -14,7 +14,8 @@ public class ModInfo {
 	
 	public String modName;
 	public String modVersion;
-	public String modAuthor;
+    public String modAuthor;
+    public String[] modAuthors;
 	public String modLink;
 	
 	public String licenseLink;
@@ -27,6 +28,8 @@ public class ModInfo {
 	
 	public int publicPolicy;
 	public int privatePolicy;
+
+    public String[] modids;
 	
 	public ModInfo(String shortName) {
 		officialSpreadsheet = false;

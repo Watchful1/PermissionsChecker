@@ -18,7 +18,8 @@ public class Globals {
 	public ModNameRegistry nameRegistry;
 	public Preferences preferences;
 	public File appStore;
-	public File permFile;
+    public File permFile;
+    public File jsonFile;
 	public RebuildsMods rebuildsMods;
 	public ListsPacks listsPacks;
 	public JFrame mainFrame;
@@ -26,8 +27,9 @@ public class Globals {
 	private ArrayList<UsesPack> packListeners;
 	public boolean changeFlag;
 
-	public static final String permUrl = "https://onedrive.live.com/download?resid=96628E67B4C51B81!161&ithint=" +
-			"file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
+    public static final String permUrl = "https://onedrive.live.com/download?resid=96628E67B4C51B81!161&ithint=" +
+            "file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
+    public static final String jsonUrl = "http://jake-evans.net/_work/_ftb/modperms/api/index.php?key=123&type=all";
 	public static final String forgeUrl = "http://api.feed-the-beast.com/ss/api/GetForgePackJSON/";
 	public static final String ftbRepoUrl = "http://www.creeperrepo.net/FTB2/";
 	public static final String[] modTypes = {"jar", "zip", "disabled", "litemod", "class"};
@@ -101,7 +103,37 @@ public class Globals {
 	}
 
 	public boolean updateListings() {
-		permFile = new File(appStore.getPath() + File.separator + "Permissions.xlsx");
+        jsonFile = new File(appStore.getPath() + File.separator + "Permissions.json");
+        if (!jsonFile.exists()) {
+            try {
+                jsonFile.createNewFile();
+            } catch (IOException e) {
+                System.out.println("Could not create Permissions.json");
+                return false;
+            }
+        }
+
+        try {
+            FileUtils.downloadToFile(new URL(jsonUrl), jsonFile);
+        } catch (IOException e) {
+            System.out.println("Could not download perm file");
+            return false;
+        }
+
+        ModInfo[] modInfos;
+        try {
+            modInfos = (ModInfo[]) FileUtils.readObject(jsonFile, new ModInfo[1]);
+        } catch (Exception e) {
+            System.out.println("Unable to parse permissions json");
+            return false;
+        }
+        System.out.println("LENGTH: "+modInfos.length);
+        for(ModInfo modInfo : modInfos) {
+            System.out.println(modInfo.shortName);
+        }
+        nameRegistry.loadMappings(modInfos, "https://dl.dropboxusercontent.com/u/27836116/FTBPermissionsImages/", "png");
+
+/*		permFile = new File(appStore.getPath() + File.separator + "Permissions.xlsx");
 		if (!permFile.exists()) {
 			try {
 				permFile.createNewFile();
@@ -124,11 +156,11 @@ public class Globals {
 			infos = ExcelUtils.toArray(permFile, 1);
 			mappings = ExcelUtils.toArray(permFile, 2);
 		} catch (IOException e) {
-			System.out.println("Could not read perm file");
+			System.out.println("Could not read perm json");
 			return false;
 		}
 		infos.remove(0);//remove the first row, it contains column titles
-		nameRegistry.loadMappings(infos, mappings, infos.get(15).get(14), infos.get(15).get(15));
+		nameRegistry.loadMappings(infos, mappings, infos.get(15).get(14), infos.get(15).get(15));*/
 		return true;
 	}
 

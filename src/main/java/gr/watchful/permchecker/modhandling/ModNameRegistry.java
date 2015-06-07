@@ -15,14 +15,32 @@ public class ModNameRegistry {
 	public static String imageExtension;
 	
 	private HashMap<String, String> shortNameMappings;
-	private HashMap<String, String> md5Mappings;
 	private HashMap<String, ModInfo> modInfoMappings;
 	
 	public ModNameRegistry() {
 		shortNameMappings = new HashMap<>();
-		md5Mappings = new HashMap<>();
 		modInfoMappings = new HashMap<>();
 	}
+
+    public void loadMappings(ModInfo[] modInfos, String baseUrl, String extension) {
+        imageBaseUrl = baseUrl;
+        imageExtension = extension;
+
+        for(ModInfo modInfo : modInfos) {
+            if(modInfo.shortName == null) {
+                System.out.println("Skipping, no shortname");
+                continue;
+            }
+            if(modInfo.modids == null || modInfo.modids.length == 0) {
+                System.out.println("Skipping, no id's: "+modInfo.shortName);
+                continue;
+            }
+            for(String modid : modInfo.modids) {
+                shortNameMappings.put(modid, modInfo.shortName);
+            }
+            modInfoMappings.put(modInfo.shortName, modInfo);
+        }
+    }
 	
 	public void loadMappings(ArrayList<ArrayList<String>> infos, ArrayList<ArrayList<String>> mappings, String baseUrl, String extension) {
 		imageBaseUrl = baseUrl;
