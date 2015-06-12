@@ -24,6 +24,7 @@ public class Globals {
 	private ModPack modpack;
 	private ArrayList<UsesPack> packListeners;
 	public boolean changeFlag;
+    public boolean oldVersionsFlag;
 
     public static final String permUrl = "https://onedrive.live.com/download?resid=96628E67B4C51B81!161&ithint=" +
             "file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
@@ -31,6 +32,7 @@ public class Globals {
 	public static final String forgeUrl = "http://api.feed-the-beast.com/ss/api/GetForgePackJSON/";
 	public static final String ftbRepoUrl = "http://www.creeperrepo.net/FTB2/";
 	public static final String[] modTypes = {"jar", "zip", "disabled", "litemod", "class"};
+    public static final int metaVersion = 1;
 
 
 	public Globals() {

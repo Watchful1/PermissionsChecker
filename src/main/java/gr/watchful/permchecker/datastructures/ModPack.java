@@ -44,6 +44,7 @@ public class ModPack {
 	public ArrayList<String> submitters;
 	public String submitURL;
     public File storageLocation;
+    public int metaVersion;
 
 	public HashMap<String, String> shortNameMappings;
 	public HashMap<String, ModInfo> modInfoMappings;
@@ -88,6 +89,8 @@ public class ModPack {
 			modInfoMappings.remove(name);
 			shortNameMappings.remove(name);
 		}
+
+        metaVersion = Globals.metaVersion;
 	}
 	
 	public String toString() {
@@ -135,6 +138,10 @@ public class ModPack {
 			}
 		}
         temp.storageLocation = saveFile;
+        if(temp.metaVersion == 0 || temp.metaVersion > Globals.metaVersion) {
+            Globals.getInstance().oldVersionsFlag = true;
+            return null;
+        }
 		temp.init();
 		temp.versions = null;
 		return temp;

@@ -184,6 +184,7 @@ public class mainClass extends JFrame implements ListsPacks {
 
     public void loadPacks(File folder) {
         if(!folder.exists() || !folder.isDirectory()) return;
+        Globals.getInstance().oldVersionsFlag = false;
         for(File pack : folder.listFiles()) {
 			//System.out.println("Loading "+pack.getName());
             ModPack temp = ModPack.loadObject(pack);
@@ -192,6 +193,11 @@ public class mainClass extends JFrame implements ListsPacks {
             }
         }
 		modPacksModel.sort(new SimpleObjectComparator());
+
+        if(Globals.getInstance().oldVersionsFlag) {
+            JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+                    "Some modpacks were on a newer json format than this version supports and were not loaded.\nGet the new version from Watchful1");
+        }
     }
 
 	public void addPack() {
