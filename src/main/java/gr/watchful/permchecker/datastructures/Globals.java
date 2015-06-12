@@ -30,7 +30,7 @@ public class Globals {
             "file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
     public static final String jsonUrl = "http://jake-evans.net/_work/_ftb/modperms/api/index.php?key=123&type=all";
 	public static final String forgeUrl = "http://api.feed-the-beast.com/ss/api/GetForgePackJSON/";
-	public static final String ftbRepoUrl = "http://www.creeperrepo.net/FTB2/";
+	public static final String ftbRepoUrl = "http://ftb.cursecdn.com/FTB2/";
 	public static final String[] modTypes = {"jar", "zip", "disabled", "litemod", "class"};
     public static final int metaVersion = 1;
 
