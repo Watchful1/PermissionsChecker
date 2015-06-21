@@ -16,7 +16,8 @@ public class ModPack {
 	public String key;//moderate, delete 1 local file. Leaves old code on server TODO
 	public String description;//simple
 	public String recommendedVersion;//simple, select from available
-	public String minecraftVersion;//simple, select from available
+    public String minecraftVersion;//simple, select from available
+    public String curseID;
 	public ArrayList<ModPackVersion> metaVersions;//add, simple. Remove, change rec version if necessary. Move TODO
 	public ArrayList<String> versions;//legacy
     public ArrayList<String> mods;
@@ -58,7 +59,8 @@ public class ModPack {
 	public void init() {
 		if(name == null || name.equals("")) name = "Unnamed";
 		if(author == null || author.equals("")) author = "none";
-		if(shortName == null) shortName = "";
+        if(shortName == null) shortName = "";
+        if(curseID == null) curseID = "";
 		if(key == null || key.equals("")) key = generateKey();
 		if(description == null) description = "";
 		if(metaVersions == null) metaVersions = new ArrayList<>();

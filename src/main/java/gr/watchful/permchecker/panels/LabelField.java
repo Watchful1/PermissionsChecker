@@ -17,8 +17,12 @@ public class LabelField extends JPanel {
     public LabelField(String name) {
         this(name, null);
     }
-	
-	public LabelField(String name, ChangeListener changeListener) {
+
+    public LabelField(String name, ChangeListener changeListener) {
+        this(name, Integer.MAX_VALUE, changeListener);
+    }
+
+	public LabelField(String name, int max, ChangeListener changeListener) {
         this.changeListener = changeListener;
         oldText = "";
 
@@ -32,7 +36,7 @@ public class LabelField extends JPanel {
 		this.add(label);
 		
 		textField = new JTextField();
-		textField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 21));
+		textField.setMaximumSize(new Dimension(max, 21));
         textField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -40,7 +44,7 @@ public class LabelField extends JPanel {
 
             @Override
             public void focusLost(FocusEvent e) {
-                if(oldText.equals(getText())) return;
+                if (oldText.equals(getText())) return;
                 oldText = getText();
                 notifyChanged();
             }

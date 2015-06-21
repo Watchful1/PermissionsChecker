@@ -44,7 +44,7 @@ public class mainClass extends JFrame implements ListsPacks {
 		System.out.println("Perm listings update took: " + (System.nanoTime() - tempTime) / 1000000);
 
 		this.setTitle("Permissions Checker v 1.2.0"); // Set the window title
-		this.setPreferredSize(new Dimension(1000, 600)); // and the initial size
+		this.setPreferredSize(new Dimension(1100, 600)); // and the initial size
 
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
@@ -186,6 +186,7 @@ public class mainClass extends JFrame implements ListsPacks {
         if(!folder.exists() || !folder.isDirectory()) return;
         Globals.getInstance().oldVersionsFlag = false;
         for(File pack : folder.listFiles()) {
+            if(pack.getName().equals(Globals.curseFileName)) continue;
 			//System.out.println("Loading "+pack.getName());
             ModPack temp = ModPack.loadObject(pack);
             if(temp != null) {
@@ -251,6 +252,17 @@ public class mainClass extends JFrame implements ListsPacks {
 		}
 		return false;
 	}
+
+    public boolean curseIDUsed(String curseID, String currentPack) {
+        for(int i=0; i<modPacksList.getModel().getSize(); i++) {
+            ModPack pack = modPacksList.getModel().get(i);
+            if(curseID.equals(pack.curseID) && !currentPack.equals(pack.shortName)) {
+                System.out.println("CurseID exists in pack with name "+pack.name);
+                return true;
+            }
+        }
+        return false;
+    }
 
 	@Override
 	public void nameChanged() {

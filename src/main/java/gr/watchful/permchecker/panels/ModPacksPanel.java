@@ -22,6 +22,7 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 	private VersionEditor versionEditor;
 	private ForgeEditor forgeEditor;
     private PublicField publicField;
+    private LabelField curseField;
 	//private FileSelector iconSelector;
 	//private FileSelector splashSelector;
 	//private FileSelector serverSelector;
@@ -60,9 +61,12 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
         horizHolder.setLayout(new BoxLayout(horizHolder, BoxLayout.X_AXIS));
 		forgeEditor = new ForgeEditor("Forge", this);
         horizHolder.add(forgeEditor);
-        horizHolder.add(Box.createRigidArea(new Dimension(60,1)));
+        horizHolder.add(Box.createRigidArea(new Dimension(30,1)));
         publicField = new PublicField(this);
         horizHolder.add(publicField);
+        horizHolder.add(Box.createRigidArea(new Dimension(30,1)));
+        curseField = new LabelField("Curse Project", this);
+        horizHolder.add(curseField);
         this.add(horizHolder);
 		/*iconSelector = new FileSelector("Icon", 150, "png", this);
 		this.add(iconSelector);
@@ -143,6 +147,7 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		forgeEditor.setForgeType(pack.forgeType);
 		forgeEditor.setForgeVersion(pack.ForgeVersion);
         publicField.setPublic(pack.isPublic);
+        curseField.setText(pack.curseID);
 		/*iconSelector.setFile(pack.icon);
 		splashSelector.setFile(pack.splash);
 		serverSelector.setFile(pack.server);*/
@@ -193,6 +198,16 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		} else if(e.getSource().equals(forgeEditor)) {
 			Globals.getModPack().forgeType = forgeEditor.getForgeType();
 			Globals.getModPack().ForgeVersion = forgeEditor.getForgeVersion();
+        } else if(e.getSource().equals(curseField)) {
+            if(curseField.getText() != null && !curseField.getText().equals("")) {
+                String result = checkValidProject(curseField.getText());
+                if(result == null) {
+                    curseField.setText(Globals.getModPack().curseID);
+                    return;
+                }
+                curseField.setText(result);
+            }
+            Globals.getModPack().curseID = curseField.getText();
         } else if(e.getSource().equals(publicField)) {
             Globals.getModPack().isPublic = publicField.isPublic();
 		/*} else if(e.getSource().equals(iconSelector)) {
@@ -232,5 +247,26 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
         }
         keyField.setText(key);
         return key;
+    }
+
+    private String checkValidProject(String projectID) {
+        String message = "";
+        if(projectID == null || projectID.equals("")) {
+            message = "Curse project ID is not valid, pick a new project ID";
+        } else if(Globals.getInstance().listsPacks.curseIDUsed(projectID, shortNameField.getText())) {
+            message = "Curse project ID is taken by another pack, pick a new project ID";
+        }
+        if(!message.equals("")) {
+            String result = (String) JOptionPane.showInputDialog(
+                    Globals.getInstance().mainFrame, message,
+                    "New curse ID", JOptionPane.PLAIN_MESSAGE, null, null, projectID);
+            if(result == null) return null;
+            return checkValidProject(result);
+        } else {
+            JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+                    "Project ID changed. Click Ok to open project page and verify that it exists and the author is correct");
+            FileUtils.openWebpage(Globals.curseProjectRoot+projectID);
+        }
+        return projectID;
     }
 }

@@ -28,10 +28,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
@@ -470,6 +467,9 @@ public class FileUtils {
             if (modPack.square != null && !modPack.squareName.equals("")) {
                 modpack.setAttribute("squareImage", modPack.squareName);
             }
+            if (modPack.curseID != null && !modPack.curseID.equals("")) {
+                modpack.setAttribute("curseProjectId", modPack.curseID);
+            }
 			modpack.setAttribute("description", modPack.description);
 			modpack.setAttribute("mods", modPack.getModList());
 
@@ -618,8 +618,6 @@ public class FileUtils {
 	public static boolean remoteFileExists(String url)  {
 		try {
 			HttpURLConnection.setFollowRedirects(false);
-			// note : you may also need
-			//        HttpURLConnection.setInstanceFollowRedirects(false)
 			HttpURLConnection con =
 					(HttpURLConnection) new URL(url).openConnection();
 			con.setRequestMethod("HEAD");
@@ -668,4 +666,16 @@ public class FileUtils {
 		}
 		return stringBuffer.toString();
 	}
+
+    public static void openWebpage(String URL) {
+        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+            try {
+                desktop.browse(new URI(URL));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

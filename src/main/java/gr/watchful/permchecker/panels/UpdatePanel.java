@@ -315,12 +315,85 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 			Globals.getModPack().server = null;
 			serverSelector.clearSelection();//kinda hacky
 		}
+
+        boolean curseIsBlank = Globals.getModPack().curseID != null || !Globals.getModPack().curseID.equals("");
+        ArrayList<String> curseKeys = loadCurseKeys();
+
+        if(curseKeys == null && !curseIsBlank) {
+            JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+                    "Unable to load curse keys file. Not exporting key");
+        } else {
+            boolean exists = false;
+            int index = 0;
+            for(String key : curseKeys) {
+                if(key.equals(Globals.getModPack().key)) {
+                    exists = true;
+                    break;
+                }
+                index++;
+            }
+
+            boolean save = false;
+            if(!exists) {
+                curseKeys.add(Globals.getModPack().key);
+                save = true;
+            } else if(curseIsBlank) {
+                curseKeys.remove(index);
+                save = true;
+            }
+
+            if(save) {
+                if(!saveCurseKeys(curseKeys, Globals.getInstance().preferences.saveFolder)) {
+                    JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+                            "Couldn't save curse keys file, changes won't sync to other tools. Contact Watchful1");
+                }
+
+                if(saveCurseKeys(curseKeys, new File(Globals.getInstance().preferences.exportFolder
+                        + File.separator + "static"))) {
+                    JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+                            "Exported curse keys file. Please upload static folder as soon as possible.\n" +
+                                    "Yes, I know this will get annoying");
+                } else {
+                    JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+                            "Couldn't export curse keys file, pack won't sync to client. Contact Watchful1");
+                }
+            }
+        }
+
 		Globals.modPackChanged(this, false);
 
 		System.out.println("Deleting working folder");
 		FileUtils.purgeDirectory(Globals.getInstance().preferences.workingFolder);
 		selector.clearSelection();
 	}
+
+    private ArrayList<String> loadCurseKeys() {
+        File curseFile = new File(Globals.getInstance().preferences.saveFolder+File.separator+Globals.curseFileName);
+        if(curseFile.exists()) {
+            try {
+                ArrayList<String> tempArray = (ArrayList<String>) FileUtils.readObject(curseFile, new ArrayList<String>());
+                return tempArray;
+            } catch (Exception e) {
+                System.out.println("Couldn't load curse keys file");
+                return null;
+            }
+        } else {
+            System.out.println("Curse keys file doesn't exist");
+            return new ArrayList<>();
+        }
+    }
+
+    private boolean saveCurseKeys(ArrayList<String> curseKeys, File exportLocation) {
+        File curseFile = new File(exportLocation+"/"+Globals.curseFileName);
+        try {
+            FileUtils.saveObject(curseKeys, curseFile);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Couldn't save curse keys file");
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 	@Override
 	public void stateChanged(ChangeEvent e) {

@@ -1,9 +1,11 @@
 package gr.watchful.permchecker.datastructures;
 
 public interface ListsPacks {
-	public boolean codeExists(String code, String currentPack);
+	boolean codeExists(String code, String currentPack);
 
-	public boolean shortnameExists(String shortname);
+	boolean shortnameExists(String shortname);
 
-	public void nameChanged();
+    boolean curseIDUsed(String curseID, String currentPack);
+
+	void nameChanged();
 }
