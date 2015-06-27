@@ -1,9 +1,6 @@
 package gr.watchful.permchecker.panels;
 
-import gr.watchful.permchecker.datastructures.Globals;
-import gr.watchful.permchecker.datastructures.ModInfo;
-import gr.watchful.permchecker.datastructures.ModPack;
-import gr.watchful.permchecker.datastructures.SavesMods;
+import gr.watchful.permchecker.datastructures.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,8 +11,6 @@ import java.util.ArrayList;
 @SuppressWarnings("serial")
 public class ModInfoEditor extends JPanel {
 	public ModInfo modInfo;
-	
-	private JButton save;
 
 	private LabelField name;
 	private LabelField author;
@@ -27,6 +22,8 @@ public class ModInfoEditor extends JPanel {
 	private PermType publicPermType;
 	
 	private ArrayList<SavesMods> saveListeners;
+
+    private ModFile attachedModFile;
 	
 	public ModInfoEditor(Dimension size) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -38,24 +35,33 @@ public class ModInfoEditor extends JPanel {
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		buttonPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-		
-		save = new JButton("Save Public");
-		save.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				save(true);
-			}
-		});
-		buttonPanel.add(save);
 
-		save = new JButton("Save Private");
-		save.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				save(false);
-			}
-		});
-		buttonPanel.add(save);
+        JButton savePublic = new JButton("Save Public");
+        savePublic.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                save(true);
+            }
+        });
+		buttonPanel.add(savePublic);
+
+        JButton savePrivate = new JButton("Save Private");
+        savePrivate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                save(false);
+            }
+        });
+		buttonPanel.add(savePrivate);
+
+        JButton modIdsButton = new JButton("Get ModIDs");
+        modIdsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                showModIDsPopup();
+            }
+        });
+        buttonPanel.add(modIdsButton);
 
 		this.add(buttonPanel);
 		
@@ -83,13 +89,18 @@ public class ModInfoEditor extends JPanel {
 		
 		saveListeners = new ArrayList<>();
 	}
+
+    public void setMod(ModInfo mod, String shortName) {
+        setMod(mod, shortName, null);
+    }
 	
-	public void setMod(ModInfo mod, String shortName) {
+	public void setMod(ModInfo mod, String shortName, ModFile modFile) {
 		if(mod == null) {
 			modInfo = new ModInfo(shortName);
 		} else {
 			modInfo = mod;
 		}
+        attachedModFile = modFile;
 		name.setText(modInfo.modName);
 		author.setText(modInfo.modAuthor);
 		link.setText(modInfo.modLink);
@@ -167,4 +178,20 @@ public class ModInfoEditor extends JPanel {
 			savesMod.saveMod(modInfo);
 		}
 	}
+
+    public void showModIDsPopup() {
+        StringBuilder bldr = new StringBuilder();
+
+        if(attachedModFile.IDs.isEmpty()) {
+            bldr.append(attachedModFile.md5);
+        } else {
+            for(int i=0; i < attachedModFile.IDs.getSize(); i++) {
+                if(i != 0) bldr.append(", ");
+                bldr.append(attachedModFile.IDs.get(i));
+            }
+        }
+        JOptionPane.showInputDialog(
+                Globals.getInstance().mainFrame, "Current Mod IDs",
+                "Mod IDs", JOptionPane.PLAIN_MESSAGE, null, null, bldr);
+    }
 }

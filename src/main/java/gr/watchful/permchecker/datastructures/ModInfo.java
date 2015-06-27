@@ -1,12 +1,14 @@
 package gr.watchful.permchecker.datastructures;
 
+import java.util.ArrayList;
+
 public class ModInfo {
-	public static final int OPEN = 1; //1
-	public static final int NOTIFY = 2; //2
-	public static final int REQUEST = 3; //3
-	public static final int FTB = 4; //4
-    public static final int CLOSED = 5; //5
-	public static final int UNKNOWN = 6; //6
+	public static final int OPEN = 1;
+	public static final int NOTIFY = 2;
+	public static final int REQUEST = 3;
+	public static final int FTB = 4;
+    public static final int CLOSED = 5;
+	public static final int UNKNOWN = 6;
 	
 	public boolean officialSpreadsheet;
 	
@@ -30,6 +32,8 @@ public class ModInfo {
 	public int privatePolicy;
 
     public String[] modids;
+
+    public transient ArrayList<String> currentModIds;
 	
 	public ModInfo(String shortName) {
 		officialSpreadsheet = false;
@@ -52,6 +56,7 @@ public class ModInfo {
         if(privateLicenseLink == null) privateLicenseLink = "";
         if(privateLicenseImage == null) privateLicenseImage = "";
         if(customLink == null) customLink = "";
+        if(currentModIds == null) currentModIds = new ArrayList<>();
     }
 
 	public boolean hasPublic() {

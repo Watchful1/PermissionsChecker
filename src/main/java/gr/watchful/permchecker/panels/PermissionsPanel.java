@@ -105,7 +105,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 			CardLayout cardLayout = (CardLayout)(cards.getLayout());
 			cardLayout.show(cards, "MODEDITOR");
 
-			modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(good.getSelected(), Globals.getModPack()), good.getSelected().shortName);
+			modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(good.getSelected(), Globals.getModPack()), good.getSelected().shortName, good.getSelected().modFile);
 		}
 		if(list.equals("Bad")) {
 			//System.out.println(bad.getSelected().modFile.fileName());
@@ -118,7 +118,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 			CardLayout cardLayout = (CardLayout)(cards.getLayout());
 			cardLayout.show(cards, "MODEDITOR");
 
-			modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(bad.getSelected(), Globals.getModPack()), bad.getSelected().shortName);
+			modEditor.setMod(Globals.getInstance().nameRegistry.getInfo(bad.getSelected(), Globals.getModPack()), bad.getSelected().shortName, bad.getSelected().modFile);
 		}
 		if(list.equals("Unknown")) {
 			//System.out.println(unknown.getSelected().fileName());
@@ -152,13 +152,17 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 	}
 
 	public void parsePack() {
-		modEditor.setMod(null, "");
+		modEditor.setMod(null, "", null);
 		modFileEditor.setModFile(null);
-		System.out.println("Parsing "+Globals.getModPack().name);
+		System.out.println("Parsing " + Globals.getModPack().name);
 		knownModFiles = modFinder.discoverModFiles(new File(
 				Globals.getInstance().preferences.workingFolder+File.separator+"minecraft"+File.separator+"mods"));
-		System.out.println("Found "+knownModFiles.size()+" files");
-		recheckMods();
+        if(knownModFiles.size() == 0) {
+            System.out.println("No files found, not updating mod list");
+        } else {
+            System.out.println("Found " + knownModFiles.size() + " files");
+            recheckMods();
+        }
 		setDisabled(false);
 	}
 
@@ -185,9 +189,12 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 			} else {
 				String md5 = FileUtils.getMD5(modFile.file);
 				if(md5 != null) {
+                    modFile.md5 = md5;
 					Globals.getInstance().preferences.unknownMods.put(md5, modFile.fileName());
                     pack.unknownModIDs.add(md5);
-				}
+				} else {
+                    System.out.println("Couldn't get MD5 for: "+modFile.fileName());
+                }
 			}
 		}
 		Globals.getInstance().savePreferences();

@@ -8,6 +8,7 @@ import gr.watchful.permchecker.utils.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class ModFileEditor extends JPanel implements SavesMods {
@@ -50,7 +51,7 @@ public class ModFileEditor extends JPanel implements SavesMods {
 		} else {
 			names.setModel(modFile.names);
 			IDs.setModel(modFile.IDs);
-			modInfoEditor.setMod(modFile.getInfo(), "");
+			modInfoEditor.setMod(modFile.getInfo(), "", modFile);
 			this.modFile = modFile;
 		}
 	}

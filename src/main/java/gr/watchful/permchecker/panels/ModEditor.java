@@ -1,9 +1,11 @@
 package gr.watchful.permchecker.panels;
 
+import gr.watchful.permchecker.datastructures.ModFile;
 import gr.watchful.permchecker.datastructures.ModInfo;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class ModEditor extends JPanel {
@@ -21,7 +23,7 @@ public class ModEditor extends JPanel {
 		this.add(modInfoEditor);
 	}
 	
-	public void setMod(ModInfo mod, String shortName) {
-		modInfoEditor.setMod(mod, shortName);
+	public void setMod(ModInfo mod, String shortName, ModFile modFile) {
+		modInfoEditor.setMod(mod, shortName, modFile);
 	}
 }
