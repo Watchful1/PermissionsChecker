@@ -33,28 +33,69 @@ public class ModNameRegistry {
                 System.out.println("Skipping, no shortname");
                 continue;
             }
-            if(modInfo.modids == null || modInfo.modids.length == 0) {
+            if(modInfo.modids == null || modInfo.modids.length() == 0) {
                 System.out.println("Skipping, no id's: "+modInfo.shortName);
                 continue;
             }
 
-            for(String modid : modInfo.modids) {
+            for(String modid : modInfo.modids.split(", ")) {
                 shortNameMappings.put(modid, modInfo.shortName);
             }
 
-            if(modInfo.modAuthors == null || modInfo.modAuthors.length == 0) {
+            if(modInfo.modAuthors == null || modInfo.modAuthors.length() == 0) {
                 System.out.println("No authors for: "+modInfo.shortName);
             } else {
                 StringBuilder bldr = new StringBuilder();
-                for (String author : modInfo.modAuthors) {
+                for (String author : modInfo.modAuthors.split(",")) {
                     bldr.append(author);
                     bldr.append(", ");
                 }
                 bldr.delete(bldr.length()-2, bldr.length());
                 modInfo.modAuthor = bldr.toString();
+                modInfo.modAuthors = null;
             }
             modInfo.init();
             modInfoMappings.put(modInfo.shortName, modInfo);
+
+            switch (modInfo.publicStringPolicy) {
+                case "Open": modInfo.publicPolicy = ModInfo.OPEN;
+                    break;
+                case "Notify": modInfo.publicPolicy = ModInfo.NOTIFY;
+                    break;
+                case "Request":  modInfo.publicPolicy = ModInfo.REQUEST;
+                    break;
+                case "FTB": modInfo.publicPolicy = ModInfo.FTB;
+                    break;
+                case "Closed": modInfo.publicPolicy = ModInfo.CLOSED;
+                    break;
+                case "Unknown": modInfo.publicPolicy = ModInfo.UNKNOWN;
+                    break;
+                default:
+                    System.out.println("Unknown public policy for " + modInfo.shortName + ": " + modInfo.publicStringPolicy);
+                    modInfo.publicPolicy = ModInfo.UNKNOWN;
+                    break;
+            }
+            modInfo.publicStringPolicy = null;
+
+            switch (modInfo.privateStringPolicy) {
+                case "Open": modInfo.privatePolicy = ModInfo.OPEN;
+                    break;
+                case "Notify": modInfo.privatePolicy = ModInfo.NOTIFY;
+                    break;
+                case "Request":  modInfo.privatePolicy = ModInfo.REQUEST;
+                    break;
+                case "FTB": modInfo.privatePolicy = ModInfo.FTB;
+                    break;
+                case "Closed": modInfo.privatePolicy = ModInfo.CLOSED;
+                    break;
+                case "Unknown": modInfo.privatePolicy = ModInfo.UNKNOWN;
+                    break;
+                default:
+                    System.out.println("Unknown public policy for " + modInfo.shortName + ": " + modInfo.privateStringPolicy);
+                    modInfo.privatePolicy = ModInfo.UNKNOWN;
+                    break;
+            }
+            modInfo.privateStringPolicy = null;
         }
     }
 

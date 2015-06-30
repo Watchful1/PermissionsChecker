@@ -118,10 +118,6 @@ public class ModPack {
         }
 		FileUtils.saveObject(pack, saveFile);
 	}
-
-    public void reloadObject(ModPack pack) {
-
-    }
 	
 	public static ModPack loadObject(File saveFile) {
 		if(!saveFile.exists()) return null;

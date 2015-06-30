@@ -17,7 +17,7 @@ public class ModInfo {
 	public String modName;
 	public String modVersion;
     public String modAuthor;
-    public String[] modAuthors;
+    public String modAuthors;
 	public String modLink;
 	
 	public String licenseLink;
@@ -30,8 +30,10 @@ public class ModInfo {
 	
 	public int publicPolicy;
 	public int privatePolicy;
+    public String publicStringPolicy;
+    public String privateStringPolicy;
 
-    public String[] modids;
+    public String modids;
 
     public transient ArrayList<String> currentModIds;
 	
