@@ -233,16 +233,30 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 
     private String checkValidKey(String key) {
         String message = "";
+        boolean valid = false;
         if(key == null || key.equals("") || !ModPack.isValidKey(key)) {
             message = "Key is not valid, pick a new key";
         } else if(Globals.getInstance().listsPacks.codeExists(key, shortNameField.getText())) {
-            message = "Key exists, pick a new key";
+            message = "Key exists, pick a new key\nIf you want to overwrite the key, press ok without changing the key";
+            valid = true;
         }
         if(!message.equals("")) {
             String result = (String) JOptionPane.showInputDialog(
                     Globals.getInstance().mainFrame, message,
                     "New key", JOptionPane.PLAIN_MESSAGE, null, null, key);
             if(result == null) return null;
+            if(valid && result.equals(key)) {
+                int n = JOptionPane.showConfirmDialog(
+                        Globals.getInstance().mainFrame,
+                        "Are you sure you want to overwrite this key?",
+                        "Confirm overwrite",
+                        JOptionPane.YES_NO_OPTION);
+                if(n == JOptionPane.YES_OPTION) {
+                    return key;
+                } else {
+                    return null;
+                }
+            }
             return checkValidKey(result);
         }
         keyField.setText(key);

@@ -127,7 +127,10 @@ public class ModInfoEditor extends JPanel {
 			return;
 		}
 
-		ModInfo tempInfo = new ModInfo("");
+        String generated = ModPack.generateShortName(name.getText()).toLowerCase();
+        String result = generated;
+        shortName.setText(result);
+        ModInfo tempInfo = new ModInfo(result);
 
 		tempInfo.officialSpreadsheet = false;
 
@@ -138,12 +141,6 @@ public class ModInfoEditor extends JPanel {
 		tempInfo.licenseImage = licenseImageLink.getText();
 
 		tempInfo.publicPolicy = publicPermType.getType();
-		if(tempInfo.shortName == null || tempInfo.shortName.equals("")) {
-			String generated = ModPack.generateShortName(tempInfo.modName).toLowerCase();
-			String result = generated;
-			tempInfo.shortName = result;
-			shortName.setText(result);
-		}
 
 		tempInfo.customLink = customLink.getText();
 		tempInfo.isPublicPerm = isPublic;

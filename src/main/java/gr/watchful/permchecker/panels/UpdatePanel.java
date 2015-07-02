@@ -322,7 +322,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
         if(curseKeys == null && !curseIsBlank) {
             JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
                     "Unable to load curse keys file. Not exporting key");
-        } else {
+        } else if(Globals.getModPack().curseID != null && !Globals.getModPack().curseID.equals("")) {
             boolean exists = false;
             int index = 0;
             for(String key : curseKeys) {
