@@ -160,7 +160,7 @@ public class ModPack {
     }
 
     public static Boolean isValidKey(String key) {
-        return !key.matches(".*[^0-9A-Za-z].*");
+        return !key.matches(".*[^0-9A-Za-z-].*");
     }
 
 	public boolean equals(Object object) {
@@ -225,20 +225,46 @@ public class ModPack {
 	}
 
 	public static boolean createShortName(ModPack pack) {
-		String result = generateShortName(pack.name);
-		while(Globals.getInstance().listsPacks.shortnameExists(result)) {
-			result = (String) JOptionPane.showInputDialog(
-					Globals.getInstance().mainFrame, "Shortname exists for "+pack.name
-							+"\npick new shortname",
-					"New Shortname", JOptionPane.PLAIN_MESSAGE, null, null, result);
-			if(result == null || result.equals("")) {
-				System.out.println("Shortname creation canceled");
-				return false;
-			}
-		}
-		pack.shortName = result;
-		return true;
+        String result = checkValidShortName(generateShortName(pack.name));
+        if (result == null) {
+            System.out.println("Shortname creation canceled");
+            return false;
+        } else {
+            pack.shortName = result;
+            return true;
+        }
 	}
+
+    private static String checkValidShortName(String shortname) {
+        String message = "";
+        boolean valid = false;
+        if(shortname == null || shortname.equals("") || !ModPack.isValidKey(shortname)) {
+            message = "Shortname is not valid, pick a new key";
+        } else if(Globals.getInstance().listsPacks.shortnameExists(shortname)) {
+            message = "Shortname exists, pick a new shortname\nIf you want to overwrite the shortname, press ok without changing the shortname";
+            valid = true;
+        }
+        if(!message.equals("")) {
+            String result = (String) JOptionPane.showInputDialog(
+                    Globals.getInstance().mainFrame, message,
+                    "New shortname", JOptionPane.PLAIN_MESSAGE, null, null, shortname);
+            if(result == null) return null;
+            if(valid && result.equals(shortname)) {
+                int n = JOptionPane.showConfirmDialog(
+                        Globals.getInstance().mainFrame,
+                        "Are you sure you want to overwrite the shortname \""+shortname+"\"?",
+                        "Confirm overwrite",
+                        JOptionPane.YES_NO_OPTION);
+                if(n == JOptionPane.YES_OPTION) {
+                    return shortname;
+                } else {
+                    return null;
+                }
+            }
+            return checkValidShortName(result);
+        }
+        return shortname;
+    }
 
 	public void addShortName(String shortName, String modID) {
 		System.out.println("Saving ID "+modID+" as "+shortName);

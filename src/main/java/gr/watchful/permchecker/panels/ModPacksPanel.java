@@ -248,7 +248,7 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
             if(valid && result.equals(key)) {
                 int n = JOptionPane.showConfirmDialog(
                         Globals.getInstance().mainFrame,
-                        "Are you sure you want to overwrite this key?",
+                        "Are you sure you want to overwrite the key \""+key+"\"?",
                         "Confirm overwrite",
                         JOptionPane.YES_NO_OPTION);
                 if(n == JOptionPane.YES_OPTION) {
