@@ -114,18 +114,21 @@ public class ModInfoEditor extends JPanel {
 	
 	public void save(boolean isPublic) {
 		// Custom added mods are handled differently from mods already in the spreadsheet
-		if(name.getText().equals("")) {
-			System.out.println("Can't save a mod without a name");
-			return;
+        StringBuilder bldr = new StringBuilder();
+		if(name.getText().equals("") || name.getText().equals("Unknown")) {
+            bldr.append("Can't save a mod without a name\n");
 		}
-		if(author.getText().equals("")) {
-			System.out.println("Can't save a mod without an author");
-			return;
+		if(author.getText().equals("") || author.getText().equals("Unknown")) {
+            bldr.append("Can't save a mod without an author\n");
 		}
-		if(link.getText().equals("")) {
-			System.out.println("Can't save a mod without a link");
-			return;
+		if(link.getText().equals("") || link.getText().equals("None")) {
+            bldr.append("Can't save a mod without a link\n");
 		}
+        if(!bldr.toString().equals("")) {
+            JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+                    bldr.toString());
+            return;
+        }
 
         String generated = ModPack.generateShortName(name.getText()).toLowerCase();
         String result = generated;
