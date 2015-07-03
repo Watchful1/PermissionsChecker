@@ -44,7 +44,7 @@ public class ModPack {
 	public Time lastEdited;
 	public ArrayList<String> submitters;
 	public String submitURL;
-    public File storageLocation;
+    public transient File storageLocation;
     public int metaVersion;
 
 	public HashMap<String, String> shortNameMappings;
