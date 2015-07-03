@@ -43,6 +43,8 @@ public class mainClass extends JFrame implements ListsPacks {
         Globals.getInstance().updateListings();
 		System.out.println("Perm listings update took: " + (System.nanoTime() - tempTime) / 1000000);
 
+        System.setProperty("http.agent", "FTBPermissionsChecker");
+
 		this.setTitle("Permissions Checker v 1.2.0"); // Set the window title
 		this.setPreferredSize(new Dimension(1100, 600)); // and the initial size
 
