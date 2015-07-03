@@ -417,7 +417,7 @@ public class FileUtils {
 		} catch (IOException e) {
             e.printStackTrace();
 			JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
-					"Pack.json add failed");
+					"Pack.json add failed.\nThis could mean the api is broken or down.\nAlternatively, the forge version doesn't exist.");
 			return false;
 		}
         if(!isValidJson(readFile(jsonFile))) {
