@@ -130,9 +130,14 @@ public class ModInfoEditor extends JPanel {
             return;
         }
 
-        String generated = ModPack.generateShortName(name.getText()).toLowerCase();
-        String result = generated;
-        shortName.setText(result);
+        String result;
+        if(shortName.getText().equals("")) {
+            result = ModPack.generateShortName(name.getText()).toLowerCase();
+            shortName.setText(result);
+        } else {
+            result = shortName.getText();
+        }
+
         ModInfo tempInfo = new ModInfo(result);
 
 		tempInfo.officialSpreadsheet = false;
