@@ -15,9 +15,7 @@ public class SimpleObjectComparator implements Comparator<Object> {
 		} else if(o1.getClass().equals(Mod.class) && o2.getClass().equals(Mod.class)) {
 			Mod mod1 = (Mod) o1;
 			Mod mod2 = (Mod) o2;
-			if(mod1.permStatus == Mod.PRIVATE && mod2.permStatus != Mod.PRIVATE) return -1;
-			else if(mod2.permStatus == Mod.PRIVATE && mod1.permStatus != Mod.PRIVATE) return 1;
-			else return mod1.toString().compareToIgnoreCase(mod2.toString());
+			return mod1.toString().compareToIgnoreCase(mod2.toString());
 		} else return o1.toString().toLowerCase().compareTo(o2.toString().toLowerCase());
     }
 }

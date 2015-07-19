@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 @SuppressWarnings("serial")
 public class PermissionsPanel extends JPanel implements NamedScrollingListPanelListener, RebuildsMods, UsesPack {
@@ -223,6 +225,13 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 
 		goodMods.sort(new SimpleObjectComparator());
 		badMods.sort(new SimpleObjectComparator());
+        Collections.sort(pack.mods, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return Globals.getInstance().nameRegistry.getInfo(o1, Globals.getModPack()).modName.compareToIgnoreCase(
+                        Globals.getInstance().nameRegistry.getInfo(o2, Globals.getModPack()).modName);
+            }
+        });
 	}
 
 	public boolean promptPermissionsGood() {
