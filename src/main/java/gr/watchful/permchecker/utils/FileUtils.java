@@ -437,12 +437,22 @@ public class FileUtils {
         return true;
     }
 
-	public static String buildXML(ArrayList<ModPack> modPacks) {
-		Document doc = null;
+	public static Boolean writeXML(ArrayList<ModPack> modPacks, File output) {
+        if(output.exists()) output.delete();
+        output.getParentFile().mkdirs();
+        try {
+            output.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        Document doc = null;
 		try {
 			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
+            return false;
 		}
 		Element rootElement = doc.createElement("modpacks");
 		doc.appendChild(rootElement);
@@ -515,16 +525,17 @@ public class FileUtils {
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-			StringWriter writer = new StringWriter();
-			transformer.transform(new DOMSource(doc), new StreamResult(writer));
-			return writer.getBuffer().toString();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(output);
+            transformer.transform(source, result);
+            return true;
 		} catch (TransformerConfigurationException e) {
 			e.printStackTrace();
 		} catch (TransformerException e) {
 			e.printStackTrace();
 		}
 
-		return "";
+		return false;
 	}
 
 	public static ArrayList<ModPack> readXML(String string) {

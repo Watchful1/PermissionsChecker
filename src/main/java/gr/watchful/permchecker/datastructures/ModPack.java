@@ -129,6 +129,10 @@ public class ModPack {
             System.out.println("Failed to read "+saveFile.getName());
             return null;
         }
+        if(temp == null) {
+            System.out.println("Failed to read "+saveFile.getName());
+            return null;
+        }
 		if(temp.versions != null) {
 			temp.metaVersions = new ArrayList<>();
 			for(String version : temp.versions) {

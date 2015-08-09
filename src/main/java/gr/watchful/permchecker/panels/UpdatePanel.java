@@ -273,10 +273,9 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		}
 		ArrayList<ModPack> temp = new ArrayList<>();
 		temp.add(Globals.getModPack());
-		String xml = FileUtils.buildXML(temp);
-		if(!FileUtils.writeFile(xml, new File(
-				Globals.getInstance().preferences.exportFolder+File.separator+"static"+
-				File.separator+Globals.getModPack().key+".xml"), false)) {
+		if(!FileUtils.writeXML(temp, new File(
+                Globals.getInstance().preferences.exportFolder + File.separator + "static" +
+                        File.separator + Globals.getModPack().key + ".xml"))) {
 			System.out.println("xml export failed");
 			return;
 		}
