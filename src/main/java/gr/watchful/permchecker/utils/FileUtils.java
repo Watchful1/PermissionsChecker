@@ -176,7 +176,7 @@ public class FileUtils {
 			bOut = new BufferedOutputStream(fOut);
 			tOut = new ZipArchiveOutputStream(bOut);
 
-            String[] patterns = {".*\\.DS_Store"};
+            String[] patterns = {".*\\.DS_Store",".*ini$"};
 
 			for(File file : folder.listFiles()) {
                 for(String pattern : patterns) {
