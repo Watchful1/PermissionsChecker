@@ -45,7 +45,7 @@ public class mainClass extends JFrame implements ListsPacks {
 
         System.setProperty("http.agent", "FTBPermissionsChecker");
 
-		this.setTitle("Permissions Checker v 1.2.1"); // Set the window title
+		this.setTitle("Permissions Checker v 1.2.2"); // Set the window title
 		this.setPreferredSize(new Dimension(1100, 600)); // and the initial size
 
         JPanel leftPanel = new JPanel();
