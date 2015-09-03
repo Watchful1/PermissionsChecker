@@ -26,7 +26,6 @@ public class PublicField extends JPanel {
 		toggleButton = new JToggleButton();
 
 		try {
-            System.out.println(ClassLoader.getSystemResource("images/toggleLeft.png"));
 			Image left1 = ImageIO.read(ClassLoader.getSystemResource("images/toggleLeft.png"));
 			Image right1 = ImageIO.read(ClassLoader.getSystemResource("images/toggleRight.png"));
 			toggleButton.setIcon(new ImageIcon(left1));
