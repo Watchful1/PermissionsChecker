@@ -57,7 +57,7 @@ public class FileUtils {
 			copyFile(sourceFolder, destinationFolder, overwrite);
 		}
 	}
-	
+
 	public static void copyFile(File sourceFile, File destinationFile) {
 		copyFile(sourceFile, destinationFile, true);
 	}
@@ -163,7 +163,7 @@ public class FileUtils {
 			return false;
 		}
 	}
-	
+
 	public static boolean zipFolderTo(File folder, File outputLocation) {
 		FileOutputStream fOut = null;
 		BufferedOutputStream bOut = null;
@@ -175,15 +175,6 @@ public class FileUtils {
 			fOut = new FileOutputStream(outputLocation);
 			bOut = new BufferedOutputStream(fOut);
 			tOut = new ZipArchiveOutputStream(bOut);
-
-            String[] patterns = {".*\\.DS_Store",".*ini$"};
-
-			for(File file : folder.listFiles()) {
-                for(String pattern : patterns) {
-                    if(file.getName().matches(pattern)) continue;
-                }
-				addFileToZip(tOut, file, "");
-			}
 
 			/*
 
@@ -239,6 +230,11 @@ public class FileUtils {
 	}
 
 	private static void addFileToZip(ZipArchiveOutputStream zOut, File file, String base) throws IOException {
+        String[] patterns = {".*\\.DS_Store",".*ini$"};
+        for(String pattern : patterns) {
+            if(file.getName().matches(pattern)) break;
+        }
+
 		String entryName = base + file.getName();
 		ZipArchiveEntry zipEntry = new ZipArchiveEntry(file, entryName);
 		zOut.putArchiveEntry(zipEntry);
@@ -266,7 +262,7 @@ public class FileUtils {
 	public static boolean writeFile(String string, File location) {
 		return writeFile(string, location, false);
 	}
-	
+
 	public static boolean writeFile(String string, File location, boolean forceASCII) {
 		if(!location.exists()) location.getParentFile().mkdirs();
 		try{
@@ -295,7 +291,7 @@ public class FileUtils {
 		}
 		return true;
 	}
-	
+
 	public static String readFile(File location) {
 		if(!location.exists()) return null;
 		BufferedReader br = null;
@@ -317,7 +313,7 @@ public class FileUtils {
 		}
 		return bldr.toString();
 	}
-	
+
 	public static void downloadToFile(URL url, File file) throws IOException {
         file.getParentFile().mkdirs();
         ReadableByteChannel rbc = Channels.newChannel(url.openStream());
@@ -369,12 +365,12 @@ public class FileUtils {
 
 		return response.toString();
 	}
-	
+
 	public static String getJSON(Object object) {
 		Gson gson = new Gson();
 		return gson.toJson(object);
 	}
-	
+
 	public static Object getObject(String JSON, Object object) {
 		Gson gson = new Gson();
 		Object tempObject;
@@ -386,11 +382,11 @@ public class FileUtils {
 		}
 		return tempObject;
 	}
-	
+
 	public static void saveObject(Object object, File file) {
 		writeFile(getJSON(object), file);
 	}
-	
+
 	public static Object readObject(File file, Object object) {
 		return getObject(readFile(file), object);
 	}
