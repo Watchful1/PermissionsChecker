@@ -230,7 +230,7 @@ public class FileUtils {
 	}
 
 	private static void addFileToZip(ZipArchiveOutputStream zOut, File file, String base) throws IOException {
-        String[] patterns = {".*\\.DS_Store",".*ini$"};
+        String[] patterns = {".*\\.DS_Store",".*ini$","thumbs\\.db"};
         for(String pattern : patterns) {
             if(file.getName().matches(pattern)) break;
         }
