@@ -34,8 +34,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class FileUtils {
 	public static void copyFolder(File sourceFolder, File destinationFolder) {
@@ -316,7 +315,9 @@ public class FileUtils {
 
 	public static void downloadToFile(URL url, File file) throws IOException {
         file.getParentFile().mkdirs();
-        ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+        URLConnection conn = url.openConnection();
+        conn.setRequestProperty("User-Agent", "FTBPermissionsChecker");
+        ReadableByteChannel rbc = Channels.newChannel(conn.getInputStream());
         FileOutputStream fos = new FileOutputStream(file);
         fos.getChannel().transferFrom(rbc, 0, 1 << 24);
         fos.close();
