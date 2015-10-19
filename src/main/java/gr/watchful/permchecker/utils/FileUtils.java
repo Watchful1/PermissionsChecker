@@ -175,6 +175,9 @@ public class FileUtils {
 			bOut = new BufferedOutputStream(fOut);
 			tOut = new ZipArchiveOutputStream(bOut);
 
+            for(File file : folder.listFiles()) {
+                addFileToZip(tOut, file, "");
+            }
 			/*
 
 			ZipFile zipFile = new ZipFile(outputLocation);
@@ -231,7 +234,7 @@ public class FileUtils {
 	private static void addFileToZip(ZipArchiveOutputStream zOut, File file, String base) throws IOException {
         String[] patterns = {".*\\.DS_Store",".*ini$","thumbs\\.db"};
         for(String pattern : patterns) {
-            if(file.getName().matches(pattern)) break;
+            if(file.getName().matches(pattern)) return;
         }
 
 		String entryName = base + file.getName();
