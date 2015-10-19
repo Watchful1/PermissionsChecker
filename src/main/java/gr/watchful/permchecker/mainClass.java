@@ -43,7 +43,7 @@ public class mainClass extends JFrame implements ListsPacks {
         Globals.getInstance().updateListings();
 		System.out.println("Perm listings update took: " + (System.nanoTime() - tempTime) / 1000000);
 
-		this.setTitle("Permissions Checker v 1.2.3"); // Set the window title
+		this.setTitle("Permissions Checker v 1.2.4"); // Set the window title
 		this.setPreferredSize(new Dimension(1100, 600)); // and the initial size
 
         JPanel leftPanel = new JPanel();
