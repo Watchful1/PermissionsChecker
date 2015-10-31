@@ -232,7 +232,7 @@ public class FileUtils {
 	}
 
 	private static void addFileToZip(ZipArchiveOutputStream zOut, File file, String base) throws IOException {
-        String[] patterns = {".*\\.DS_Store",".*ini$","thumbs\\.db"};
+        String[] patterns = {".*\\.DS_Store","thumbs\\.db"};
         for(String pattern : patterns) {
             if(file.getName().matches(pattern)) return;
         }
@@ -341,6 +341,7 @@ public class FileUtils {
 			System.out.println("Couldn't connect to " + url);
 			return null;
 		}
+        connection.setRequestProperty("User-Agent", "FTBPermissionsChecker");
 		BufferedReader in = null;
 		try {
 			in = new BufferedReader(
