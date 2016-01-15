@@ -40,15 +40,14 @@ public class Preferences {
 
 		if(minecraftVersions == null) {
 			minecraftVersions = new ArrayList<>();
-			minecraftVersions.add("1.7.10");
+            minecraftVersions.add("1.8.9");
+            minecraftVersions.add("1.8.8");
+            minecraftVersions.add("1.8");
+            minecraftVersions.add("1.7.10");
 			minecraftVersions.add("1.7.2");
 			minecraftVersions.add("1.6.4");
-			minecraftVersions.add("1.6.2");
-			minecraftVersions.add("1.5.2");
-			minecraftVersions.add("1.4.7");
-			minecraftVersions.add("1.2.5");
 		}
-		if(defaultMinecraftVersion == null || defaultMinecraftVersion.equals("")) defaultMinecraftVersion = "1.6.4";
+		if(defaultMinecraftVersion == null || defaultMinecraftVersion.equals("")) defaultMinecraftVersion = "1.7.10";
     	if(unknownMods == null) unknownMods = new HashMap<>();
 	}
 
