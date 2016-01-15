@@ -130,23 +130,33 @@ public class mainClass extends JFrame implements ListsPacks {
 		});
 		menu.add(newPackFromCode);
 
-		JMenuItem openFolder = new JMenuItem("Open appdata");
-		openFolder.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if(!OsTypes.getOperatingSystemType().equals(OsTypes.OSType.Windows)) {
-					System.out.println("Os is not windows, can't open explorer");
-					return;
-				}
-				try {
-					Desktop.getDesktop().open(Globals.getInstance().appStore);
-				} catch (IOException e) {
-					System.out.println("Couldn't open explorer");
-					return;
-				}
-			}
-		});
-		menu.add(openFolder);
+        JMenuItem openFolder = new JMenuItem("Open appdata");
+        openFolder.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                if(!OsTypes.getOperatingSystemType().equals(OsTypes.OSType.Windows)) {
+                    System.out.println("Os is not windows, can't open explorer");
+                    return;
+                }
+                try {
+                    Desktop.getDesktop().open(Globals.getInstance().appStore);
+                } catch (IOException e) {
+                    System.out.println("Couldn't open explorer");
+                    return;
+                }
+            }
+        });
+        menu.add(openFolder);
+
+        JMenuItem drastic = new JMenuItem("Drastic click here");
+        drastic.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+                        "More ram has been downloaded to your system.\nHave a nice day.");
+            }
+        });
+        menu.add(drastic);
 
 		this.setJMenuBar(menuBar);
 
