@@ -18,6 +18,7 @@ public class Globals {
 	public File appStore;
     public File permFile;
     public File jsonFile;
+    public File jsonCacheFile;
 	public RebuildsMods rebuildsMods;
 	public ListsPacks listsPacks;
 	public JFrame mainFrame;
@@ -106,33 +107,57 @@ public class Globals {
 
 	public boolean updateListings() {
         jsonFile = new File(appStore.getPath() + File.separator + "Permissions.json");
-        if (!jsonFile.exists()) {
+        jsonCacheFile = new File(appStore.getPath() + File.separator + "PermissionsCache.json");
+
+        ModInfo[] modInfos = loadListingsFromSite(jsonFile);
+        if (modInfos == null) modInfos = loadListingsFromCache(jsonCacheFile);
+        if (modInfos == null) return false;
+        nameRegistry.loadMappings(modInfos, "https://dl.dropboxusercontent.com/u/27836116/FTBPermissionsImages/", "png");
+
+        FileUtils.copyFile(jsonFile, jsonCacheFile, true);
+
+		return true;
+	}
+
+    private ModInfo[] loadListingsFromSite(File file) {
+        if (!file.exists()) {
             try {
-                jsonFile.createNewFile();
+                file.createNewFile();
             } catch (IOException e) {
                 System.out.println("Could not create Permissions.json");
-                return false;
+                return null;
             }
         }
 
         try {
-            FileUtils.downloadToFile(new URL(jsonUrl), jsonFile);
+            FileUtils.downloadToFile(new URL(jsonUrl), file);
         } catch (IOException e) {
             System.out.println("Could not download perm file");
-            return false;
+            return null;
         }
 
         ModInfo[] modInfos;
         try {
-            modInfos = (ModInfo[]) FileUtils.readObject(jsonFile, new ModInfo[1]);
+            modInfos = (ModInfo[]) FileUtils.readObject(file, new ModInfo[1]);
         } catch (Exception e) {
             System.out.println("Unable to parse permissions json");
-            return false;
+            return null;
         }
-        nameRegistry.loadMappings(modInfos, "https://dl.dropboxusercontent.com/u/27836116/FTBPermissionsImages/", "png");
+        return modInfos;
+    }
 
-		return true;
-	}
+    private ModInfo[] loadListingsFromCache(File file) {
+        if (!file.exists()) return null;
+
+        ModInfo[] modInfos;
+        try {
+            modInfos = (ModInfo[]) FileUtils.readObject(file, new ModInfo[1]);
+        } catch (Exception e) {
+            System.out.println("Unable to parse cached permissions json");
+            return null;
+        }
+        return modInfos;
+    }
 
 	public void addListener(UsesPack usesPack) {
 		packListeners.add(usesPack);
