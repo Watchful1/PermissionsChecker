@@ -46,6 +46,7 @@ public class ModPack {
 	public String submitURL;
     public transient File storageLocation;
     public int metaVersion;
+    public boolean java8required;
 
 	public HashMap<String, String> shortNameMappings;
 	public HashMap<String, ModInfo> modInfoMappings;

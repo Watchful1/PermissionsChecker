@@ -23,9 +23,7 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 	private ForgeEditor forgeEditor;
     private PublicField publicField;
     private LabelField curseField;
-	//private FileSelector iconSelector;
-	//private FileSelector splashSelector;
-	//private FileSelector serverSelector;
+    private CheckboxField java8Required;
 
 	private ModPack oldPack;
 
@@ -56,24 +54,26 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		versionEditor = new VersionEditor("Version", this);
 		this.add(versionEditor);
 
-        JPanel horizHolder = new JPanel();
-        horizHolder.setAlignmentX(0);
-        horizHolder.setLayout(new BoxLayout(horizHolder, BoxLayout.X_AXIS));
+        JPanel horizHolderForgeCurse = new JPanel();
+        horizHolderForgeCurse.setAlignmentX(0);
+        horizHolderForgeCurse.setLayout(new BoxLayout(horizHolderForgeCurse, BoxLayout.X_AXIS));
 		forgeEditor = new ForgeEditor("Forge", this);
-        horizHolder.add(forgeEditor);
-        horizHolder.add(Box.createRigidArea(new Dimension(30,1)));
-        publicField = new PublicField(this);
-        horizHolder.add(publicField);
-        horizHolder.add(Box.createRigidArea(new Dimension(30,1)));
+        horizHolderForgeCurse.add(forgeEditor);
+        horizHolderForgeCurse.add(Box.createRigidArea(new Dimension(120, 1)));
         curseField = new LabelField("Curse Project", this);
-        horizHolder.add(curseField);
-        this.add(horizHolder);
-		/*iconSelector = new FileSelector("Icon", 150, "png", this);
-		this.add(iconSelector);
-		splashSelector = new FileSelector("Splash", 150, "png", this);
-		this.add(splashSelector);
-		serverSelector = new FileSelector("Server", -1, "zip", this);
-		this.add(serverSelector);*/
+        horizHolderForgeCurse.add(curseField);
+        this.add(horizHolderForgeCurse);
+
+        JPanel horizHolderPublicJava = new JPanel();
+        horizHolderPublicJava.setAlignmentX(0);
+        horizHolderPublicJava.setLayout(new BoxLayout(horizHolderPublicJava, BoxLayout.X_AXIS));
+        horizHolderPublicJava.add(Box.createRigidArea(new Dimension(90, 1)));
+        publicField = new PublicField(this);
+        horizHolderPublicJava.add(publicField);
+        horizHolderPublicJava.add(Box.createRigidArea(new Dimension(60, 1)));
+        java8Required = new CheckboxField("Java 8 required", this);
+        horizHolderPublicJava.add(java8Required);
+        this.add(horizHolderPublicJava);
 	}
 	
 	public void savePack(ModPack packIn) {
@@ -148,9 +148,7 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		forgeEditor.setForgeVersion(pack.ForgeVersion);
         publicField.setPublic(pack.isPublic);
         curseField.setText(pack.curseID);
-		/*iconSelector.setFile(pack.icon);
-		splashSelector.setFile(pack.splash);
-		serverSelector.setFile(pack.server);*/
+        java8Required.setChecked(pack.java8required);
 	}
 
 	@Override
@@ -210,18 +208,8 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
             Globals.getModPack().curseID = curseField.getText();
         } else if(e.getSource().equals(publicField)) {
             Globals.getModPack().isPublic = publicField.isPublic();
-		/*} else if(e.getSource().equals(iconSelector)) {
-			if(fileChanged(iconSelector)) {
-				Globals.getModPack().icon = iconSelector.getFile();
-			}
-		} else if(e.getSource().equals(splashSelector)) {
-			if(fileChanged(splashSelector)) {
-				Globals.getModPack().splash = splashSelector.getFile();
-			}
-		} else if(e.getSource().equals(serverSelector)) {
-			if(fileChanged(serverSelector)) {
-				Globals.getModPack().server = serverSelector.getFile();
-			}*/
+        } else if(e.getSource().equals(java8Required)) {
+            Globals.getModPack().java8required = java8Required.isChecked();
 		} else {
 			changed = false;
 		}

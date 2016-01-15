@@ -481,6 +481,9 @@ public class FileUtils {
             if (modPack.curseID != null && !modPack.curseID.equals("")) {
                 modpack.setAttribute("curseProjectId", modPack.curseID);
             }
+            if (modPack.java8required) {
+                modpack.setAttribute("minJRE", "1.8");
+            }
 			modpack.setAttribute("description", modPack.description);
 			modpack.setAttribute("mods", modPack.getModList());
 
