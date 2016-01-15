@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class MinecraftVersionSelector extends JPanel {
+public class DropdownSelector extends JPanel {
 	private JLabel label;
 	private JComboBox<String> chooser;
 	private DefaultComboBoxModel<String> items;
@@ -16,11 +16,11 @@ public class MinecraftVersionSelector extends JPanel {
     private String oldVersion;
 	private boolean paused;
 
-	public MinecraftVersionSelector(String name) {
+	public DropdownSelector(String name) {
         this(name, null);
     }
 
-    public MinecraftVersionSelector(String name, ChangeListener changeListener) {
+    public DropdownSelector(String name, ChangeListener changeListener) {
         this.changeListener = changeListener;
         oldVersion = "";
 		paused = false;
@@ -41,8 +41,8 @@ public class MinecraftVersionSelector extends JPanel {
         chooser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(oldVersion.equals(getVersion())) return;
-                oldVersion = getVersion();
+                if(oldVersion.equals(getSelection())) return;
+                oldVersion = getSelection();
 
                 notifyChanged();
             }
@@ -50,26 +50,26 @@ public class MinecraftVersionSelector extends JPanel {
 		this.add(chooser);
 	}
 
-	public void setVersion(String version) {
-		int index = items.getIndexOf(version);
+	public void setSelection(String selection) {
+		int index = items.getIndexOf(selection);
 		if(index == -1) {
-			System.out.println("Couldn't find minecraft version "+version);
+			System.out.println("Couldn't find selection "+selection);
 			return;
 		}
-        oldVersion = version;
+        oldVersion = selection;
 		chooser.setSelectedIndex(index);
 	}
 
-	public void setVersions(ArrayList<String> versions) {
+	public void setSelections(ArrayList<String> selections) {
 		paused = true;
 		items.removeAllElements();
-		for(String version : versions) {
-			items.addElement(version);
+		for(String selection : selections) {
+			items.addElement(selection);
 		}
 		paused = false;
 	}
 
-	public String getVersion() {
+	public String getSelection() {
 		return (String) chooser.getSelectedItem();
 	}
 

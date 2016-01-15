@@ -47,6 +47,7 @@ public class ModPack {
     public transient File storageLocation;
     public int metaVersion;
     public boolean java8required;
+    public String listedPackType;
 
 	public HashMap<String, String> shortNameMappings;
 	public HashMap<String, ModInfo> modInfoMappings;
@@ -74,7 +75,8 @@ public class ModPack {
         if(unknownModIDs == null) unknownModIDs = new ArrayList<>();
 		if(forgeType == null) forgeType = ForgeType.RECOMMENDED;
 		if(shortNameMappings == null) shortNameMappings = new HashMap<>();
-		if(modInfoMappings == null) modInfoMappings = new HashMap<>();
+        if(modInfoMappings == null) modInfoMappings = new HashMap<>();
+        if(listedPackType == null) listedPackType = "";
 		ArrayList<String> badNames = new ArrayList<>();
 
 		for(ModInfo modInfo : modInfoMappings.values()) {

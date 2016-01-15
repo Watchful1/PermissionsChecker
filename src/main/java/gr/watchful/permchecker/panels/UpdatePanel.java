@@ -248,6 +248,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 	 */
 	public void exportPack() {
 		Globals.saveCurrentPack();
+        ModPack pack = Globals.getModPack();
 		permPanel.parsePack();
 		if(!permPanel.promptPermissionsGood()) {
 			System.out.println("Export canceled");
@@ -256,23 +257,23 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		permPanel.writeFile();
 
 		boolean success = true;
-		if(Globals.getModPack().forgeType.equals(ForgeType.VERSION)) {
+		if(pack.forgeType.equals(ForgeType.VERSION)) {
 			success = FileUtils.addForge(Globals.getInstance().preferences.getWorkingMinecraftFolder(),
-					Globals.getModPack().ForgeVersion);
+                    pack.ForgeVersion);
 		} else {
 			success = FileUtils.addForge(Globals.getInstance().preferences.getWorkingMinecraftFolder(),
-					Globals.getModPack().forgeType, Globals.getModPack().minecraftVersion);
+                    pack.forgeType, pack.minecraftVersion);
 		}
 		if(!success) {
 			System.out.println("pack.json add failed");
 			return;
 		}
-		if((Globals.getModPack().server != null && Globals.getModPack().server.exists()) &&
-				(Globals.getModPack().serverName == null || Globals.getModPack().serverName.equals(""))) {
-			Globals.getModPack().serverName = Globals.getModPack().shortName + "Server.zip";
+		if((pack.server != null && pack.server.exists()) &&
+				(pack.serverName == null || pack.serverName.equals(""))) {
+            pack.serverName = pack.shortName + "Server.zip";
 		}
 		ArrayList<ModPack> temp = new ArrayList<>();
-		temp.add(Globals.getModPack());
+		temp.add(pack);
 		if(!FileUtils.writeXML(temp, new File(
                 Globals.getInstance().preferences.exportFolder + File.separator + "static" +
                         File.separator + Globals.getModPack().key + ".xml"))) {
@@ -280,52 +281,52 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 			return;
 		}
 		File packExportFolder = new File(Globals.getInstance().preferences.exportFolder + File.separator +
-				"privatepacks" + File.separator + Globals.getModPack().shortName + File.separator +
+				"privatepacks" + File.separator + pack.shortName + File.separator +
 				versionSelector.getSelectedItem().toString().replaceAll("\\.","_"));
 		if(!FileUtils.zipFolderTo(Globals.getInstance().preferences.workingFolder,
-				new File(packExportFolder + File.separator + Globals.getModPack().getZipName()))) {
+				new File(packExportFolder + File.separator + pack.getZipName()))) {
 
 		}
 
-		if(Globals.getModPack().icon != null && Globals.getModPack().icon.exists()) {
-			FileUtils.moveFile(Globals.getModPack().icon, new File(Globals.getInstance().preferences.exportFolder
+		if(pack.icon != null && pack.icon.exists()) {
+			FileUtils.moveFile(pack.icon, new File(Globals.getInstance().preferences.exportFolder
 					+ File.separator + "static" + File.separator +
-					Globals.getModPack().getIconName()));
-			Globals.getModPack().icon = null;
+                    pack.getIconName()));
+            pack.icon = null;
 			iconSelector.clearSelection();//kinda hacky
 		}
-        if(Globals.getModPack().splash != null && Globals.getModPack().splash.exists()) {
-            FileUtils.moveFile(Globals.getModPack().splash, new File(Globals.getInstance().preferences.exportFolder
+        if(pack.splash != null && pack.splash.exists()) {
+            FileUtils.moveFile(pack.splash, new File(Globals.getInstance().preferences.exportFolder
                     + File.separator + "static" + File.separator +
-                    Globals.getModPack().getSplashName()));
-            Globals.getModPack().splash = null;
+                    pack.getSplashName()));
+            pack.splash = null;
             splashSelector.clearSelection();//kinda hacky
         }
-        if(Globals.getModPack().square != null && Globals.getModPack().square.exists()) {
-            FileUtils.moveFile(Globals.getModPack().square, new File(Globals.getInstance().preferences.exportFolder
+        if(pack.square != null && pack.square.exists()) {
+            FileUtils.moveFile(pack.square, new File(Globals.getInstance().preferences.exportFolder
                     + File.separator + "static" + File.separator +
-                    Globals.getModPack().getSquareName()));
-            Globals.getModPack().square = null;
+                    pack.getSquareName()));
+            pack.square = null;
             squareSelector.clearSelection();//kinda hacky
         }
-		if(Globals.getModPack().server != null && Globals.getModPack().server.exists()) {
-			FileUtils.moveFile(Globals.getModPack().server, new File(packExportFolder + File.separator +
-					Globals.getModPack().serverName));
-			Globals.getModPack().server = null;
+		if(pack.server != null && pack.server.exists()) {
+			FileUtils.moveFile(pack.server, new File(packExportFolder + File.separator +
+                    pack.serverName));
+            pack.server = null;
 			serverSelector.clearSelection();//kinda hacky
 		}
 
-        boolean curseIsBlank = Globals.getModPack().curseID == null || Globals.getModPack().curseID.equals("");
+        boolean curseIsBlank = pack.curseID == null || pack.curseID.equals("");
         ArrayList<String> curseKeys = loadCurseKeys();
 
         if(curseKeys == null && !curseIsBlank) {
             JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
                     "Unable to load curse keys file. Not exporting key");
-        } else if(!curseIsBlank) {
+        } else if(!curseIsBlank && (pack.listedPackType == null || pack.listedPackType.equals(""))) {
             boolean exists = false;
             int index = 0;
             for(String key : curseKeys) {
-                if(key.equals(Globals.getModPack().key)) {
+                if(key.equals(pack.key)) {
                     exists = true;
                     break;
                 }
@@ -334,7 +335,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 
             boolean save = false;
             if(!exists) {
-                curseKeys.add(Globals.getModPack().key);
+                curseKeys.add(pack.key);
                 save = true;
             } else if(curseIsBlank) {
                 curseKeys.remove(index);

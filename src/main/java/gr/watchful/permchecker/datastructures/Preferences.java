@@ -20,6 +20,7 @@ public class Preferences {
 	public String defaultMinecraftVersion;
 	public String parsedPackShortName;
 	public boolean copyImportAssets;
+    public ArrayList<String> listedPackTypes;
 
     public Preferences(File appStore) {
 		init(appStore);
@@ -46,6 +47,12 @@ public class Preferences {
 			minecraftVersions.add("1.6.4");
 		}
 		if(defaultMinecraftVersion == null || defaultMinecraftVersion.equals("")) defaultMinecraftVersion = "1.7.10";
+        if(listedPackTypes == null) {
+            listedPackTypes = new ArrayList<>();
+            listedPackTypes.add("");
+            listedPackTypes.add("thirdparty");
+            listedPackTypes.add("modpacks");
+        }
 	}
 
 	public File getWorkingMinecraftFolder() {
