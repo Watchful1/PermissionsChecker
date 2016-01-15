@@ -21,8 +21,6 @@ public class Preferences {
 	public String parsedPackShortName;
 	public boolean copyImportAssets;
 
-	public HashMap<String, String> unknownMods;
-
     public Preferences(File appStore) {
 		init(appStore);
     }
@@ -48,7 +46,6 @@ public class Preferences {
 			minecraftVersions.add("1.6.4");
 		}
 		if(defaultMinecraftVersion == null || defaultMinecraftVersion.equals("")) defaultMinecraftVersion = "1.7.10";
-    	if(unknownMods == null) unknownMods = new HashMap<>();
 	}
 
 	public File getWorkingMinecraftFolder() {

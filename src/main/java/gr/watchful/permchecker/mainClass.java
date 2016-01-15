@@ -148,25 +148,6 @@ public class mainClass extends JFrame implements ListsPacks {
 		});
 		menu.add(openFolder);
 
-		JMenuItem exportUnknowns = new JMenuItem("Export and clear unknown mods");
-		exportUnknowns.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				StringBuilder bldr = new StringBuilder();
-				for (Map.Entry<String, String> entry : Globals.getInstance().preferences.unknownMods.entrySet()) {
-					bldr.append(entry.getKey());
-					bldr.append(" : ");
-					bldr.append(entry.getValue());
-					bldr.append("\n");
-				}
-				FileUtils.writeFile(bldr.toString(), new File(Globals.getInstance().appStore +
-					File.separator+"UnknownMods.txt"));
-				Globals.getInstance().preferences.unknownMods = new HashMap<>();
-				Globals.getInstance().savePreferences();
-			}
-		});
-		menu.add(exportUnknowns);
-
 		this.setJMenuBar(menuBar);
 
 

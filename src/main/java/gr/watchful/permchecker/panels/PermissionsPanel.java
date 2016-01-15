@@ -182,17 +182,14 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		for(ModFile modFile : modStorage.modFiles) {
 			if(modFile.IDs.getSize() > 0) {
 				for (String ID : modFile.IDs.getArrayList()) {
-					Globals.getInstance().preferences.unknownMods.put(ID, modFile.fileName());
                     pack.unknownModIDs.add(ID);
 				}
 			} else if(modFile.md5 != null && !modFile.md5.equals("")) {
-				Globals.getInstance().preferences.unknownMods.put(modFile.md5, modFile.fileName());
                 pack.unknownModIDs.add(modFile.md5);
 			} else {
 				String md5 = FileUtils.getMD5(modFile.file);
 				if(md5 != null) {
                     modFile.md5 = md5;
-					Globals.getInstance().preferences.unknownMods.put(md5, modFile.fileName());
                     pack.unknownModIDs.add(md5);
 				} else {
                     System.out.println("Couldn't get MD5 for: "+modFile.fileName());
