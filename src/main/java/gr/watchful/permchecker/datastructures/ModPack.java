@@ -194,7 +194,7 @@ public class ModPack {
     }
 
     public String getSquareName() {
-        if(squareName == null || squareName.equals("")) squareName = shortName+"Square"+".png";
+        if(squareName == null || squareName.equals("")) squareName = shortName+"Panel"+".png";
         return squareName;
     }
 
