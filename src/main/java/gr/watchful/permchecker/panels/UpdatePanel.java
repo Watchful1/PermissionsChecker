@@ -69,7 +69,6 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		for(ModPackVersion version : pack.metaVersions) {
 			versionSelector.addItem(version.version);
 		}
-		versionSelector.setSelectedItem(pack.recommendedVersion);
 	}
 
 	public boolean fileChanged(FileSelector fileSelector) {
