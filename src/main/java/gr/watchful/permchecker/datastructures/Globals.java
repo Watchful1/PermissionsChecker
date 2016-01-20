@@ -36,6 +36,8 @@ public class Globals {
     public static final int metaVersion = 1;
     public static final String curseFileName = "curseKeys.json";
     public static final String curseProjectRoot = "http://minecraft.curseforge.com/modpacks/";
+    public static final String version = "1.2.6";
+    public static final String latestReleaseUrl = "https://api.github.com/repos/Watchful1/PermissionsChecker/releases/latest";
 
 
 	public Globals() {

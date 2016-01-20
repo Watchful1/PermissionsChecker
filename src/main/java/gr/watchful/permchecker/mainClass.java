@@ -9,6 +9,7 @@ import gr.watchful.permchecker.panels.PermissionsPanel;
 import gr.watchful.permchecker.panels.UpdatePanel;
 import gr.watchful.permchecker.utils.FileUtils;
 import gr.watchful.permchecker.utils.OsTypes;
+import gr.watchful.permchecker.utils.Updater;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,7 +44,7 @@ public class mainClass extends JFrame implements ListsPacks {
         Globals.getInstance().updateListings();
 		System.out.println("Perm listings update took: " + (System.nanoTime() - tempTime) / 1000000);
 
-		this.setTitle("Permissions Checker v 1.2.6"); // Set the window title
+		this.setTitle("Permissions Checker v "+Globals.version); // Set the window title
 		this.setPreferredSize(new Dimension(1100, 600)); // and the initial size
 
         JPanel leftPanel = new JPanel();
@@ -261,6 +262,22 @@ public class mainClass extends JFrame implements ListsPacks {
 	}
 
 	public static void main(String[] args) {
+        if (args.length >= 3) {
+            if (args[0].equals("-u")) {
+                Updater.finishUpdate(args[1], args[2]);
+                return;
+            } else if (args[0].equals("-c")) {
+                Updater.cleanup(args[1], args[2]);
+            } else {
+                System.out.println("Unrecognized argument");
+                return;
+            }
+        }
+
+        String newVersion = Updater.checkUpdate(Globals.version);
+        System.out.println(newVersion);
+        if(newVersion != null) Updater.startUpdate(newVersion);
+
         mainClass main = new mainClass();
 		main.addComponentListener(new ComponentAdapter() {
 			@Override
