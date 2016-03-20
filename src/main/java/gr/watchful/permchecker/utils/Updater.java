@@ -78,11 +78,25 @@ public class Updater {
     public static void finishUpdate(String targetFileString, String sourceFileString) {
         StringBuilder bldr = new StringBuilder();
         File logFile = new File("FinishUpdate.txt");
+
+        try {
+            new File("PING1").createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         try {
             logFile.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try {
+            new File("PING2").createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         File targetFile = new File(targetFileString);
         bldr.append("Target Jar: "+targetFile.getAbsolutePath()+"\n");
         if (!targetFile.exists()) {
@@ -91,6 +105,13 @@ public class Updater {
             FileUtils.writeFile(bldr.toString(), logFile);
             return;
         }
+
+        try {
+            new File("PING3").createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         File sourceFile = new File(sourceFileString);
         bldr.append("Source Jar: "+sourceFile.getAbsolutePath()+"\n");
@@ -101,19 +122,47 @@ public class Updater {
             return;
         }
 
+        try {
+            new File("PING4").createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         targetFile.delete();
         bldr.append("Deleted target" + "\n");
         sourceFile.renameTo(targetFile);
         bldr.append("Copied source" + "\n");
 
+
+        try {
+            new File("PING5").createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         File updaterFile = getCurrentJar();
         bldr.append("Updater Jar: "+updaterFile.getAbsolutePath()+"\n");
+
+
+        try {
+            new File("PING6").createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         String[] run = {"java","-jar",targetFile.getName(),"-c",sourceFile.getAbsolutePath(),updaterFile.getAbsolutePath()};
         for (String cmd : run) {
             bldr.append(cmd+" ");
         }
         bldr.append("\n");
+
+        try {
+            new File("PING7").createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         FileUtils.writeFile(bldr.toString(), logFile);
         try {
             Runtime.getRuntime().exec(run);
