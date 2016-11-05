@@ -68,6 +68,7 @@ public class FileUtils {
 					System.out.println("Destination file exists\n"+sourceFile.getAbsolutePath());
 					return;
 				}
+				destinationFile.getParentFile().mkdirs();
 				if(!destinationFile.exists()) {
 					destinationFile.createNewFile();
 				}
