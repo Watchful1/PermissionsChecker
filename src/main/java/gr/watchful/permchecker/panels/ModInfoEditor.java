@@ -23,7 +23,7 @@ public class ModInfoEditor extends JPanel {
 	
 	private ArrayList<SavesMods> saveListeners;
 
-    private ModFile attachedModFile;
+	private ModFile attachedModFile;
 	
 	public ModInfoEditor(Dimension size) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -36,32 +36,32 @@ public class ModInfoEditor extends JPanel {
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		buttonPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
 
-        JButton savePublic = new JButton("Save Public");
-        savePublic.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                save(true);
-            }
-        });
+		JButton savePublic = new JButton("Save Public");
+		savePublic.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				save(true);
+			}
+		});
 		buttonPanel.add(savePublic);
 
-        JButton savePrivate = new JButton("Save Private");
-        savePrivate.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                save(false);
-            }
-        });
+		JButton savePrivate = new JButton("Save Private");
+		savePrivate.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				save(false);
+			}
+		});
 		buttonPanel.add(savePrivate);
 
-        JButton modIdsButton = new JButton("Get ModIDs");
-        modIdsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                showModIDsPopup();
-            }
-        });
-        buttonPanel.add(modIdsButton);
+		JButton modIdsButton = new JButton("Get ModIDs");
+		modIdsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				showModIDsPopup();
+			}
+		});
+		buttonPanel.add(modIdsButton);
 
 		this.add(buttonPanel);
 		
@@ -90,9 +90,9 @@ public class ModInfoEditor extends JPanel {
 		saveListeners = new ArrayList<>();
 	}
 
-    public void setMod(ModInfo mod, String shortName) {
-        setMod(mod, shortName, null);
-    }
+	public void setMod(ModInfo mod, String shortName) {
+		setMod(mod, shortName, null);
+	}
 	
 	public void setMod(ModInfo mod, String shortName, ModFile modFile) {
 		if(mod == null) {
@@ -100,7 +100,7 @@ public class ModInfoEditor extends JPanel {
 		} else {
 			modInfo = mod;
 		}
-        attachedModFile = modFile;
+		attachedModFile = modFile;
 		name.setText(modInfo.modName);
 		author.setText(modInfo.modAuthor);
 		link.setText(modInfo.modLink);
@@ -114,31 +114,31 @@ public class ModInfoEditor extends JPanel {
 	
 	public void save(boolean isPublic) {
 		// Custom added mods are handled differently from mods already in the spreadsheet
-        StringBuilder bldr = new StringBuilder();
+		StringBuilder bldr = new StringBuilder();
 		if(name.getText().equals("") || name.getText().equals("Unknown")) {
-            bldr.append("Can't save a mod without a name\n");
+			bldr.append("Can't save a mod without a name\n");
 		}
 		if(author.getText().equals("") || author.getText().equals("Unknown")) {
-            bldr.append("Can't save a mod without an author\n");
+			bldr.append("Can't save a mod without an author\n");
 		}
 		if(link.getText().equals("") || link.getText().equals("None")) {
-            bldr.append("Can't save a mod without a link\n");
+			bldr.append("Can't save a mod without a link\n");
 		}
-        if(!bldr.toString().equals("")) {
-            JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
-                    bldr.toString());
-            return;
-        }
+		if(!bldr.toString().equals("")) {
+			JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+					bldr.toString());
+			return;
+		}
 
-        String result;
-        if(shortName.getText().equals("")) {
-            result = ModPack.generateShortName(name.getText()).toLowerCase();
-            shortName.setText(result);
-        } else {
-            result = shortName.getText();
-        }
+		String result;
+		if(shortName.getText().equals("")) {
+			result = ModPack.generateShortName(name.getText()).toLowerCase();
+			shortName.setText(result);
+		} else {
+			result = shortName.getText();
+		}
 
-        ModInfo tempInfo = new ModInfo(result);
+		ModInfo tempInfo = new ModInfo(result);
 
 		tempInfo.officialSpreadsheet = false;
 
@@ -184,19 +184,19 @@ public class ModInfoEditor extends JPanel {
 		}
 	}
 
-    public void showModIDsPopup() {
-        StringBuilder bldr = new StringBuilder();
+	public void showModIDsPopup() {
+		StringBuilder bldr = new StringBuilder();
 
-        if(attachedModFile.IDs.isEmpty()) {
-            bldr.append(attachedModFile.md5);
-        } else {
-            for(int i=0; i < attachedModFile.IDs.getSize(); i++) {
-                if(i != 0) bldr.append(", ");
-                bldr.append(attachedModFile.IDs.get(i));
-            }
-        }
-        JOptionPane.showInputDialog(
-                Globals.getInstance().mainFrame, "Current Mod IDs",
-                "Mod IDs", JOptionPane.PLAIN_MESSAGE, null, null, bldr);
-    }
+		if(attachedModFile.IDs.isEmpty()) {
+			bldr.append(attachedModFile.md5);
+		} else {
+			for(int i=0; i < attachedModFile.IDs.getSize(); i++) {
+				if(i != 0) bldr.append(", ");
+				bldr.append(attachedModFile.IDs.get(i));
+			}
+		}
+		JOptionPane.showInputDialog(
+				Globals.getInstance().mainFrame, "Current Mod IDs",
+				"Mod IDs", JOptionPane.PLAIN_MESSAGE, null, null, bldr);
+	}
 }

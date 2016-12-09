@@ -7,7 +7,7 @@
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
  * Contributors:
- *     cpw - implementation
+ *	 cpw - implementation
  */
 
 package gr.watchful.permchecker.modhandling;
@@ -29,76 +29,76 @@ import java.util.Map;
 
 public class MetadataCollection
 {
-    @SuppressWarnings("unused")
-    private String modListVersion;
-    private ModMetadata[] modList;
-    private Map<String, ModMetadata> metadatas = Maps.newHashMap();
+	@SuppressWarnings("unused")
+	private String modListVersion;
+	private ModMetadata[] modList;
+	private Map<String, ModMetadata> metadatas = Maps.newHashMap();
 
-    public static MetadataCollection from(InputStream inputStream, String sourceName)
-    {
-        if (inputStream == null) return null;
+	public static MetadataCollection from(InputStream inputStream, String sourceName)
+	{
+		if (inputStream == null) return null;
 
-        InputStreamReader reader = new InputStreamReader(inputStream);
-        try
-        {
-            MetadataCollection collection;
-            Gson gson = new GsonBuilder().registerTypeAdapter(ArtifactVersion.class, new ArtifactVersionAdapter()).create();
-            JsonParser parser = new JsonParser();
-            JsonElement rootElement = parser.parse(reader);
-            if (rootElement.isJsonArray())
-            {
-                collection = new MetadataCollection();
-                JsonArray jsonList = rootElement.getAsJsonArray();
-                collection.modList = new ModMetadata[jsonList.size()];
-                int i = 0;
-                for (JsonElement mod : jsonList)
-                {
-                    collection.modList[i++]=gson.fromJson(mod, ModMetadata.class);
-                }
-            }
-            else
-            {
-                collection = gson.fromJson(rootElement, MetadataCollection.class);
-            }
-            collection.parseModMetadataList();
-            return collection;
-        }
-        catch (Exception e) {
+		InputStreamReader reader = new InputStreamReader(inputStream);
+		try
+		{
+			MetadataCollection collection;
+			Gson gson = new GsonBuilder().registerTypeAdapter(ArtifactVersion.class, new ArtifactVersionAdapter()).create();
+			JsonParser parser = new JsonParser();
+			JsonElement rootElement = parser.parse(reader);
+			if (rootElement.isJsonArray())
+			{
+				collection = new MetadataCollection();
+				JsonArray jsonList = rootElement.getAsJsonArray();
+				collection.modList = new ModMetadata[jsonList.size()];
+				int i = 0;
+				for (JsonElement mod : jsonList)
+				{
+					collection.modList[i++]=gson.fromJson(mod, ModMetadata.class);
+				}
+			}
+			else
+			{
+				collection = gson.fromJson(rootElement, MetadataCollection.class);
+			}
+			collection.parseModMetadataList();
+			return collection;
+		}
+		catch (Exception e) {
 			return null;
 		}
-    }
+	}
 
 
-    private void parseModMetadataList()
-    {
-        for (ModMetadata modMetadata : modList)
-        {
-            metadatas.put(modMetadata.modId, modMetadata);
-        }
-    }
+	private void parseModMetadataList()
+	{
+		for (ModMetadata modMetadata : modList)
+		{
+			metadatas.put(modMetadata.modId, modMetadata);
+		}
+	}
 
-    public static class ArtifactVersionAdapter extends TypeAdapter<ArtifactVersion>
-    {
+	public static class ArtifactVersionAdapter extends TypeAdapter<ArtifactVersion>
+	{
 
-        @Override
-        public void write(JsonWriter out, ArtifactVersion value) throws IOException
-        {
-            // no op - we never write these out
-        }
+		@Override
+		public void write(JsonWriter out, ArtifactVersion value) throws IOException
+		{
+			// no op - we never write these out
+		}
 
-        @Override
-        public ArtifactVersion read(JsonReader in) throws IOException
-        {
-            return null;//return VersionParser.parseVersionReference(in.nextString());
-        }
+		@Override
+		public ArtifactVersion read(JsonReader in) throws IOException
+		{
+			return null;//return VersionParser.parseVersionReference(in.nextString());
+		}
 
-    }
-    
-    public String toString() {
-    	StringBuilder bldr = new StringBuilder();
-    	for(ModMetadata modMeta : metadatas.values()) {
-    		bldr.append(modMeta.toString()); bldr.append("\n");
-    	}
-    	return bldr.toString();
-    }
+	}
+
+	public String toString() {
+		StringBuilder bldr = new StringBuilder();
+		for(ModMetadata modMeta : metadatas.values()) {
+			bldr.append(modMeta.toString()); bldr.append("\n");
+		}
+		return bldr.toString();
+	}
 }

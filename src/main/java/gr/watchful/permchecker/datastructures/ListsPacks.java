@@ -5,7 +5,7 @@ public interface ListsPacks {
 
 	boolean shortnameExists(String shortname);
 
-    boolean curseIDUsed(String curseID, String currentPack);
+	boolean curseIDUsed(String curseID, String currentPack);
 
 	void nameChanged();
 }

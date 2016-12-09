@@ -20,39 +20,39 @@ public class Preferences {
 	public String defaultMinecraftVersion;
 	public String parsedPackShortName;
 	public boolean copyImportAssets;
-    public ArrayList<String> listedPackTypes;
+	public ArrayList<String> listedPackTypes;
 
-    public Preferences(File appStore) {
+	public Preferences(File appStore) {
 		init(appStore);
-    }
+	}
 
-    public void init(File appStore) {
+	public void init(File appStore) {
 		if(saveFolderPath == null || saveFolderPath.equals("")) saveFolderPath = appStore+File.separator+"packs";
 		if(workingFolderPath == null || workingFolderPath.equals("")) workingFolderPath = appStore+File.separator+"working";
 		if(exportFolderPath == null || exportFolderPath.equals("")) exportFolderPath = appStore+File.separator+"export";
 		if(defaultOpenFolderPath == null || defaultOpenFolderPath.equals("")) defaultOpenFolderPath = System.getProperty("user.home");
 
-        saveFolder = new File(saveFolderPath);
-        workingFolder = new File(workingFolderPath);
+		saveFolder = new File(saveFolderPath);
+		workingFolder = new File(workingFolderPath);
 		exportFolder = new File(exportFolderPath);
 		defaultOpenFolder = new File(defaultOpenFolderPath);
 
 		if(minecraftVersions == null) {
 			minecraftVersions = new ArrayList<>();
-            minecraftVersions.add("1.8.9");
-            minecraftVersions.add("1.8.8");
-            minecraftVersions.add("1.8");
-            minecraftVersions.add("1.7.10");
+			minecraftVersions.add("1.8.9");
+			minecraftVersions.add("1.8.8");
+			minecraftVersions.add("1.8");
+			minecraftVersions.add("1.7.10");
 			minecraftVersions.add("1.7.2");
 			minecraftVersions.add("1.6.4");
 		}
 		if(defaultMinecraftVersion == null || defaultMinecraftVersion.equals("")) defaultMinecraftVersion = "1.7.10";
-        if(listedPackTypes == null) {
-            listedPackTypes = new ArrayList<>();
-            listedPackTypes.add("");
-            listedPackTypes.add("thirdparty");
-            listedPackTypes.add("modpacks");
-        }
+		if(listedPackTypes == null) {
+			listedPackTypes = new ArrayList<>();
+			listedPackTypes.add("");
+			listedPackTypes.add("thirdparty");
+			listedPackTypes.add("modpacks");
+		}
 	}
 
 	public File getWorkingMinecraftFolder() {

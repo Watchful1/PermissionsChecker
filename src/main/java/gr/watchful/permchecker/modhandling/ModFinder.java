@@ -49,7 +49,7 @@ public class ModFinder {
 					if (temp != null) {
 						/*System.out.println(temp.fileName()+" has "+temp.IDs.getSize()+" ids");
 						for(int j=0; j<temp.IDs.getSize(); j++) {
-							System.out.println("    "+temp.IDs.get(j));
+							System.out.println("	"+temp.IDs.get(j));
 						}*/
 						modFiles.add(temp);
 					}
@@ -131,12 +131,12 @@ public class ModFinder {
 			file.close();
 			if(hasClassFiles) {
 				/*for(int i=0; i< otherMod.IDs.getSize(); i++) {
-					System.out.println("    "+otherMod.IDs.get(i));
+					System.out.println("	"+otherMod.IDs.get(i));
 				}*/
 				return otherMod;
 			}
 			else {
-				//System.out.println("    Nothing found");
+				//System.out.println("	Nothing found");
 				return null;
 			}
 		} else if(ext.equals("class")) {
@@ -183,7 +183,7 @@ public class ModFinder {
 				//System.out.println("Visiting "+name);
 				return new ModMethodVisitor();
 			}
-			//System.out.println("    "+name);
+			//System.out.println("	"+name);
 			return null;
 		}
 	}

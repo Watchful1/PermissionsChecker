@@ -14,7 +14,7 @@ import java.util.List;
  *
  *  a) All MouseEvents will now be intercepted by the glass pane.
  *  b) The panel is removed from the normal focus traveral policy to prevent
- *     any component on the panel from receiving focus.
+ *	 any component on the panel from receiving focus.
  *  c) Key Bindings for any component on the panel will be intercepted.
  *
  *  Therefore, the panel and components will behave as though they are disabled
@@ -29,8 +29,8 @@ import java.util.List;
  *
  *  a) disable( Container ) - to disable all Components on the Container
  *  b) enable ( Container ) - to enable all Components disabled by the
- *     disable() method. That is any component that was disabled prior to using
- *     the disable() method method will remain disabled.
+ *	 disable() method. That is any component that was disabled prior to using
+ *	 the disable() method method will remain disabled.
  *
  *  Code taken from: http://tips4java.wordpress.com/2009/08/02/disabled-panel/
  */

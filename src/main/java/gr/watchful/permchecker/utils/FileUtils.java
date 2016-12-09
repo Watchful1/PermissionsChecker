@@ -176,9 +176,9 @@ public class FileUtils {
 			bOut = new BufferedOutputStream(fOut);
 			tOut = new ZipArchiveOutputStream(bOut);
 
-            for(File file : folder.listFiles()) {
-                addFileToZip(tOut, file, "");
-            }
+			for(File file : folder.listFiles()) {
+				addFileToZip(tOut, file, "");
+			}
 			/*
 
 			ZipFile zipFile = new ZipFile(outputLocation);
@@ -233,10 +233,10 @@ public class FileUtils {
 	}
 
 	private static void addFileToZip(ZipArchiveOutputStream zOut, File file, String base) throws IOException {
-        String[] patterns = {".*\\.DS_Store","thumbs\\.db"};
-        for(String pattern : patterns) {
-            if(file.getName().matches(pattern)) return;
-        }
+		String[] patterns = {".*\\.DS_Store","thumbs\\.db"};
+		for(String pattern : patterns) {
+			if(file.getName().matches(pattern)) return;
+		}
 
 		String entryName = base + file.getName();
 		ZipArchiveEntry zipEntry = new ZipArchiveEntry(file, entryName);
@@ -318,14 +318,14 @@ public class FileUtils {
 	}
 
 	public static void downloadToFile(URL url, File file) throws IOException {
-        file.getParentFile().mkdirs();
-        URLConnection conn = url.openConnection();
-        conn.setRequestProperty("User-Agent", "FTBPermissionsChecker");
-        ReadableByteChannel rbc = Channels.newChannel(conn.getInputStream());
-        FileOutputStream fos = new FileOutputStream(file);
-        fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-        fos.close();
-    }
+		file.getParentFile().mkdirs();
+		URLConnection conn = url.openConnection();
+		conn.setRequestProperty("User-Agent", "FTBPermissionsChecker");
+		ReadableByteChannel rbc = Channels.newChannel(conn.getInputStream());
+		FileOutputStream fos = new FileOutputStream(file);
+		fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+		fos.close();
+	}
 
 	public static String downloadToString(String url)  {
 		URL website = null;
@@ -342,7 +342,7 @@ public class FileUtils {
 			System.out.println("Couldn't connect to " + url);
 			return null;
 		}
-        connection.setRequestProperty("User-Agent", "FTBPermissionsChecker");
+		connection.setRequestProperty("User-Agent", "FTBPermissionsChecker");
 		BufferedReader in = null;
 		try {
 			in = new BufferedReader(
@@ -412,49 +412,49 @@ public class FileUtils {
 			if (forgeType.equals(ForgeType.RECOMMENDED)) forgeUrl = forgeUrl.concat("recommended");
 			else forgeUrl = forgeUrl.concat("latest");
 		} else forgeUrl = forgeUrl.concat(Integer.toString(forgeVersion));
-        File jsonFile = new File(minecraftFolder+File.separator+"pack.json");
+		File jsonFile = new File(minecraftFolder+File.separator+"pack.json");
 		try {
 			System.out.println("URL: "+forgeUrl);
 			downloadToFile(new URL(forgeUrl), jsonFile);
 		} catch (IOException e) {
-            e.printStackTrace();
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
 					"Pack.json add failed.\nThis could mean the api is broken or down.\nAlternatively, the forge version doesn't exist.");
 			return false;
 		}
-        if(!isValidJson(readFile(jsonFile))) {
-            JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
-                    "Pack.json was added, but is not valid json");
-            return false;
-        }
+		if(!isValidJson(readFile(jsonFile))) {
+			JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+					"Pack.json was added, but is not valid json");
+			return false;
+		}
 		return true;
 	}
 
-    public static boolean isValidJson(String json) {
-        try {
-            new JsonParser().parse(json);
-        } catch (JsonParseException e) {
-            return false;
-        }
-        return true;
-    }
+	public static boolean isValidJson(String json) {
+		try {
+			new JsonParser().parse(json);
+		} catch (JsonParseException e) {
+			return false;
+		}
+		return true;
+	}
 
 	public static Boolean writeXML(ArrayList<ModPack> modPacks, File output) {
-        if(output.exists()) output.delete();
-        output.getParentFile().mkdirs();
-        try {
-            output.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+		if(output.exists()) output.delete();
+		output.getParentFile().mkdirs();
+		try {
+			output.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
 
-        Document doc = null;
+		Document doc = null;
 		try {
 			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
-            return false;
+			return false;
 		}
 		Element rootElement = doc.createElement("modpacks");
 		doc.appendChild(rootElement);
@@ -468,7 +468,7 @@ public class FileUtils {
 			modpack.setAttribute("repoVersion", modPack.recommendedVersion.replace(".", "_"));
 			modpack.setAttribute("logo", modPack.getIconName());
 			modpack.setAttribute("url", modPack.getZipName());
-            modpack.setAttribute("image", modPack.getSplashName());
+			modpack.setAttribute("image", modPack.getSplashName());
 			modpack.setAttribute("dir", modPack.shortName);
 			modpack.setAttribute("mcVersion", modPack.minecraftVersion);
 			if (modPack.serverName != null && !modPack.serverName.equals("")) {
@@ -476,15 +476,15 @@ public class FileUtils {
 			} else {
 				modpack.setAttribute("serverPack", "");
 			}
-            if (modPack.square != null && !modPack.squareName.equals("")) {
-                modpack.setAttribute("squareImage", modPack.squareName);
-            }
-            if (modPack.curseID != null && !modPack.curseID.equals("")) {
-                modpack.setAttribute("curseProjectId", modPack.curseID);
-            }
-            if (modPack.java8required) {
-                modpack.setAttribute("minJRE", "1.8");
-            }
+			if (modPack.square != null && !modPack.squareName.equals("")) {
+				modpack.setAttribute("squareImage", modPack.squareName);
+			}
+			if (modPack.curseID != null && !modPack.curseID.equals("")) {
+				modpack.setAttribute("curseProjectId", modPack.curseID);
+			}
+			if (modPack.java8required) {
+				modpack.setAttribute("minJRE", "1.8");
+			}
 			modpack.setAttribute("description", modPack.description);
 			modpack.setAttribute("mods", modPack.getModList());
 
@@ -530,10 +530,10 @@ public class FileUtils {
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-            DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(output);
-            transformer.transform(source, result);
-            return true;
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(output);
+			transformer.transform(source, result);
+			return true;
 		} catch (TransformerConfigurationException e) {
 			e.printStackTrace();
 		} catch (TransformerException e) {
@@ -573,14 +573,14 @@ public class FileUtils {
 				pack.minecraftVersion = eElement.getAttribute("mcVersion");
 				pack.description = eElement.getAttribute("description");
 				pack.iconName = eElement.getAttribute("logo");
-                pack.splashName = eElement.getAttribute("image");
+				pack.splashName = eElement.getAttribute("image");
 				pack.zipName = eElement.getAttribute("url");
 				pack.shortName = eElement.getAttribute("dir");
 				if (eElement.hasAttribute("warning")) pack.warning = eElement.getAttribute("warning");
 				else pack.warning = null;
 
-                if (eElement.hasAttribute("squareImage")) pack.squareName = eElement.getAttribute("squareImage");
-                else pack.squareName = null;
+				if (eElement.hasAttribute("squareImage")) pack.squareName = eElement.getAttribute("squareImage");
+				else pack.squareName = null;
 
 				if (eElement.hasAttribute("animation")) pack.animation = eElement.getAttribute("animation");
 				else pack.animation = null;
@@ -683,15 +683,15 @@ public class FileUtils {
 		return stringBuffer.toString();
 	}
 
-    public static void openWebpage(String URL) {
-        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-            try {
-                desktop.browse(new URI(URL));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+	public static void openWebpage(String URL) {
+		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+		if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+			try {
+				desktop.browse(new URI(URL));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 }

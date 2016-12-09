@@ -23,14 +23,14 @@ import java.util.List;
  *  few features have been added that might be handy in these cases:
  *
  *  a) a "popup" feature - when a component is selected in can "popup" from
- *     its regular location so it visibly stands out. To accomplish this some
- *     extra space must be reserved in the container for the popup. This is
- *     done by using the setPopupInsets method which allow you to control the
- *     popup direction. In addition you can add/remove a simple constraint to
- *     the component. POP_UP will popup the component. POP_DOWN or null
- *     will paint the component in its regular location.
+ *	 its regular location so it visibly stands out. To accomplish this some
+ *	 extra space must be reserved in the container for the popup. This is
+ *	 done by using the setPopupInsets method which allow you to control the
+ *	 popup direction. In addition you can add/remove a simple constraint to
+ *	 the component. POP_UP will popup the component. POP_DOWN or null
+ *	 will paint the component in its regular location.
  *  b) when a component is made "invisible" you can reserve its location in the
- *     container so all the other components don't shift.
+ *	 container so all the other components don't shift.
  *
  *  Note: this layout is achieved by changing the ZOrder of components in the
  *  container. It will not work for all components as some compnents will
@@ -94,7 +94,7 @@ public class OverlapLayout implements LayoutManager2, java.io.Serializable
 	 *
 	 *  @param overlapPosition a Point defining the relative amount of overlap
 	 *  @param overlapAbove when true components are painted above the previous
-	 *                      component, otherwise they are painted below.
+	 *					  component, otherwise they are painted below.
 	 */
 	public OverlapLayout(Point overlapPosition, boolean overlapAbove)
 	{
@@ -137,7 +137,7 @@ public class OverlapLayout implements LayoutManager2, java.io.Serializable
 	 *  the container
 	 *
 	 *  @param includeInvisible  when true, space is reserved otherwise the
-	 *                           component is not included in the layout sizing
+	 *						   component is not included in the layout sizing
 	 */
 	public void	setIncludeInvisible(boolean includeInvisible)
 	{
@@ -180,7 +180,7 @@ public class OverlapLayout implements LayoutManager2, java.io.Serializable
 	 *  reserved on one side of the container.
 	 *
 	 *  @param popupInsets Insets defining extra space for a particular side
-	 *                     of the container.
+	 *					 of the container.
 	 */
 	public void setPopupInsets(Insets popupInsets)
 	{
@@ -192,7 +192,7 @@ public class OverlapLayout implements LayoutManager2, java.io.Serializable
 	 *
 	 *  @param   component the component to be queried
 	 *  @return  the constraint for the specified component, or null
-	 *           if component is null or is not present in this layout
+	 *		   if component is null or is not present in this layout
 	 */
 	public Boolean getConstraints(Component component)
 	{
@@ -292,7 +292,7 @@ public class OverlapLayout implements LayoutManager2, java.io.Serializable
 	 *
 	 *  @param	 parent   the container in which to do the layout
 	 *  @return  the preferred dimensions to lay out the
-	 *	         subcomponents of the specified container
+	 *			 subcomponents of the specified container
 	 */
 	public Dimension preferredLayoutSize(Container parent)
 	{
@@ -308,7 +308,7 @@ public class OverlapLayout implements LayoutManager2, java.io.Serializable
 	 *  component in the calculation.
 	 *
 	 *  @param	 parent  the container in which to do the layout
-	 *  @param	 type    either MINIMUM or PREFERRED
+	 *  @param	 type	either MINIMUM or PREFERRED
 	 */
 	private Dimension getLayoutSize(Container parent, int type)
 	{

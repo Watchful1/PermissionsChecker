@@ -26,7 +26,7 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 	}
 	
 	public NamedScrollingListPanel(String name, int size, final SortedListModel<T> model, boolean enableFiltering) {
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setMinimumSize(new Dimension(size, 50));
 		this.setMaximumSize(new Dimension(size, Integer.MAX_VALUE));
 		this.setPreferredSize(new Dimension(size, 500));
@@ -34,8 +34,8 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 		this.model = model;
 
 		if(name != null) {
-            JLabel nameLabel = new JLabel(name);
-            nameLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
+			JLabel nameLabel = new JLabel(name);
+			nameLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
 			this.add(nameLabel);
 
 			this.name = name;
@@ -60,8 +60,8 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 		listeners = new ArrayList<>();
 		
 		JScrollPane scrList = new JScrollPane();
-        scrList.getViewport().setView(list);
-        this.add(scrList);
+		scrList.getViewport().setView(list);
+		this.add(scrList);
 	}
 
 	private void updateFilter(String filter) {
@@ -84,40 +84,40 @@ public class NamedScrollingListPanel<T> extends JPanel implements ListSelectionL
 		return (SortedListModel<T>) list.getModel();
 	}
 
-    public T getSelected() {
-        return list.getSelectedValue();
-    }
+	public T getSelected() {
+		return list.getSelectedValue();
+	}
 
-    public int getNamePos(String name) {
-        ListModel model = getModel();
-        for(int i=0; i<model.getSize(); i++) {
-            if(model.getElementAt(i).toString().equals(name)) return i;
-        }
-        return -1;
-    }
+	public int getNamePos(String name) {
+		ListModel model = getModel();
+		for(int i=0; i<model.getSize(); i++) {
+			if(model.getElementAt(i).toString().equals(name)) return i;
+		}
+		return -1;
+	}
 
-    public void setSelectedName(String name) {
-        setSelected(getNamePos(name));
-    }
+	public void setSelectedName(String name) {
+		setSelected(getNamePos(name));
+	}
 
-    public void setSelected(int pos) {
-        if(pos < 0 || pos > list.getModel().getSize()) System.out.println("Name not found, couldn't select");
-        else list.setSelectedIndex(pos);
-    }
+	public void setSelected(int pos) {
+		if(pos < 0 || pos > list.getModel().getSize()) System.out.println("Name not found, couldn't select");
+		else list.setSelectedIndex(pos);
+	}
 	
 	public void clearSelection() {
 		list.clearSelection();
 	}
 
-    public void sort() {
-        getModel().sort(new SimpleObjectComparator());
-    }
+	public void sort() {
+		getModel().sort(new SimpleObjectComparator());
+	}
 
-    public void sortKeepSelected() {
-        String name = getSelected().toString();
-        sort();
-        setSelectedName(name);
-    }
+	public void sortKeepSelected() {
+		String name = getSelected().toString();
+		sort();
+		setSelectedName(name);
+	}
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {

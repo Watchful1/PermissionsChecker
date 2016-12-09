@@ -21,10 +21,10 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 	private DropdownSelector minecraftVersionSelector;
 	private VersionEditor versionEditor;
 	private ForgeEditor forgeEditor;
-    private PublicField publicField;
-    private LabelField curseField;
-    private CheckboxField java8Required;
-    private DropdownSelector listedPackTypeSelector;
+	private PublicField publicField;
+	private LabelField curseField;
+	private CheckboxField java8Required;
+	private DropdownSelector listedPackTypeSelector;
 
 	private ModPack oldPack;
 
@@ -55,30 +55,30 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		versionEditor = new VersionEditor("Version", this);
 		this.add(versionEditor);
 
-        JPanel horizHolderForgeCurse = new JPanel();
-        horizHolderForgeCurse.setAlignmentX(0);
-        horizHolderForgeCurse.setLayout(new BoxLayout(horizHolderForgeCurse, BoxLayout.X_AXIS));
+		JPanel horizHolderForgeCurse = new JPanel();
+		horizHolderForgeCurse.setAlignmentX(0);
+		horizHolderForgeCurse.setLayout(new BoxLayout(horizHolderForgeCurse, BoxLayout.X_AXIS));
 		forgeEditor = new ForgeEditor("Forge", this);
-        horizHolderForgeCurse.add(forgeEditor);
-        horizHolderForgeCurse.add(Box.createRigidArea(new Dimension(120, 1)));
-        curseField = new LabelField("Curse Project", this);
-        horizHolderForgeCurse.add(curseField);
-        this.add(horizHolderForgeCurse);
+		horizHolderForgeCurse.add(forgeEditor);
+		horizHolderForgeCurse.add(Box.createRigidArea(new Dimension(120, 1)));
+		curseField = new LabelField("Curse Project", this);
+		horizHolderForgeCurse.add(curseField);
+		this.add(horizHolderForgeCurse);
 
-        JPanel horizHolderPublicJava = new JPanel();
-        horizHolderPublicJava.setAlignmentX(0);
-        horizHolderPublicJava.setLayout(new BoxLayout(horizHolderPublicJava, BoxLayout.X_AXIS));
-        horizHolderPublicJava.add(Box.createRigidArea(new Dimension(90, 1)));
-        publicField = new PublicField(this);
-        horizHolderPublicJava.add(publicField);
-        horizHolderPublicJava.add(Box.createRigidArea(new Dimension(60, 1)));
-        java8Required = new CheckboxField("Java 8 required", this);
-        horizHolderPublicJava.add(java8Required);
-        horizHolderPublicJava.add(Box.createRigidArea(new Dimension(60, 1)));
-        listedPackTypeSelector = new DropdownSelector("Listed Type", this);
-        listedPackTypeSelector.setSelections(Globals.getInstance().preferences.listedPackTypes);
-        horizHolderPublicJava.add(listedPackTypeSelector);
-        this.add(horizHolderPublicJava);
+		JPanel horizHolderPublicJava = new JPanel();
+		horizHolderPublicJava.setAlignmentX(0);
+		horizHolderPublicJava.setLayout(new BoxLayout(horizHolderPublicJava, BoxLayout.X_AXIS));
+		horizHolderPublicJava.add(Box.createRigidArea(new Dimension(90, 1)));
+		publicField = new PublicField(this);
+		horizHolderPublicJava.add(publicField);
+		horizHolderPublicJava.add(Box.createRigidArea(new Dimension(60, 1)));
+		java8Required = new CheckboxField("Java 8 required", this);
+		horizHolderPublicJava.add(java8Required);
+		horizHolderPublicJava.add(Box.createRigidArea(new Dimension(60, 1)));
+		listedPackTypeSelector = new DropdownSelector("Listed Type", this);
+		listedPackTypeSelector.setSelections(Globals.getInstance().preferences.listedPackTypes);
+		horizHolderPublicJava.add(listedPackTypeSelector);
+		this.add(horizHolderPublicJava);
 	}
 	
 	public void savePack(ModPack packIn) {
@@ -151,10 +151,10 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		versionEditor.setRecommendedVersion(pack.recommendedVersion);
 		forgeEditor.setForgeType(pack.forgeType);
 		forgeEditor.setForgeVersion(pack.ForgeVersion);
-        publicField.setPublic(pack.isPublic);
-        curseField.setText(pack.curseID);
-        java8Required.setChecked(pack.java8required);
-        listedPackTypeSelector.setSelection(pack.listedPackType);
+		publicField.setPublic(pack.isPublic);
+		curseField.setText(pack.curseID);
+		java8Required.setChecked(pack.java8required);
+		listedPackTypeSelector.setSelection(pack.listedPackType);
 	}
 
 	@Override
@@ -186,10 +186,10 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		} else if(e.getSource().equals(authorField)) {
 			Globals.getModPack().author = authorField.getText();
 		} else if(e.getSource().equals(keyField)) {
-            if(checkValidKey(keyField.getText()) == null) {
-                keyField.setText(Globals.getModPack().key);
-                return;
-            }
+			if(checkValidKey(keyField.getText()) == null) {
+				keyField.setText(Globals.getModPack().key);
+				return;
+			}
 
 			Globals.getModPack().key = keyField.getText();
 		} else if(e.getSource().equals(descriptionField)) {
@@ -202,22 +202,22 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		} else if(e.getSource().equals(forgeEditor)) {
 			Globals.getModPack().forgeType = forgeEditor.getForgeType();
 			Globals.getModPack().ForgeVersion = forgeEditor.getForgeVersion();
-        } else if(e.getSource().equals(curseField)) {
-            if(curseField.getText() != null && !curseField.getText().equals("")) {
-                String result = checkValidProject(curseField.getText());
-                if(result == null) {
-                    curseField.setText(Globals.getModPack().curseID);
-                    return;
-                }
-                curseField.setText(result);
-            }
-            Globals.getModPack().curseID = curseField.getText();
-        } else if(e.getSource().equals(publicField)) {
-            Globals.getModPack().isPublic = publicField.isPublic();
-        } else if(e.getSource().equals(java8Required)) {
-            Globals.getModPack().java8required = java8Required.isChecked();
-        } else if(e.getSource().equals(listedPackTypeSelector)) {
-            Globals.getModPack().listedPackType = listedPackTypeSelector.getSelection();
+		} else if(e.getSource().equals(curseField)) {
+			if(curseField.getText() != null && !curseField.getText().equals("")) {
+				String result = checkValidProject(curseField.getText());
+				if(result == null) {
+					curseField.setText(Globals.getModPack().curseID);
+					return;
+				}
+				curseField.setText(result);
+			}
+			Globals.getModPack().curseID = curseField.getText();
+		} else if(e.getSource().equals(publicField)) {
+			Globals.getModPack().isPublic = publicField.isPublic();
+		} else if(e.getSource().equals(java8Required)) {
+			Globals.getModPack().java8required = java8Required.isChecked();
+		} else if(e.getSource().equals(listedPackTypeSelector)) {
+			Globals.getModPack().listedPackType = listedPackTypeSelector.getSelection();
 		} else {
 			changed = false;
 		}
@@ -227,56 +227,56 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 
 	}
 
-    private String checkValidKey(String key) {
-        String message = "";
-        boolean valid = false;
-        if(key == null || key.equals("") || !ModPack.isValidKey(key)) {
-            message = "Key is not valid, pick a new key";
-        } else if(Globals.getInstance().listsPacks.codeExists(key, shortNameField.getText())) {
-            message = "Key exists, pick a new key\nIf you want to overwrite the key, press ok without changing the key";
-            valid = true;
-        }
-        if(!message.equals("")) {
-            String result = (String) JOptionPane.showInputDialog(
-                    Globals.getInstance().mainFrame, message,
-                    "New key", JOptionPane.PLAIN_MESSAGE, null, null, key);
-            if(result == null) return null;
-            if(valid && result.equals(key)) {
-                int n = JOptionPane.showConfirmDialog(
-                        Globals.getInstance().mainFrame,
-                        "Are you sure you want to overwrite the key \""+key+"\"?",
-                        "Confirm overwrite",
-                        JOptionPane.YES_NO_OPTION);
-                if(n == JOptionPane.YES_OPTION) {
-                    return key;
-                } else {
-                    return null;
-                }
-            }
-            return checkValidKey(result);
-        }
-        keyField.setText(key);
-        return key;
-    }
+	private String checkValidKey(String key) {
+		String message = "";
+		boolean valid = false;
+		if(key == null || key.equals("") || !ModPack.isValidKey(key)) {
+			message = "Key is not valid, pick a new key";
+		} else if(Globals.getInstance().listsPacks.codeExists(key, shortNameField.getText())) {
+			message = "Key exists, pick a new key\nIf you want to overwrite the key, press ok without changing the key";
+			valid = true;
+		}
+		if(!message.equals("")) {
+			String result = (String) JOptionPane.showInputDialog(
+					Globals.getInstance().mainFrame, message,
+					"New key", JOptionPane.PLAIN_MESSAGE, null, null, key);
+			if(result == null) return null;
+			if(valid && result.equals(key)) {
+				int n = JOptionPane.showConfirmDialog(
+						Globals.getInstance().mainFrame,
+						"Are you sure you want to overwrite the key \""+key+"\"?",
+						"Confirm overwrite",
+						JOptionPane.YES_NO_OPTION);
+				if(n == JOptionPane.YES_OPTION) {
+					return key;
+				} else {
+					return null;
+				}
+			}
+			return checkValidKey(result);
+		}
+		keyField.setText(key);
+		return key;
+	}
 
-    private String checkValidProject(String projectID) {
-        String message = "";
-        if(projectID == null || projectID.equals("")) {
-            message = "Curse project ID is not valid, pick a new project ID";
-        } else if(Globals.getInstance().listsPacks.curseIDUsed(projectID, shortNameField.getText())) {
-            message = "Curse project ID is taken by another pack, pick a new project ID";
-        }
-        if(!message.equals("")) {
-            String result = (String) JOptionPane.showInputDialog(
-                    Globals.getInstance().mainFrame, message,
-                    "New curse ID", JOptionPane.PLAIN_MESSAGE, null, null, projectID);
-            if(result == null) return null;
-            return checkValidProject(result);
-        } else {
-            JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
-                    "Project ID changed. Click Ok to open project page and verify that it exists and the author is correct");
-            FileUtils.openWebpage(Globals.curseProjectRoot+projectID);
-        }
-        return projectID;
-    }
+	private String checkValidProject(String projectID) {
+		String message = "";
+		if(projectID == null || projectID.equals("")) {
+			message = "Curse project ID is not valid, pick a new project ID";
+		} else if(Globals.getInstance().listsPacks.curseIDUsed(projectID, shortNameField.getText())) {
+			message = "Curse project ID is taken by another pack, pick a new project ID";
+		}
+		if(!message.equals("")) {
+			String result = (String) JOptionPane.showInputDialog(
+					Globals.getInstance().mainFrame, message,
+					"New curse ID", JOptionPane.PLAIN_MESSAGE, null, null, projectID);
+			if(result == null) return null;
+			return checkValidProject(result);
+		} else {
+			JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+					"Project ID changed. Click Ok to open project page and verify that it exists and the author is correct");
+			FileUtils.openWebpage(Globals.curseProjectRoot+projectID);
+		}
+		return projectID;
+	}
 }

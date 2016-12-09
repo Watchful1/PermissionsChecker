@@ -159,12 +159,12 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		System.out.println("Parsing " + Globals.getModPack().name);
 		knownModFiles = modFinder.discoverModFiles(new File(
 				Globals.getInstance().preferences.workingFolder+File.separator+"minecraft"+File.separator+"mods"));
-        if(knownModFiles.size() == 0) {
-            System.out.println("No files found, not updating mod list");
-        } else {
-            System.out.println("Found " + knownModFiles.size() + " files");
-            recheckMods();
-        }
+		if(knownModFiles.size() == 0) {
+			System.out.println("No files found, not updating mod list");
+		} else {
+			System.out.println("Found " + knownModFiles.size() + " files");
+			recheckMods();
+		}
 		setDisabled(false);
 	}
 
@@ -173,27 +173,27 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		badMods.clear();
 		unknownMods.clear();
 
-        ModPack pack = Globals.getModPack();
-        pack.mods.clear();
-        pack.unknownModIDs.clear();
+		ModPack pack = Globals.getModPack();
+		pack.mods.clear();
+		pack.unknownModIDs.clear();
 
 		ModStorage modStorage = Globals.getInstance().nameRegistry.compileMods(knownModFiles, Globals.getModPack());
 		unknownMods.addAll(modStorage.modFiles);
 		for(ModFile modFile : modStorage.modFiles) {
 			if(modFile.IDs.getSize() > 0) {
 				for (String ID : modFile.IDs.getArrayList()) {
-                    pack.unknownModIDs.add(ID);
+					pack.unknownModIDs.add(ID);
 				}
 			} else if(modFile.md5 != null && !modFile.md5.equals("")) {
-                pack.unknownModIDs.add(modFile.md5);
+				pack.unknownModIDs.add(modFile.md5);
 			} else {
 				String md5 = FileUtils.getMD5(modFile.file);
 				if(md5 != null) {
-                    modFile.md5 = md5;
-                    pack.unknownModIDs.add(md5);
+					modFile.md5 = md5;
+					pack.unknownModIDs.add(md5);
 				} else {
-                    System.out.println("Couldn't get MD5 for: "+modFile.fileName());
-                }
+					System.out.println("Couldn't get MD5 for: "+modFile.fileName());
+				}
 			}
 		}
 		Globals.getInstance().savePreferences();
@@ -202,7 +202,7 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 		else System.out.println("Parsing with pack perms "+Globals.getModPack().modInfoMappings.toString());
 		for(Mod mod : modStorage.mods.values()) {
 			if(mod.shortName.equals("ignore")) continue; // Ignore non-mod files
-            pack.mods.add(mod.shortName);
+			pack.mods.add(mod.shortName);
 			temp = Globals.getInstance().nameRegistry.getInfo(mod, Globals.getModPack());
 			if(temp == null) {
 				unknownMods.addElement(mod.modFile);
@@ -212,8 +212,8 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 					goodMods.addElement(mod);
 				} else if (temp.hasPrivate()) {
 					mod.permStatus = Mod.PRIVATE;
-                    if(Globals.getModPack().isPublic) badMods.addElement(mod);
-                    else goodMods.addElement(mod);
+					if(Globals.getModPack().isPublic) badMods.addElement(mod);
+					else goodMods.addElement(mod);
 				} else {
 					badMods.addElement(mod);
 				}
@@ -222,13 +222,13 @@ public class PermissionsPanel extends JPanel implements NamedScrollingListPanelL
 
 		goodMods.sort(new SimpleObjectComparator());
 		badMods.sort(new SimpleObjectComparator());
-        Collections.sort(pack.mods, new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return Globals.getInstance().nameRegistry.getInfo(o1, Globals.getModPack()).modName.compareToIgnoreCase(
-                        Globals.getInstance().nameRegistry.getInfo(o2, Globals.getModPack()).modName);
-            }
-        });
+		Collections.sort(pack.mods, new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return Globals.getInstance().nameRegistry.getInfo(o1, Globals.getModPack()).modName.compareToIgnoreCase(
+						Globals.getInstance().nameRegistry.getInfo(o2, Globals.getModPack()).modName);
+			}
+		});
 	}
 
 	public boolean promptPermissionsGood() {

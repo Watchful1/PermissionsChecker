@@ -14,21 +14,21 @@ import java.awt.event.FocusListener;
 public class ForgeEditor extends JPanel implements ActionListener {
 	private JLabel label;
 	private JTextField forgeVersionEditor;
-    private ChangeListener changeListener;
-    private int oldVersion;
-    private ForgeType oldType;
+	private ChangeListener changeListener;
+	private int oldVersion;
+	private ForgeType oldType;
 	private JRadioButton recommendedButton;
 	private JRadioButton latestButton;
 	private ButtonGroup buttonGroup;
 
 	public ForgeEditor(String name) {
-        this(name, null);
-    }
+		this(name, null);
+	}
 
-    public ForgeEditor(String name, ChangeListener changeListener) {
-        this.changeListener = changeListener;
-        oldVersion = -1;
-        oldType = ForgeType.RECOMMENDED;
+	public ForgeEditor(String name, ChangeListener changeListener) {
+		this.changeListener = changeListener;
+		oldVersion = -1;
+		oldType = ForgeType.RECOMMENDED;
 
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setAlignmentX(0);
@@ -58,21 +58,21 @@ public class ForgeEditor extends JPanel implements ActionListener {
 		forgeVersionEditor = new JTextField();
 		forgeVersionEditor.setMaximumSize(new Dimension(120, 21));
 		forgeVersionEditor.setPreferredSize(new Dimension(120, 21));
-        forgeVersionEditor.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                // do nothing
-            }
+		forgeVersionEditor.addFocusListener(new FocusListener() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				// do nothing
+			}
 
-            @Override
-            public void focusLost(FocusEvent e) {
-                if(oldVersion == getForgeVersion()) return;
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(oldVersion == getForgeVersion()) return;
 				if(getForgeVersion() == -1) setForgeType(ForgeType.RECOMMENDED);
 				else setForgeType(ForgeType.VERSION);
-                oldVersion = getForgeVersion();
-                notifyChanged();
-            }
-        });
+				oldVersion = getForgeVersion();
+				notifyChanged();
+			}
+		});
 		this.add(forgeVersionEditor);
 	}
 
@@ -125,10 +125,10 @@ public class ForgeEditor extends JPanel implements ActionListener {
 		return version;
 	}
 
-    public void notifyChanged() {
-        if(changeListener == null) return;
-        changeListener.stateChanged(new ChangeEvent(this));
-    }
+	public void notifyChanged() {
+		if(changeListener == null) return;
+		changeListener.stateChanged(new ChangeEvent(this));
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
