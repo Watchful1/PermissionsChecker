@@ -12,20 +12,20 @@ public class DropdownSelector extends JPanel {
 	private JLabel label;
 	private JComboBox<String> chooser;
 	private DefaultComboBoxModel<String> items;
-    private ChangeListener changeListener;
-    private String oldVersion;
+	private ChangeListener changeListener;
+	private String oldVersion;
 	private boolean paused;
 
 	public DropdownSelector(String name) {
-        this(name, null);
-    }
+		this(name, null);
+	}
 
-    public DropdownSelector(String name, ChangeListener changeListener) {
-        this.changeListener = changeListener;
-        oldVersion = "";
+	public DropdownSelector(String name, ChangeListener changeListener) {
+		this.changeListener = changeListener;
+		oldVersion = "";
 		paused = false;
 
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 21));
 		this.setAlignmentX(0);
 
@@ -38,15 +38,15 @@ public class DropdownSelector extends JPanel {
 		items = new DefaultComboBoxModel<>();
 
 		chooser = new JComboBox<>(items);
-        chooser.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(oldVersion.equals(getSelection())) return;
-                oldVersion = getSelection();
+		chooser.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(oldVersion.equals(getSelection())) return;
+				oldVersion = getSelection();
 
-                notifyChanged();
-            }
-        });
+				notifyChanged();
+			}
+		});
 		this.add(chooser);
 	}
 
@@ -56,7 +56,7 @@ public class DropdownSelector extends JPanel {
 			System.out.println("Couldn't find selection "+selection);
 			return;
 		}
-        oldVersion = selection;
+		oldVersion = selection;
 		chooser.setSelectedIndex(index);
 	}
 
@@ -73,10 +73,10 @@ public class DropdownSelector extends JPanel {
 		return (String) chooser.getSelectedItem();
 	}
 
-    public void notifyChanged() {
-        if(changeListener == null) return;
+	public void notifyChanged() {
+		if(changeListener == null) return;
 		if(paused) return;
 
-        changeListener.stateChanged(new ChangeEvent(this));
-    }
+		changeListener.stateChanged(new ChangeEvent(this));
+	}
 }

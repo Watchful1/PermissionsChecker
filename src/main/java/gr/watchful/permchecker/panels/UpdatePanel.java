@@ -17,33 +17,33 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 	private LabelField packName;
 	private FileSelector selector;
 	private FileSelector iconSelector;
-    private FileSelector splashSelector;
-    private FileSelector squareSelector;
+	private FileSelector splashSelector;
+	private FileSelector squareSelector;
 	private FileSelector serverSelector;
 	JComboBox<String> versionSelector;
 	public PermissionsPanel permPanel;//TODO really should be a better way to do this
 
 
-    public UpdatePanel() {
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+	public UpdatePanel() {
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setAlignmentX(JPanel.LEFT_ALIGNMENT);
 
-        packName = new LabelField("Pack Name");
-        packName.lock("Currently opened pack");
-        this.add(packName);
+		packName = new LabelField("Pack Name");
+		packName.lock("Currently opened pack");
+		this.add(packName);
 
-        selector = new FileSelector("Zip", -1, "zip", this);
-        this.add(selector);
+		selector = new FileSelector("Zip", -1, "zip", this);
+		this.add(selector);
 		iconSelector = new FileSelector("Icon", 150, "png", this);
 		this.add(iconSelector);
-        splashSelector = new FileSelector("Splash", 150, "png", this);
-        this.add(splashSelector);
-        squareSelector = new FileSelector("Square", 150, "png", this);
-        this.add(squareSelector);
+		splashSelector = new FileSelector("Splash", 150, "png", this);
+		this.add(splashSelector);
+		squareSelector = new FileSelector("Square", 150, "png", this);
+		this.add(squareSelector);
 		serverSelector = new FileSelector("Server", -1, "zip", this);
 		this.add(serverSelector);
 
-        versionSelector = new JComboBox<>();
+		versionSelector = new JComboBox<>();
 		versionSelector.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
 		versionSelector.setAlignmentX(JPanel.LEFT_ALIGNMENT);
 		this.add(versionSelector);
@@ -56,14 +56,14 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 			}
 		});
 		this.add(exportButton);
-    }
+	}
 
 	public void setPack(ModPack pack) {
 		packName.setText(pack.name);
 		selector.clearSelection();
 		iconSelector.setFile(pack.icon);
-        splashSelector.setFile(pack.splash);
-        squareSelector.setFile(pack.square);
+		splashSelector.setFile(pack.splash);
+		squareSelector.setFile(pack.square);
 		serverSelector.setFile(pack.server);
 		versionSelector.removeAllItems();
 		for(ModPackVersion version : pack.metaVersions) {
@@ -247,7 +247,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 	 */
 	public void exportPack() {
 		Globals.saveCurrentPack();
-        ModPack pack = Globals.getModPack();
+		ModPack pack = Globals.getModPack();
 		permPanel.parsePack();
 		if(!permPanel.promptPermissionsGood()) {
 			System.out.println("Export canceled");
@@ -258,10 +258,10 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		boolean success = true;
 		if(pack.forgeType.equals(ForgeType.VERSION)) {
 			success = FileUtils.addForge(Globals.getInstance().preferences.getWorkingMinecraftFolder(),
-                    pack.ForgeVersion);
+					pack.ForgeVersion);
 		} else {
 			success = FileUtils.addForge(Globals.getInstance().preferences.getWorkingMinecraftFolder(),
-                    pack.forgeType, pack.minecraftVersion);
+					pack.forgeType, pack.minecraftVersion);
 		}
 		if(!success) {
 			System.out.println("pack.json add failed");
@@ -269,13 +269,13 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		}
 		if((pack.server != null && pack.server.exists()) &&
 				(pack.serverName == null || pack.serverName.equals(""))) {
-            pack.serverName = pack.shortName + "Server.zip";
+			pack.serverName = pack.shortName + "Server.zip";
 		}
 		ArrayList<ModPack> temp = new ArrayList<>();
 		temp.add(pack);
 		if(!FileUtils.writeXML(temp, new File(
-                Globals.getInstance().preferences.exportFolder + File.separator + "static" +
-                        File.separator + Globals.getModPack().key + ".xml"))) {
+				Globals.getInstance().preferences.exportFolder + File.separator + "static" +
+						File.separator + Globals.getModPack().key + ".xml"))) {
 			System.out.println("xml export failed");
 			return;
 		}
@@ -290,74 +290,74 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		if(pack.icon != null && pack.icon.exists()) {
 			FileUtils.moveFile(pack.icon, new File(Globals.getInstance().preferences.exportFolder
 					+ File.separator + "static" + File.separator +
-                    pack.getIconName()));
-            pack.icon = null;
+					pack.getIconName()));
+			pack.icon = null;
 			iconSelector.clearSelection();//kinda hacky
 		}
-        if(pack.splash != null && pack.splash.exists()) {
-            FileUtils.moveFile(pack.splash, new File(Globals.getInstance().preferences.exportFolder
-                    + File.separator + "static" + File.separator +
-                    pack.getSplashName()));
-            pack.splash = null;
-            splashSelector.clearSelection();//kinda hacky
-        }
-        if(pack.square != null && pack.square.exists()) {
-            FileUtils.moveFile(pack.square, new File(Globals.getInstance().preferences.exportFolder
-                    + File.separator + "static" + File.separator +
-                    pack.getSquareName()));
-            pack.square = null;
-            squareSelector.clearSelection();//kinda hacky
-        }
+		if(pack.splash != null && pack.splash.exists()) {
+			FileUtils.moveFile(pack.splash, new File(Globals.getInstance().preferences.exportFolder
+					+ File.separator + "static" + File.separator +
+					pack.getSplashName()));
+			pack.splash = null;
+			splashSelector.clearSelection();//kinda hacky
+		}
+		if(pack.square != null && pack.square.exists()) {
+			FileUtils.moveFile(pack.square, new File(Globals.getInstance().preferences.exportFolder
+					+ File.separator + "static" + File.separator +
+					pack.getSquareName()));
+			pack.square = null;
+			squareSelector.clearSelection();//kinda hacky
+		}
 		if(pack.server != null && pack.server.exists()) {
 			FileUtils.moveFile(pack.server, new File(packExportFolder + File.separator +
-                    pack.serverName));
-            pack.server = null;
+					pack.serverName));
+			pack.server = null;
 			serverSelector.clearSelection();//kinda hacky
 		}
 
-        boolean curseIsBlank = pack.curseID == null || pack.curseID.equals("");
-        ArrayList<String> curseKeys = loadCurseKeys();
+		boolean curseIsBlank = pack.curseID == null || pack.curseID.equals("");
+		ArrayList<String> curseKeys = loadCurseKeys();
 
-        if(curseKeys == null && !curseIsBlank) {
-            JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
-                    "Unable to load curse keys file. Not exporting key");
-        } else if(!curseIsBlank && (pack.listedPackType == null || pack.listedPackType.equals(""))) {
-            boolean exists = false;
-            int index = 0;
-            for(String key : curseKeys) {
-                if(key.equals(pack.key)) {
-                    exists = true;
-                    break;
-                }
-                index++;
-            }
+		if(curseKeys == null && !curseIsBlank) {
+			JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+					"Unable to load curse keys file. Not exporting key");
+		} else if(!curseIsBlank && (pack.listedPackType == null || pack.listedPackType.equals(""))) {
+			boolean exists = false;
+			int index = 0;
+			for(String key : curseKeys) {
+				if(key.equals(pack.key)) {
+					exists = true;
+					break;
+				}
+				index++;
+			}
 
-            boolean save = false;
-            if(!exists) {
-                curseKeys.add(pack.key);
-                save = true;
-            } else if(curseIsBlank) {
-                curseKeys.remove(index);
-                save = true;
-            }
+			boolean save = false;
+			if(!exists) {
+				curseKeys.add(pack.key);
+				save = true;
+			} else if(curseIsBlank) {
+				curseKeys.remove(index);
+				save = true;
+			}
 
-            if(save) {
-                if(!saveCurseKeys(curseKeys, Globals.getInstance().preferences.saveFolder)) {
-                    JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
-                            "Couldn't save curse keys file, changes won't sync to other tools. Contact Watchful1");
-                }
+			if(save) {
+				if(!saveCurseKeys(curseKeys, Globals.getInstance().preferences.saveFolder)) {
+					JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+							"Couldn't save curse keys file, changes won't sync to other tools. Contact Watchful1");
+				}
 
-                if(saveCurseKeys(curseKeys, new File(Globals.getInstance().preferences.exportFolder
-                        + File.separator + "static"))) {
-                    JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
-                            "Exported curse keys file. Please upload static folder as soon as possible.\n" +
-                                    "Yes, I know this will get annoying");
-                } else {
-                    JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
-                            "Couldn't export curse keys file, pack won't sync to client. Contact Watchful1");
-                }
-            }
-        }
+				if(saveCurseKeys(curseKeys, new File(Globals.getInstance().preferences.exportFolder
+						+ File.separator + "static"))) {
+					JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+							"Exported curse keys file. Please upload static folder as soon as possible.\n" +
+									"Yes, I know this will get annoying");
+				} else {
+					JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+							"Couldn't export curse keys file, pack won't sync to client. Contact Watchful1");
+				}
+			}
+		}
 
 		Globals.modPackChanged(this, false);
 
@@ -366,33 +366,33 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		selector.clearSelection();
 	}
 
-    private ArrayList<String> loadCurseKeys() {
-        File curseFile = new File(Globals.getInstance().preferences.saveFolder+File.separator+Globals.curseFileName);
-        if(curseFile.exists()) {
-            try {
-                ArrayList<String> tempArray = (ArrayList<String>) FileUtils.readObject(curseFile, new ArrayList<String>());
-                return tempArray;
-            } catch (Exception e) {
-                System.out.println("Couldn't load curse keys file");
-                return null;
-            }
-        } else {
-            System.out.println("Curse keys file doesn't exist");
-            return new ArrayList<>();
-        }
-    }
+	private ArrayList<String> loadCurseKeys() {
+		File curseFile = new File(Globals.getInstance().preferences.saveFolder+File.separator+Globals.curseFileName);
+		if(curseFile.exists()) {
+			try {
+				ArrayList<String> tempArray = (ArrayList<String>) FileUtils.readObject(curseFile, new ArrayList<String>());
+				return tempArray;
+			} catch (Exception e) {
+				System.out.println("Couldn't load curse keys file");
+				return null;
+			}
+		} else {
+			System.out.println("Curse keys file doesn't exist");
+			return new ArrayList<>();
+		}
+	}
 
-    private boolean saveCurseKeys(ArrayList<String> curseKeys, File exportLocation) {
-        File curseFile = new File(exportLocation+"/"+Globals.curseFileName);
-        try {
-            FileUtils.saveObject(curseKeys, curseFile);
-            return true;
-        } catch (Exception e) {
-            System.out.println("Couldn't save curse keys file");
-            e.printStackTrace();
-            return false;
-        }
-    }
+	private boolean saveCurseKeys(ArrayList<String> curseKeys, File exportLocation) {
+		File curseFile = new File(exportLocation+"/"+Globals.curseFileName);
+		try {
+			FileUtils.saveObject(curseKeys, curseFile);
+			return true;
+		} catch (Exception e) {
+			System.out.println("Couldn't save curse keys file");
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
@@ -407,14 +407,14 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 			if(iconSelector.getFile() == null || fileChanged(iconSelector)) {
 				Globals.getModPack().icon = iconSelector.getFile();
 			}
-        } else if(e.getSource().equals(splashSelector)) {
-            if(splashSelector.getFile() == null || fileChanged(splashSelector)) {
-                Globals.getModPack().splash = splashSelector.getFile();
-            }
-        } else if(e.getSource().equals(squareSelector)) {
-            if(squareSelector.getFile() == null || fileChanged(squareSelector)) {
-                Globals.getModPack().square = squareSelector.getFile();
-            }
+		} else if(e.getSource().equals(splashSelector)) {
+			if(splashSelector.getFile() == null || fileChanged(splashSelector)) {
+				Globals.getModPack().splash = splashSelector.getFile();
+			}
+		} else if(e.getSource().equals(squareSelector)) {
+			if(squareSelector.getFile() == null || fileChanged(squareSelector)) {
+				Globals.getModPack().square = squareSelector.getFile();
+			}
 		} else if(e.getSource().equals(serverSelector)) {
 			if(serverSelector.getFile() == null || fileChanged(serverSelector)) {
 				Globals.getModPack().server = serverSelector.getFile();

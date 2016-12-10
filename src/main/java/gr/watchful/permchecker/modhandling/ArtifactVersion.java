@@ -7,7 +7,7 @@
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * 
  * Contributors:
- *     cpw - implementation
+ *	 cpw - implementation
  */
 
 package gr.watchful.permchecker.modhandling;
@@ -38,13 +38,13 @@ package gr.watchful.permchecker.modhandling;
  * @author <a href="mailto:brett@apache.org">Brett Porter</a>
  */
 public interface ArtifactVersion
-    extends Comparable<ArtifactVersion>
+	extends Comparable<ArtifactVersion>
 {
-    String getLabel();
+	String getLabel();
 
-    String getVersionString();
+	String getVersionString();
 
-    boolean containsVersion(ArtifactVersion source);
+	boolean containsVersion(ArtifactVersion source);
 
-    String getRangeString();
+	String getRangeString();
 }

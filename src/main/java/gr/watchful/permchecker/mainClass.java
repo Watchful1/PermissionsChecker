@@ -3,12 +3,14 @@ package gr.watchful.permchecker;
 import gr.watchful.permchecker.datastructures.*;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
+import gr.watchful.permchecker.logging.MyLogger;
 import gr.watchful.permchecker.panels.ModPacksPanel;
 import gr.watchful.permchecker.panels.NamedScrollingListPanel;
 import gr.watchful.permchecker.panels.PermissionsPanel;
 import gr.watchful.permchecker.panels.UpdatePanel;
 import gr.watchful.permchecker.utils.FileUtils;
 import gr.watchful.permchecker.utils.OsTypes;
+import gr.watchful.permchecker.utils.Updater;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,41 +23,43 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @SuppressWarnings("serial")
 public class mainClass extends JFrame implements ListsPacks {
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
 	private JTabbedPane tabbedPane;
 	private ModPacksPanel modPacksPanel;
-    private UpdatePanel updatePanel;
-    private PermissionsPanel permissionsPanel;
-    public SortedListModel<ModPack> modPacksModel;
-    public NamedScrollingListPanel<ModPack> modPacksList;
-    private ModPack oldSelection;
+	private UpdatePanel updatePanel;
+	private PermissionsPanel permissionsPanel;
+	public SortedListModel<ModPack> modPacksModel;
+	public NamedScrollingListPanel<ModPack> modPacksList;
+	private ModPack oldSelection;
 
 	public mainClass() {
 		long startTime = System.nanoTime();
 		//System.out.println("Time 1: " + (System.nanoTime() - startTime) / 1000000);
-        Globals.getInstance().mainFrame = this;
+		Globals.getInstance().mainFrame = this;
 		Globals.getInstance().listsPacks = this;
-        Globals.getInstance().initializeFolders();
-        Globals.getInstance().loadPreferences();
+		Globals.getInstance().loadPreferences();
 		long tempTime = System.nanoTime();
-        Globals.getInstance().updateListings();
+		Globals.getInstance().updateListings();
 		System.out.println("Perm listings update took: " + (System.nanoTime() - tempTime) / 1000000);
 
-		this.setTitle("Permissions Checker v 1.2.6"); // Set the window title
+		this.setTitle("Permissions Checker v "+Globals.version); // Set the window title
 		this.setPreferredSize(new Dimension(1100, 600)); // and the initial size
 
-        JPanel leftPanel = new JPanel();
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+		JPanel leftPanel = new JPanel();
+		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
-        modPacksModel = new SortedListModel<>();
-        loadPacks(Globals.getInstance().preferences.saveFolder);
+		modPacksModel = new SortedListModel<>();
+		loadPacks(Globals.getInstance().preferences.saveFolder);
 
-        modPacksList = new NamedScrollingListPanel<>("ModPacks", 200, modPacksModel, true);
-        modPacksList.setAlignmentX(Component.LEFT_ALIGNMENT);
+		modPacksList = new NamedScrollingListPanel<>("ModPacks", 200, modPacksModel, true);
+		modPacksList.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        modPacksPanel = new ModPacksPanel(modPacksList);
+		modPacksPanel = new ModPacksPanel(modPacksList);
 		Globals.getInstance().addListener(modPacksPanel);
 		updatePanel = new UpdatePanel();
 		Globals.getInstance().addListener(updatePanel);
@@ -63,24 +67,24 @@ public class mainClass extends JFrame implements ListsPacks {
 		Globals.getInstance().addListener(permissionsPanel);
 		updatePanel.permPanel = permissionsPanel;
 
-        modPacksList.addListener(new NamedScrollingListPanelListener() {
-            @Override
-            public void selectionChanged(NamedSelectionEvent event) {
-                if(oldSelection != null && oldSelection.equals(modPacksList.getSelected())) return;
+		modPacksList.addListener(new NamedScrollingListPanelListener() {
+			@Override
+			public void selectionChanged(NamedSelectionEvent event) {
+				if(oldSelection != null && oldSelection.equals(modPacksList.getSelected())) return;
 				Globals.getInstance().setModPack(modPacksList.getSelected());
-                oldSelection = modPacksList.getSelected();
+				oldSelection = modPacksList.getSelected();
 				modPacksList.revalidate();
-            }
-        });
+			}
+		});
 		modPacksList.setSelected(0);
-        leftPanel.add(modPacksList);
+		leftPanel.add(modPacksList);
 
-        this.add(leftPanel, BorderLayout.LINE_START);
+		this.add(leftPanel, BorderLayout.LINE_START);
 		
 		tabbedPane = new JTabbedPane();
 
-        tabbedPane.add("Info", modPacksPanel);
-        tabbedPane.add("Update", updatePanel);
+		tabbedPane.add("Info", modPacksPanel);
+		tabbedPane.add("Update", updatePanel);
 		tabbedPane.add("Permissions", permissionsPanel);
 
 		this.add(tabbedPane);
@@ -90,15 +94,15 @@ public class mainClass extends JFrame implements ListsPacks {
 		JMenu menu = new JMenu("Temp"); // with the submenus
 		menuBar.add(menu);
 
-        JMenuItem updatePerms = new JMenuItem("Update Permissions");
-        updatePerms.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                Globals.getInstance().updateListings();
+		JMenuItem updatePerms = new JMenuItem("Update Permissions");
+		updatePerms.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Globals.getInstance().updateListings();
 				permissionsPanel.invalidateContents();
-            }
-        });
-        menu.add(updatePerms);
+			}
+		});
+		menu.add(updatePerms);
 
 		JMenuItem newPack = new JMenuItem("Add pack");
 		newPack.addActionListener(new ActionListener() {
@@ -130,33 +134,33 @@ public class mainClass extends JFrame implements ListsPacks {
 		});
 		menu.add(newPackFromCode);
 
-        JMenuItem openFolder = new JMenuItem("Open appdata");
-        openFolder.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                if(!OsTypes.getOperatingSystemType().equals(OsTypes.OSType.Windows)) {
-                    System.out.println("Os is not windows, can't open explorer");
-                    return;
-                }
-                try {
-                    Desktop.getDesktop().open(Globals.getInstance().appStore);
-                } catch (IOException e) {
-                    System.out.println("Couldn't open explorer");
-                    return;
-                }
-            }
-        });
-        menu.add(openFolder);
+		JMenuItem openFolder = new JMenuItem("Open appdata");
+		openFolder.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(!OsTypes.getOperatingSystemType().equals(OsTypes.OSType.Windows)) {
+					System.out.println("Os is not windows, can't open explorer");
+					return;
+				}
+				try {
+					Desktop.getDesktop().open(Globals.getInstance().appStore);
+				} catch (IOException e) {
+					System.out.println("Couldn't open explorer");
+					return;
+				}
+			}
+		});
+		menu.add(openFolder);
 
-        JMenuItem drastic = new JMenuItem("Drastic click here");
-        drastic.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
-                        "More ram has been downloaded to your system.\nHave a nice day.");
-            }
-        });
-        menu.add(drastic);
+		JMenuItem drastic = new JMenuItem("Drastic click here");
+		drastic.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+						"More ram has been downloaded to your system.\nHave a nice day.");
+			}
+		});
+		menu.add(drastic);
 
 		this.setJMenuBar(menuBar);
 
@@ -173,35 +177,35 @@ public class mainClass extends JFrame implements ListsPacks {
 		return file.getName().equals("minecraft") || file.getName().equals(".minecraft");
 	}
 
-    public void loadPacks(File folder) {
-        if(!folder.exists() || !folder.isDirectory()) return;
-        Globals.getInstance().oldVersionsFlag = false;
-        for(File pack : folder.listFiles()) {
-            if(pack.getName().equals(Globals.curseFileName)) continue;
+	public void loadPacks(File folder) {
+		if(!folder.exists() || !folder.isDirectory()) return;
+		Globals.getInstance().oldVersionsFlag = false;
+		for(File pack : folder.listFiles()) {
+			if(pack.getName().equals(Globals.curseFileName)) continue;
 			//System.out.println("Loading "+pack.getName());
-            ModPack temp = ModPack.loadObject(pack);
-            if(temp != null) {
-                modPacksModel.addElement(temp);
-            }
-        }
+			ModPack temp = ModPack.loadObject(pack);
+			if(temp != null) {
+				modPacksModel.addElement(temp);
+			}
+		}
 		modPacksModel.sort(new SimpleObjectComparator());
 
-        if(Globals.getInstance().oldVersionsFlag) {
-            JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
-                    "Some modpacks were on a newer json format than this version supports and were not loaded.\nGet the new version from Watchful1");
-        }
-    }
+		if(Globals.getInstance().oldVersionsFlag) {
+			JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+					"Some modpacks were on a newer json format than this version supports and were not loaded.\nGet the new version from Watchful1");
+		}
+	}
 
 	public void addPack() {
 		addPack(new ModPack());
 	}
 
-    public void addPack(ModPack pack) {
-        modPacksModel.addElement(pack);
-        modPacksList.setSelected(modPacksModel.getSize()-1);
-        modPacksList.sortKeepSelected();
-        Globals.setModPack(pack);
-    }
+	public void addPack(ModPack pack) {
+		modPacksModel.addElement(pack);
+		modPacksList.setSelected(modPacksModel.getSize()-1);
+		modPacksList.sortKeepSelected();
+		Globals.setModPack(pack);
+	}
 
 	public boolean codeExists(String code, String currentPack) {
 		if(code == null || code.equals("")) return false;
@@ -244,16 +248,16 @@ public class mainClass extends JFrame implements ListsPacks {
 		return false;
 	}
 
-    public boolean curseIDUsed(String curseID, String currentPack) {
-        for(int i=0; i<modPacksList.getModel().getSize(); i++) {
-            ModPack pack = modPacksList.getModel().get(i);
-            if(curseID.equals(pack.curseID) && !currentPack.equals(pack.shortName)) {
-                System.out.println("CurseID exists in pack with name "+pack.name);
-                return true;
-            }
-        }
-        return false;
-    }
+	public boolean curseIDUsed(String curseID, String currentPack) {
+		for(int i=0; i<modPacksList.getModel().getSize(); i++) {
+			ModPack pack = modPacksList.getModel().get(i);
+			if(curseID.equals(pack.curseID) && !currentPack.equals(pack.shortName)) {
+				System.out.println("CurseID exists in pack with name "+pack.name);
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public void nameChanged() {
@@ -261,7 +265,39 @@ public class mainClass extends JFrame implements ListsPacks {
 	}
 
 	public static void main(String[] args) {
-        mainClass main = new mainClass();
+		Globals.getInstance().initializeFolders();
+		try {
+			MyLogger.setup();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Could not create log file");
+		}
+
+		boolean skipUpdate = false;
+		if (args.length >= 1) {
+			if (args[0].equals("-u") && args.length >= 3) {
+				Updater.finishUpdate(args[1], args[2]);
+				return;
+			} else if (args[0].equals("-c") && args.length >= 3) {
+				Updater.cleanup(args[1], args[2]);
+			} else if (args[0].equals("-d")) {
+				skipUpdate = true;
+				LOGGER.info("Skipping update");
+			} else {
+				LOGGER.warning("Unrecognized argument");
+				return;
+			}
+		}
+
+		if (!skipUpdate) {
+			String newVersion = Updater.checkUpdate(Globals.version);
+			LOGGER.info("Updating to: "+newVersion);
+			if (newVersion != null) {
+				Updater.startUpdate(newVersion);
+			}
+		}
+
+		mainClass main = new mainClass();
 		main.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentHidden(ComponentEvent e) {
@@ -269,5 +305,5 @@ public class mainClass extends JFrame implements ListsPacks {
 				((JFrame)(e.getComponent())).dispose();
 			}
 		});
-    }
+	}
 }

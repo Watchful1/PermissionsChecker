@@ -34,10 +34,10 @@ public class ModFile {
 		return file.getName();
 	}
 
-    public void addVersion (String version)
-    {
-        versions.addElement(version);
-    }
+	public void addVersion (String version)
+	{
+		versions.addElement(version);
+	}
 
 	public ModInfo getInfo() {
 		/*if(mcmod != null) {

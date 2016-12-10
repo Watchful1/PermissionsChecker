@@ -11,20 +11,20 @@ import java.awt.event.FocusListener;
 public class LabelField extends JPanel {
 	private JLabel label;
 	private JTextField textField;
-    private ChangeListener changeListener;
-    private String oldText;
+	private ChangeListener changeListener;
+	private String oldText;
 
-    public LabelField(String name) {
-        this(name, null);
-    }
+	public LabelField(String name) {
+		this(name, null);
+	}
 
-    public LabelField(String name, ChangeListener changeListener) {
-        this(name, Integer.MAX_VALUE, changeListener);
-    }
+	public LabelField(String name, ChangeListener changeListener) {
+		this(name, Integer.MAX_VALUE, changeListener);
+	}
 
 	public LabelField(String name, int max, ChangeListener changeListener) {
-        this.changeListener = changeListener;
-        oldText = "";
+		this.changeListener = changeListener;
+		oldText = "";
 
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setAlignmentX(0);
@@ -37,23 +37,23 @@ public class LabelField extends JPanel {
 		
 		textField = new JTextField();
 		textField.setMaximumSize(new Dimension(max, 21));
-        textField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
+		textField.addFocusListener(new FocusListener() {
+			@Override
+			public void focusGained(FocusEvent e) {
+			}
 
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (oldText.equals(getText())) return;
-                oldText = getText();
-                notifyChanged();
-            }
-        });
+			@Override
+			public void focusLost(FocusEvent e) {
+				if (oldText.equals(getText())) return;
+				oldText = getText();
+				notifyChanged();
+			}
+		});
 		this.add(textField);
 	}
 	
 	public void setText(String in) {
-        oldText = in;
+		oldText = in;
 		textField.setText(in);
 	}
 	
@@ -61,18 +61,18 @@ public class LabelField extends JPanel {
 		return textField.getText();
 	}
 
-    public void lock(String lockReason) {
-        textField.setToolTipText(lockReason);
-        textField.setEditable(false);
-    }
+	public void lock(String lockReason) {
+		textField.setToolTipText(lockReason);
+		textField.setEditable(false);
+	}
 
-    public void unLock() {
-        textField.setToolTipText("");
-        textField.setEditable(true);
-    }
+	public void unLock() {
+		textField.setToolTipText("");
+		textField.setEditable(true);
+	}
 
-    public void notifyChanged() {
-        if(changeListener == null) return;
-        changeListener.stateChanged(new ChangeEvent(this));
-    }
+	public void notifyChanged() {
+		if(changeListener == null) return;
+		changeListener.stateChanged(new ChangeEvent(this));
+	}
 }
