@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="PermissionsChecker:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/PermissionsChecker_jar</output-path>
-    <root id="archive" name="PermissionsChecker.jar">
+  <artifact type="jar" name="PermChecker:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PermChecker_jar</output-path>
+    <root id="archive" name="PermChecker.jar">
       <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/stax/stax-api/1.0.1/49c100caf72d658aca8e58bd74a4ba90fa2b0d70/stax-api-1.0.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.xmlbeans/xmlbeans/2.6.0/29e80d2dd51f9dcdef8f9ffaee0d4dc1c9bbfc87/xmlbeans-2.6.0.jar" path-in-jar="/" />

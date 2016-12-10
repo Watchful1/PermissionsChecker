@@ -3,6 +3,7 @@ package gr.watchful.permchecker;
 import gr.watchful.permchecker.datastructures.*;
 import gr.watchful.permchecker.listenerevent.NamedScrollingListPanelListener;
 import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
+import gr.watchful.permchecker.logging.MyLogger;
 import gr.watchful.permchecker.panels.ModPacksPanel;
 import gr.watchful.permchecker.panels.NamedScrollingListPanel;
 import gr.watchful.permchecker.panels.PermissionsPanel;
@@ -22,9 +23,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @SuppressWarnings("serial")
 public class mainClass extends JFrame implements ListsPacks {
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
 	private JTabbedPane tabbedPane;
 	private ModPacksPanel modPacksPanel;
 	private UpdatePanel updatePanel;
@@ -262,21 +266,35 @@ public class mainClass extends JFrame implements ListsPacks {
 	}
 
 	public static void main(String[] args) {
-		if (args.length >= 3) {
-			if (args[0].equals("-u")) {
+		try {
+			MyLogger.setup();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Could not create log file");
+		}
+		LOGGER.info("Test");
+
+		boolean skipUpdate = false;
+		if (args.length >= 1) {
+			if (args[0].equals("-u") && args.length >= 3) {
 				Updater.finishUpdate(args[1], args[2]);
 				return;
-			} else if (args[0].equals("-c")) {
+			} else if (args[0].equals("-c") && args.length >= 3) {
 				Updater.cleanup(args[1], args[2]);
+			} else if (args[0].equals("-d")) {
+				skipUpdate = true;
+				System.out.println("Skipping update");
 			} else {
 				System.out.println("Unrecognized argument");
 				return;
 			}
 		}
 
-		String newVersion = Updater.checkUpdate(Globals.version);
-		System.out.println(newVersion);
-		if(newVersion != null) Updater.startUpdate(newVersion);
+		if (!skipUpdate) {
+			String newVersion = Updater.checkUpdate(Globals.version);
+			System.out.println(newVersion);
+			if (newVersion != null) Updater.startUpdate(newVersion);
+		}
 
 		mainClass main = new mainClass();
 		main.addComponentListener(new ComponentAdapter() {
