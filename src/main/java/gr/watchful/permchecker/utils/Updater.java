@@ -8,8 +8,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Updater {
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
 	public static String checkUpdate(String currentVersion) {
 		String latestJSON = FileUtils.downloadToString(Globals.latestReleaseUrl);
 		try {
@@ -26,176 +30,89 @@ public class Updater {
 			}
 			return null;
 		} catch (JSONException e) {
-			System.out.println("Couldn't parse json for update");
+			LOGGER.warning("Couldn't parse json for update");
 			return null;
 		}
 	}
 
 	public static void startUpdate(String versionURL) {
-		StringBuilder bldr = new StringBuilder();
-		File logFile = new File("StartUpdate.txt");
-		try {
-			logFile.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		File currentJar = getCurrentJar();
-		bldr.append("Current Jar: "+currentJar.getAbsolutePath()+"\n");
+		LOGGER.info("current Jar: "+currentJar.getAbsolutePath());
 		File parentFolder = new File(currentJar.getParent());
-		bldr.append("Parent Folder: "+parentFolder.getAbsolutePath()+"\n");
 
 		File newJar = new File(parentFolder+File.separator+"NewPermChecker.jar");
-		bldr.append("New Jar: "+newJar.getAbsolutePath()+"\n");
+		LOGGER.info("new Jar: "+newJar.getAbsolutePath());
 		try {
 			FileUtils.downloadToFile(new URL(versionURL), newJar);
 		} catch (IOException e) {
-			System.out.println("Couldn't download update");
-			bldr.append("Couldn't download update"+"\n");
-			FileUtils.writeFile(bldr.toString(), logFile);
+			LOGGER.severe("Couldn't download update");
 			return;
 		}
 
 		File updaterJar = new File(parentFolder+File.separator+"UpdaterPermChecker.jar");
-		bldr.append("Updater Jar: "+updaterJar.getAbsolutePath()+"\n");
+		LOGGER.info("updater Jar: "+updaterJar.getAbsolutePath());
 
 		FileUtils.copyFile(newJar, updaterJar);
-		bldr.append("Copied to updater"+"\n");
+		LOGGER.info("Copied to updater");
 
 		String[] run = {"java","-jar",updaterJar.getName(),"-u",currentJar.getAbsolutePath(),newJar.getAbsolutePath()};
-		for (String cmd : run) {
-			bldr.append(cmd+" ");
-		}
-		bldr.append("\n");
-		FileUtils.writeFile(bldr.toString(), logFile);
 		try {
 			Runtime.getRuntime().exec(run);
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+			LOGGER.severe("Could not run new process in start update");
 		}
 		System.exit(0);
 	}
 
 	public static void finishUpdate(String targetFileString, String sourceFileString) {
-		StringBuilder bldr = new StringBuilder();
-		File logFile = new File("FinishUpdate.txt");
-
-		try {
-			new File("PING1").createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			logFile.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			new File("PING2").createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		File targetFile = new File(targetFileString);
-		bldr.append("Target Jar: "+targetFile.getAbsolutePath()+"\n");
+		LOGGER.info("Target Jar: "+targetFile.getAbsolutePath());
 		if (!targetFile.exists()) {
-			System.out.println("Updater, target file does not exist, aborting");
-			bldr.append("Updater, target file does not exist, aborting"+"\n");
-			FileUtils.writeFile(bldr.toString(), logFile);
+			LOGGER.warning("Updater, target file does not exist, aborting");
 			return;
 		}
-
-		try {
-			new File("PING3").createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 
 		File sourceFile = new File(sourceFileString);
-		bldr.append("Source Jar: "+sourceFile.getAbsolutePath()+"\n");
+		LOGGER.info("Source Jar: "+sourceFile.getAbsolutePath());
 		if (!sourceFile.exists()) {
-			System.out.println("Updater, source file does not exist, aborting");
-			bldr.append("Updater, source file does not exist, aborting"+"\n");
-			FileUtils.writeFile(bldr.toString(), logFile);
+			LOGGER.warning("Updater, source file does not exist, aborting");
 			return;
 		}
 
-		try {
-			new File("PING4").createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-
 		targetFile.delete();
-		bldr.append("Deleted target" + "\n");
+		LOGGER.info("Deleted target");
 		sourceFile.renameTo(targetFile);
-		bldr.append("Copied source" + "\n");
-
-
-		try {
-			new File("PING5").createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		LOGGER.info("Copied source");
 
 		File updaterFile = getCurrentJar();
-		bldr.append("Updater Jar: "+updaterFile.getAbsolutePath()+"\n");
-
-
-		try {
-			new File("PING6").createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		LOGGER.info("Updater Jar: "+updaterFile.getAbsolutePath());
 
 		String[] run = {"java","-jar",targetFile.getName(),"-c",sourceFile.getAbsolutePath(),updaterFile.getAbsolutePath()};
-		for (String cmd : run) {
-			bldr.append(cmd+" ");
-		}
-		bldr.append("\n");
-
-		try {
-			new File("PING7").createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		FileUtils.writeFile(bldr.toString(), logFile);
 		try {
 			Runtime.getRuntime().exec(run);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+			LOGGER.severe("Could not run new process in finish update");
 		}
 		System.exit(0);
 	}
 
 	public static void cleanup(String fileString1, String fileString2) {
-		StringBuilder bldr = new StringBuilder();
-		File logFile = new File("CleanUpdate.txt");
-		try {
-			logFile.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		File file = new File(fileString1);
 		if (!file.exists()) {
-			System.out.println("file 1 does not exist");
-			bldr.append("file 1 does not exist" + "\n");
+			LOGGER.info("file 1 does not exist");
 		}
 		file.delete();
-		bldr.append("deleted 1" + "\n");
+		LOGGER.info("deleted 1");
 
 		file = new File(fileString2);
 		if (!file.exists()) {
-			System.out.println("file 2 does not exist");
-			bldr.append("file 2 does not exist" + "\n");
+			LOGGER.info("file 2 does not exist");
 		}
 		file.delete();
-		bldr.append("deleted 2" + "\n");
-		FileUtils.writeFile(bldr.toString(), logFile);
+		LOGGER.info("deleted 2");
 	}
 
 	public static File getCurrentJar() {
@@ -203,13 +120,13 @@ public class Updater {
 		try {
 			path = Updater.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 		} catch (URISyntaxException e) {
-			System.out.println("Couldn't get path");
+			LOGGER.warning("Couldn't get current jar path");
 			return null;
 		}
 		try {
 			path = URLDecoder.decode(path, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			System.out.println("Couldn't get path");
+			LOGGER.warning("Couldn't get current jar path");
 			return null;
 		}
 		return new File(path);

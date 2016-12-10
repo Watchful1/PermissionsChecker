@@ -27,7 +27,9 @@ public class MyLogger {
 			public String format(LogRecord record) {
 				return "("+
 						new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.ENGLISH).format(new Date(record.getMillis()))+
-						") - "+
+						") - ["+
+						record.getSourceClassName().substring(24)+
+						"] - "+
 						record.getLevel()+
 						" - "+
 						record.getMessage()+
