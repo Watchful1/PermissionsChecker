@@ -1,5 +1,8 @@
 package gr.watchful.permchecker.logging;
 
+import gr.watchful.permchecker.datastructures.Globals;
+
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,7 +19,7 @@ public class MyLogger {
 		logger.setUseParentHandlers(false);
 
 		logger.setLevel(Level.INFO);
-		fileHandler = new FileHandler("Logging.txt");
+		fileHandler = new FileHandler(Globals.getInstance().appStore+ File.separator+"Log%g.txt", 100000, 3);
 		consoleHandler = new ConsoleHandler();
 
 		formatter = new SimpleFormatter() {

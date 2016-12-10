@@ -42,7 +42,6 @@ public class mainClass extends JFrame implements ListsPacks {
 		//System.out.println("Time 1: " + (System.nanoTime() - startTime) / 1000000);
 		Globals.getInstance().mainFrame = this;
 		Globals.getInstance().listsPacks = this;
-		Globals.getInstance().initializeFolders();
 		Globals.getInstance().loadPreferences();
 		long tempTime = System.nanoTime();
 		Globals.getInstance().updateListings();
@@ -266,6 +265,7 @@ public class mainClass extends JFrame implements ListsPacks {
 	}
 
 	public static void main(String[] args) {
+		Globals.getInstance().initializeFolders();
 		try {
 			MyLogger.setup();
 		} catch (IOException e) {
@@ -283,16 +283,16 @@ public class mainClass extends JFrame implements ListsPacks {
 				Updater.cleanup(args[1], args[2]);
 			} else if (args[0].equals("-d")) {
 				skipUpdate = true;
-				System.out.println("Skipping update");
+				LOGGER.info("Skipping update");
 			} else {
-				System.out.println("Unrecognized argument");
+				LOGGER.warning("Unrecognized argument");
 				return;
 			}
 		}
 
 		if (!skipUpdate) {
 			String newVersion = Updater.checkUpdate(Globals.version);
-			System.out.println(newVersion);
+			LOGGER.info("Updating to: "+newVersion);
 			if (newVersion != null) Updater.startUpdate(newVersion);
 		}
 
