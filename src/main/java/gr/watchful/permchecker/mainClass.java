@@ -272,7 +272,6 @@ public class mainClass extends JFrame implements ListsPacks {
 			e.printStackTrace();
 			throw new RuntimeException("Could not create log file");
 		}
-		LOGGER.info("Test");
 
 		boolean skipUpdate = false;
 		if (args.length >= 1) {
@@ -293,7 +292,9 @@ public class mainClass extends JFrame implements ListsPacks {
 		if (!skipUpdate) {
 			String newVersion = Updater.checkUpdate(Globals.version);
 			LOGGER.info("Updating to: "+newVersion);
-			if (newVersion != null) Updater.startUpdate(newVersion);
+			if (newVersion != null) {
+				Updater.startUpdate(newVersion);
+			}
 		}
 
 		mainClass main = new mainClass();

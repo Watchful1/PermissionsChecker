@@ -35,7 +35,7 @@ public class Updater {
 		}
 	}
 
-	public static void startUpdate(String versionURL) {
+	public static Boolean startUpdate(String versionURL) {
 		File currentJar = getCurrentJar();
 		LOGGER.info("current Jar: "+currentJar.getAbsolutePath());
 		File parentFolder = new File(currentJar.getParent());
@@ -46,7 +46,7 @@ public class Updater {
 			FileUtils.downloadToFile(new URL(versionURL), newJar);
 		} catch (IOException e) {
 			LOGGER.severe("Couldn't download update");
-			return;
+			return false;
 		}
 
 		File updaterJar = new File(parentFolder+File.separator+"UpdaterPermChecker.jar");
@@ -64,21 +64,22 @@ public class Updater {
 			LOGGER.severe("Could not run new process in start update");
 		}
 		System.exit(0);
+		return true;
 	}
 
-	public static void finishUpdate(String targetFileString, String sourceFileString) {
+	public static Boolean finishUpdate(String targetFileString, String sourceFileString) {
 		File targetFile = new File(targetFileString);
 		LOGGER.info("Target Jar: "+targetFile.getAbsolutePath());
 		if (!targetFile.exists()) {
 			LOGGER.warning("Updater, target file does not exist, aborting");
-			return;
+			return false;
 		}
 
 		File sourceFile = new File(sourceFileString);
 		LOGGER.info("Source Jar: "+sourceFile.getAbsolutePath());
 		if (!sourceFile.exists()) {
 			LOGGER.warning("Updater, source file does not exist, aborting");
-			return;
+			return false;
 		}
 
 		targetFile.delete();
@@ -97,6 +98,7 @@ public class Updater {
 			LOGGER.severe("Could not run new process in finish update");
 		}
 		System.exit(0);
+		return true;
 	}
 
 	public static void cleanup(String fileString1, String fileString2) {
