@@ -26,6 +26,7 @@ public class Globals {
 	private ArrayList<UsesPack> packListeners;
 	public boolean changeFlag;
 	public boolean oldVersionsFlag;
+	public ArrayList<String> filesToReplace;
 
 	public static final String permUrl = "https://onedrive.live.com/download?resid=96628E67B4C51B81!161&ithint=" +
 			"file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
@@ -38,11 +39,17 @@ public class Globals {
 	public static final String curseProjectRoot = "http://minecraft.curseforge.com/modpacks/";
 	public static final String version = "1.3.0";
 	public static final String latestReleaseUrl = "https://api.github.com/repos/Watchful1/PermissionsChecker/releases/latest";
-
+	public static final String serverBaseUrl = "https://github.com/FeedTheBeast/FTBServerBase/archive/master.zip";
 
 	public Globals() {
 		nameRegistry = new ModNameRegistry();
 		packListeners = new ArrayList<>();
+
+		filesToReplace = new ArrayList<>();
+		filesToReplace.add("settings.bat");
+		filesToReplace.add("settings.sh");
+		filesToReplace.add("version.json");
+
 	}
 
 	public static Globals getInstance() {

@@ -39,12 +39,13 @@ public class Preferences {
 
 		if(minecraftVersions == null) {
 			minecraftVersions = new ArrayList<>();
+			minecraftVersions.add("1.11");
+			minecraftVersions.add("1.10.2");
+			minecraftVersions.add("1.10");
+			minecraftVersions.add("1.9");
 			minecraftVersions.add("1.8.9");
-			minecraftVersions.add("1.8.8");
 			minecraftVersions.add("1.8");
 			minecraftVersions.add("1.7.10");
-			minecraftVersions.add("1.7.2");
-			minecraftVersions.add("1.6.4");
 		}
 		if(defaultMinecraftVersion == null || defaultMinecraftVersion.equals("")) defaultMinecraftVersion = "1.7.10";
 		if(listedPackTypes == null) {

@@ -9,6 +9,7 @@ import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModPack;
 import gr.watchful.permchecker.datastructures.ModPackVersion;
 import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.utils.IOUtils;
@@ -45,12 +46,14 @@ public class FileUtils {
 		if (sourceFolder.isDirectory()) {
 			if (!destinationFolder.exists()) {
 				destinationFolder.mkdirs();
+			} else if (overwrite) {
+				FileUtils.purgeDirectory(destinationFolder);
 			}
 			String files[] = sourceFolder.list();
 			for (String file : files) {
 				File srcFile = new File(sourceFolder, file);
 				File destFile = new File(destinationFolder, file);
-				copyFolder(srcFile, destFile);
+				copyFolder(srcFile, destFile, overwrite);
 			}
 		} else {
 			copyFile(sourceFolder, destinationFolder, overwrite);
@@ -93,6 +96,16 @@ public class FileUtils {
 		}
 	}
 
+	public static void moveFolderContents(File sourceFolder, File destionationFolder) {
+		moveFolderContents(sourceFolder, destionationFolder, false);
+	}
+
+	public static void moveFolderContents(File sourceFolder, File destinationFolder, boolean overwrite) {
+		for (String file : sourceFolder.list()) {
+			moveFile(new File(sourceFolder, file), new File(destinationFolder, file), overwrite);
+		}
+	}
+
 	public static void moveFile(File sourceFile, File destinationFile) {
 		moveFile(sourceFile, destinationFile, true);
 	}
@@ -118,6 +131,17 @@ public class FileUtils {
 			}
 		}
 		return resource.delete();
+	}
+
+	public static boolean extractFileFromZip(File zip, String fileName, File outputLocation) {
+		try {
+			ZipFile zipFile = new ZipFile(zip);
+			zipFile.extractFile(fileName, outputLocation.getPath());
+			return true;
+		} catch (ZipException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	public static boolean extractZipTo(File zipLocation, File outputLocation) {
@@ -323,7 +347,7 @@ public class FileUtils {
 		conn.setRequestProperty("User-Agent", "FTBPermissionsChecker");
 		ReadableByteChannel rbc = Channels.newChannel(conn.getInputStream());
 		FileOutputStream fos = new FileOutputStream(file);
-		fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+		fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 		fos.close();
 	}
 
@@ -405,13 +429,18 @@ public class FileUtils {
 		return addForge(minecraftFolder, forgeVersion, ForgeType.VERSION, "");
 	}
 
-	private static boolean addForge(File minecraftFolder, int forgeVersion, ForgeType forgeType, String mcVersion) {
+	public static String getForgeUrl(int forgeVersion, ForgeType forgeType, String mcVersion) {
 		String forgeUrl = Globals.forgeUrl;
 		if(forgeType.equals(ForgeType.RECOMMENDED) || forgeType.equals(ForgeType.LATEST)) {
 			if (mcVersion != null && !mcVersion.equals("")) forgeUrl = forgeUrl.concat(mcVersion).concat("-");
 			if (forgeType.equals(ForgeType.RECOMMENDED)) forgeUrl = forgeUrl.concat("recommended");
 			else forgeUrl = forgeUrl.concat("latest");
 		} else forgeUrl = forgeUrl.concat(Integer.toString(forgeVersion));
+		return forgeUrl;
+	}
+
+	private static boolean addForge(File minecraftFolder, int forgeVersion, ForgeType forgeType, String mcVersion) {
+		String forgeUrl = getForgeUrl(forgeVersion, forgeType, mcVersion);
 		File jsonFile = new File(minecraftFolder+File.separator+"pack.json");
 		try {
 			System.out.println("URL: "+forgeUrl);
@@ -629,6 +658,15 @@ public class FileUtils {
 			if (file.isDirectory()) purgeDirectory(file);
 			file.delete();
 		}
+	}
+
+	public static File getEmptyFolder(File dir) {
+		if (dir.exists()) {
+			FileUtils.purgeDirectory(dir);
+		} else {
+			dir.mkdir();
+		}
+		return dir;
 	}
 
 	public static boolean remoteFileExists(String url)  {

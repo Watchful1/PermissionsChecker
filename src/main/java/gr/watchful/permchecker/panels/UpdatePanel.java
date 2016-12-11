@@ -2,6 +2,9 @@ package gr.watchful.permchecker.panels;
 
 import gr.watchful.permchecker.datastructures.*;
 import gr.watchful.permchecker.utils.FileUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -11,15 +14,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
 	private LabelField packName;
 	private FileSelector selector;
 	private FileSelector iconSelector;
 	private FileSelector splashSelector;
 	private FileSelector squareSelector;
 	private FileSelector serverSelector;
+	private JButton serverCreator;
+	private ModPack currentPack;
 	JComboBox<String> versionSelector;
 	public PermissionsPanel permPanel;//TODO really should be a better way to do this
 
@@ -43,6 +54,21 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		serverSelector = new FileSelector("Server", -1, "zip", this);
 		this.add(serverSelector);
 
+		this.add(Box.createRigidArea(new Dimension(0,10)));
+		JPanel creatorPanel = new JPanel();
+		creatorPanel.setLayout(new BoxLayout(creatorPanel, BoxLayout.X_AXIS));
+		creatorPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+		creatorPanel.add(Box.createHorizontalGlue());
+
+		serverCreator = new JButton("Create Server");
+		serverCreator.setEnabled(false);
+		serverCreator.addActionListener(e -> createServer());
+		creatorPanel.add(serverCreator);
+
+		creatorPanel.add(Box.createHorizontalGlue());
+		this.add(creatorPanel);
+		this.add(Box.createRigidArea(new Dimension(0,10)));
+
 		versionSelector = new JComboBox<>();
 		versionSelector.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
 		versionSelector.setAlignmentX(JPanel.LEFT_ALIGNMENT);
@@ -58,9 +84,89 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		this.add(exportButton);
 	}
 
+	private void createServer() {
+		File serverFolder = new File(Globals.getInstance().appStore,"server");
+		FileUtils.copyFolder(Globals.getInstance().preferences.workingFolder, serverFolder, true);
+
+		File minecraftFolder = new File(serverFolder,"minecraft");
+		if (!minecraftFolder.exists()) {
+			LOGGER.warning("Could not create folder, minecraft folder doesn't exist");
+			return;
+		}
+		FileUtils.moveFolderContents(minecraftFolder, serverFolder);
+		minecraftFolder.delete();
+
+		File tempZip = new File(Globals.getInstance().appStore, "baseZip.zip");
+		tempZip.delete();
+		try {
+			FileUtils.downloadToFile(new URL(Globals.serverBaseUrl), tempZip);
+		} catch (IOException e) {
+			LOGGER.log(Level.WARNING, e.getMessage(), e);
+			LOGGER.severe("Could not download server base");
+			return;
+		}
+
+		File tempFolder = FileUtils.getEmptyFolder(new File(Globals.getInstance().appStore, "tempFolder"));
+		FileUtils.extractZipTo(tempZip,tempFolder);
+		File serverBaseFolder = new File(tempFolder+File.separator+"FTBServerBase-master"+File.separator+"Server");
+		if (!serverBaseFolder.exists()) {
+			LOGGER.warning("Server base files missing from zip");
+			return;
+		}
+		FileUtils.moveFolderContents(serverBaseFolder, serverFolder);
+
+		String forgeFullName = null;
+		String forgeUrl;
+		try {
+			String forgeJsonString = FileUtils.downloadToString(FileUtils.getForgeUrl(currentPack.ForgeVersion, currentPack.forgeType, currentPack.minecraftVersion));
+			JSONObject forgeJson = new JSONObject(forgeJsonString);
+			JSONArray libs = forgeJson.getJSONArray("libraries");
+			for(int i=0; i<libs.length(); i++) {
+				if (libs.getJSONObject(i).getString("name").matches("minecraftforge")) {
+					forgeFullName = libs.getJSONObject(i).getString("name");
+					forgeUrl = libs.getJSONObject(i).getString("url");
+					break;
+				}
+			}
+		} catch (JSONException e) {
+			LOGGER.log(Level.WARNING, e.getMessage(), e);
+			LOGGER.severe("Could not parse forge json");
+			return;
+		}
+		if (forgeFullName == null) {
+			LOGGER.severe("Could not find forge in json");
+			return;
+		}
+
+
+
+		for (String file : Globals.getInstance().filesToReplace) {
+			File replaceFile = new File(serverFolder, file);
+			if (!replaceFile.exists()) {
+				LOGGER.warning("File not found, skipping replacement: "+file);
+				continue;
+			}
+			String content = FileUtils.readFile(replaceFile);
+			content = content.replaceAll("\\*FORGEVERSION\\*", Integer.toString(currentPack.ForgeVersion));
+			content = content.replaceAll("\\*MCVERSION\\*", currentPack.minecraftVersion);
+			content = content.replaceAll("\\*PACKVERSION\\*", versionSelector.getSelectedItem().toString());
+			content = content.replaceAll("\\*PACKSHORTNAME\\*", currentPack.shortName);
+			FileUtils.writeFile(content, replaceFile);
+		}
+
+		try {
+			Desktop.getDesktop().open(serverFolder);
+		} catch (IOException e) {
+			LOGGER.log(Level.WARNING, e.getMessage(), e);
+			LOGGER.severe("Could not open server folder");
+		}
+	}
+
 	public void setPack(ModPack pack) {
+		currentPack = pack;
 		packName.setText(pack.name);
 		selector.clearSelection();
+		serverCreator.setEnabled(false);
 		iconSelector.setFile(pack.icon);
 		splashSelector.setFile(pack.splash);
 		squareSelector.setFile(pack.square);
@@ -364,6 +470,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		System.out.println("Deleting working folder");
 		FileUtils.purgeDirectory(Globals.getInstance().preferences.workingFolder);
 		selector.clearSelection();
+		serverCreator.setEnabled(false);
 	}
 
 	private ArrayList<String> loadCurseKeys() {
@@ -399,6 +506,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		if(e.getSource().equals(selector)) {
 			if(selector.getFile() == null) return;
 			extractPack(selector.getFile());
+			serverCreator.setEnabled(true);
 			return;
 		}
 
