@@ -15,10 +15,13 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -108,37 +111,42 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 
 		File tempFolder = FileUtils.getEmptyFolder(new File(Globals.getInstance().appStore, "tempFolder"));
 		FileUtils.extractZipTo(tempZip,tempFolder);
+		tempZip.delete();
 		File serverBaseFolder = new File(tempFolder+File.separator+"FTBServerBase-master"+File.separator+"Server");
 		if (!serverBaseFolder.exists()) {
 			LOGGER.warning("Server base files missing from zip");
 			return;
 		}
 		FileUtils.moveFolderContents(serverBaseFolder, serverFolder);
+		FileUtils.purgeDirectory(serverBaseFolder);
 
-		String forgeFullName = null;
-		String forgeUrl;
+		File forgeFile = new File(serverFolder, "Forge.jar");
+		String finalUrl;
 		try {
-			String forgeJsonString = FileUtils.downloadToString(FileUtils.getForgeUrl(currentPack.ForgeVersion, currentPack.forgeType, currentPack.minecraftVersion));
-			JSONObject forgeJson = new JSONObject(forgeJsonString);
-			JSONArray libs = forgeJson.getJSONArray("libraries");
-			for(int i=0; i<libs.length(); i++) {
-				if (libs.getJSONObject(i).getString("name").matches("minecraftforge")) {
-					forgeFullName = libs.getJSONObject(i).getString("name");
-					forgeUrl = libs.getJSONObject(i).getString("url");
-					break;
-				}
-			}
-		} catch (JSONException e) {
+			String forgeUrl = Globals.forgeUniversalUrl.concat(FileUtils.getForgeUrlSlug(currentPack.ForgeVersion, currentPack.forgeType, currentPack.minecraftVersion));
+			finalUrl = FileUtils.downloadToFile(new URL(forgeUrl), forgeFile);
+		} catch (Exception e) {
 			LOGGER.log(Level.WARNING, e.getMessage(), e);
-			LOGGER.severe("Could not parse forge json");
+			LOGGER.severe("Could not download forge");
 			return;
 		}
-		if (forgeFullName == null) {
-			LOGGER.severe("Could not find forge in json");
+		Matcher m = Pattern.compile("(?:/forge/).*?/").matcher(finalUrl);
+		if (!m.find()) {
+			LOGGER.severe("Could not parse forge url");
 			return;
 		}
+		String forgeName = m.group(0);
+		forgeName = forgeName.substring("/forge/".length(), forgeName.length()-1);
+		String jarName = "FTBserver-"+forgeName+"-universal.jar";
+		LOGGER.info(jarName);
+		forgeFile.renameTo(new File(serverFolder, jarName));
 
-
+		m = Pattern.compile("\\d+$").matcher(forgeName);
+		if (!m.find()) {
+			LOGGER.severe("Could not parse forge number");
+			return;
+		}
+		String forgeVersion = m.group(0);
 
 		for (String file : Globals.getInstance().filesToReplace) {
 			File replaceFile = new File(serverFolder, file);
@@ -147,10 +155,12 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 				continue;
 			}
 			String content = FileUtils.readFile(replaceFile);
-			content = content.replaceAll("\\*FORGEVERSION\\*", Integer.toString(currentPack.ForgeVersion));
+			content = content.replaceAll("\\*FORGEVERSION\\*", forgeVersion);
 			content = content.replaceAll("\\*MCVERSION\\*", currentPack.minecraftVersion);
 			content = content.replaceAll("\\*PACKVERSION\\*", versionSelector.getSelectedItem().toString());
 			content = content.replaceAll("\\*PACKSHORTNAME\\*", currentPack.shortName);
+			content = content.replaceAll("\\*SERVERJAR\\*", jarName);
+			content = content.replaceAll("\\*XML\\*", currentPack.listedPackType);
 			FileUtils.writeFile(content, replaceFile);
 		}
 
@@ -160,10 +170,20 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 			LOGGER.log(Level.WARNING, e.getMessage(), e);
 			LOGGER.severe("Could not open server folder");
 		}
+
+		JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+				"Click Ok when done");
+
+		File serverOutputZip = new File(Globals.getInstance().appStore, "Server.zip");
+		FileUtils.zipFolderTo(serverFolder, serverOutputZip);
+		FileUtils.purgeDirectory(serverFolder);
+
+		serverSelector.setFile(serverOutputZip);
 	}
 
 	public void setPack(ModPack pack) {
 		currentPack = pack;
+		LOGGER.info(pack.listedPackType);
 		packName.setText(pack.name);
 		selector.clearSelection();
 		serverCreator.setEnabled(false);

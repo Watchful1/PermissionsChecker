@@ -36,8 +36,11 @@ import java.nio.channels.ReadableByteChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class FileUtils {
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
 	public static void copyFolder(File sourceFolder, File destinationFolder) {
 		copyFolder(sourceFolder, destinationFolder, true);
 	}
@@ -116,8 +119,8 @@ public class FileUtils {
 			System.out.println("Destination file exists, aborting");
 			return;
 		}
-		System.out.println("Moving file from: "+sourceFile.getAbsolutePath());
-		System.out.println("To: "+destinationFile.getAbsolutePath());
+		LOGGER.fine("Moving file from: "+sourceFile.getAbsolutePath());
+		LOGGER.fine("To: "+destinationFile.getAbsolutePath());
 		if(destinationFile.exists()) destinationFile.delete();
 		else destinationFile.getParentFile().mkdirs();
 		if(!sourceFile.renameTo(destinationFile)) System.out.println("Move failed!");
@@ -341,14 +344,16 @@ public class FileUtils {
 		return bldr.toString();
 	}
 
-	public static void downloadToFile(URL url, File file) throws IOException {
+	public static String downloadToFile(URL url, File file) throws IOException {
 		file.getParentFile().mkdirs();
 		URLConnection conn = url.openConnection();
 		conn.setRequestProperty("User-Agent", "FTBPermissionsChecker");
 		ReadableByteChannel rbc = Channels.newChannel(conn.getInputStream());
+		String finalUrl = conn.getURL().toString();
 		FileOutputStream fos = new FileOutputStream(file);
 		fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 		fos.close();
+		return finalUrl;
 	}
 
 	public static String downloadToString(String url)  {
@@ -429,8 +434,8 @@ public class FileUtils {
 		return addForge(minecraftFolder, forgeVersion, ForgeType.VERSION, "");
 	}
 
-	public static String getForgeUrl(int forgeVersion, ForgeType forgeType, String mcVersion) {
-		String forgeUrl = Globals.forgeUrl;
+	public static String getForgeUrlSlug(int forgeVersion, ForgeType forgeType, String mcVersion) {
+		String forgeUrl = "";
 		if(forgeType.equals(ForgeType.RECOMMENDED) || forgeType.equals(ForgeType.LATEST)) {
 			if (mcVersion != null && !mcVersion.equals("")) forgeUrl = forgeUrl.concat(mcVersion).concat("-");
 			if (forgeType.equals(ForgeType.RECOMMENDED)) forgeUrl = forgeUrl.concat("recommended");
@@ -440,7 +445,7 @@ public class FileUtils {
 	}
 
 	private static boolean addForge(File minecraftFolder, int forgeVersion, ForgeType forgeType, String mcVersion) {
-		String forgeUrl = getForgeUrl(forgeVersion, forgeType, mcVersion);
+		String forgeUrl = Globals.forgeUrl.concat(getForgeUrlSlug(forgeVersion, forgeType, mcVersion));
 		File jsonFile = new File(minecraftFolder+File.separator+"pack.json");
 		try {
 			System.out.println("URL: "+forgeUrl);

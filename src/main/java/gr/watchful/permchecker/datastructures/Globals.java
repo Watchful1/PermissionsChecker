@@ -40,6 +40,7 @@ public class Globals {
 	public static final String version = "1.3.0";
 	public static final String latestReleaseUrl = "https://api.github.com/repos/Watchful1/PermissionsChecker/releases/latest";
 	public static final String serverBaseUrl = "https://github.com/FeedTheBeast/FTBServerBase/archive/master.zip";
+	public static final String forgeUniversalUrl = "http://api.feed-the-beast.com/ss/api/GetForgeJar/";
 
 	public Globals() {
 		nameRegistry = new ModNameRegistry();
