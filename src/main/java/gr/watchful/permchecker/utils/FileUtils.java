@@ -657,12 +657,16 @@ public class FileUtils {
 		return FileUtils.readXML(xml);
 	}
 
-	public static void purgeDirectory(File dir) {
-		if(!dir.exists()) return;
+	public static Boolean purgeDirectory(File dir) {
+		if(!dir.exists()) return true;
+		boolean failed = false;
 		for (File file: dir.listFiles()) {
-			if (file.isDirectory()) purgeDirectory(file);
-			file.delete();
+			if (file.isDirectory()) {
+				failed = purgeDirectory(file) || failed;
+			}
+			failed = !file.delete() || failed;
 		}
+		return failed;
 	}
 
 	public static File getEmptyFolder(File dir) {

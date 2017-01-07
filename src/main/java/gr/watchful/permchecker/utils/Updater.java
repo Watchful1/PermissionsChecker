@@ -35,6 +35,17 @@ public class Updater {
 		}
 	}
 
+	public static String getChangelog() {
+		String latestJSON = FileUtils.downloadToString(Globals.latestReleaseUrl);
+		try {
+			JSONObject latest = new JSONObject(latestJSON);
+			return latest.getString("body");
+		} catch (JSONException e) {
+			LOGGER.warning("Couldn't parse json for update");
+			return "";
+		}
+	}
+
 	public static Boolean startUpdate(String versionURL) {
 		File currentJar = getCurrentJar();
 		LOGGER.info("current Jar: "+currentJar.getAbsolutePath());

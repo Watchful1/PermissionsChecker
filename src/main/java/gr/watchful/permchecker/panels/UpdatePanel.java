@@ -211,6 +211,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 	}
 
 	public void extractPack(File file) {
+		LOGGER.info("Extracting pack");
 		if(!file.exists()) {
 			System.out.println("Can't extract pack, file doesn't exist!");
 			return;
@@ -226,7 +227,13 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 			return;
 		}
 
-		FileUtils.purgeDirectory(Globals.getInstance().preferences.workingFolder);
+		if(FileUtils.purgeDirectory(Globals.getInstance().preferences.workingFolder)) {
+			JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+					"Failed to clear working folder, aborting pack import");
+			LOGGER.warning("Failed to clear working folder, aborting pack import");
+			selector.clearSelection();
+			return;
+		}
 		boolean temp = FileUtils.extractZipTo(file, Globals.getInstance().preferences.workingFolder);
 		if(temp) {
 			File working = Globals.getInstance().preferences.workingFolder;

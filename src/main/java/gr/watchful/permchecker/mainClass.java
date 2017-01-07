@@ -37,6 +37,8 @@ public class mainClass extends JFrame implements ListsPacks {
 	public NamedScrollingListPanel<ModPack> modPacksList;
 	private ModPack oldSelection;
 
+	private static boolean showChangelog = false;
+
 	public mainClass() {
 		long startTime = System.nanoTime();
 		//System.out.println("Time 1: " + (System.nanoTime() - startTime) / 1000000);
@@ -169,6 +171,14 @@ public class mainClass extends JFrame implements ListsPacks {
 		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setVisible(true);
 
+		if (showChangelog) {
+			String changelog = Updater.getChangelog();
+			JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
+					"Tool updated to version "+Globals.version+
+					"\n\nChangelog:\n\n"+changelog
+			);
+		}
+
 		long endTime = System.nanoTime();
 		System.out.println("Startup took: " + (endTime - startTime) / 1000000);
 	}
@@ -280,6 +290,7 @@ public class mainClass extends JFrame implements ListsPacks {
 				return;
 			} else if (args[0].equals("-c") && args.length >= 3) {
 				Updater.cleanup(args[1], args[2]);
+				showChangelog = true;
 			} else if (args[0].equals("-d")) {
 				skipUpdate = true;
 				LOGGER.info("Skipping update");
