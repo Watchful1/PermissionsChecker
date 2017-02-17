@@ -37,10 +37,12 @@ public class Globals {
 	public static final int metaVersion = 1;
 	public static final String curseFileName = "curseKeys.json";
 	public static final String curseProjectRoot = "http://minecraft.curseforge.com/modpacks/";
-	public static final String version = "1.3.2";
+	public static final String version = "1.3.3";
 	public static final String latestReleaseUrl = "https://api.github.com/repos/Watchful1/PermissionsChecker/releases/latest";
+	public static final String serverCommitsUrl = "https://api.github.com/repos/FeedTheBeast/FTBServerBase/commits";
 	public static final String serverBaseUrl = "https://github.com/FeedTheBeast/FTBServerBase/archive/master.zip";
 	public static final String forgeUniversalUrl = "http://api.feed-the-beast.com/ss/api/GetForgeJar/";
+	public static final String serverMinecraftVersion = "1.10.2";
 
 	public Globals() {
 		nameRegistry = new ModNameRegistry();

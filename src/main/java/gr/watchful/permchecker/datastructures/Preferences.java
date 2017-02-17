@@ -18,9 +18,9 @@ public class Preferences {
 	public String defaultOpenFolderPath;
 	public ArrayList<String> minecraftVersions;
 	public String defaultMinecraftVersion;
-	public String parsedPackShortName;
 	public boolean copyImportAssets;
 	public ArrayList<String> listedPackTypes;
+	public String serverFilesCommitSHA;
 
 	public Preferences(File appStore) {
 		init(appStore);
@@ -31,6 +31,7 @@ public class Preferences {
 		if(workingFolderPath == null || workingFolderPath.equals("")) workingFolderPath = appStore+File.separator+"working";
 		if(exportFolderPath == null || exportFolderPath.equals("")) exportFolderPath = appStore+File.separator+"export";
 		if(defaultOpenFolderPath == null || defaultOpenFolderPath.equals("")) defaultOpenFolderPath = System.getProperty("user.home");
+		if(serverFilesCommitSHA == null) serverFilesCommitSHA = "";
 
 		saveFolder = new File(saveFolderPath);
 		workingFolder = new File(workingFolderPath);

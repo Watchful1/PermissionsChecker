@@ -57,6 +57,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		serverSelector = new FileSelector("Server", -1, "zip", this);
 		this.add(serverSelector);
 
+
 		this.add(Box.createRigidArea(new Dimension(0,10)));
 		JPanel creatorPanel = new JPanel();
 		creatorPanel.setLayout(new BoxLayout(creatorPanel, BoxLayout.X_AXIS));
@@ -100,18 +101,55 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		minecraftFolder.delete();
 
 		File tempZip = new File(Globals.getInstance().appStore, "baseZip.zip");
-		tempZip.delete();
+		Boolean downloadServer = false;
+		String commitSHA = null;
+
+		String commitsJSON = FileUtils.downloadToString(Globals.serverCommitsUrl);
 		try {
-			FileUtils.downloadToFile(new URL(Globals.serverBaseUrl), tempZip);
-		} catch (IOException e) {
-			LOGGER.log(Level.WARNING, e.getMessage(), e);
-			LOGGER.severe("Could not download server base");
-			return;
+			JSONArray commits = new JSONArray(commitsJSON);
+			commitSHA = ((JSONObject) commits.get(0)).getString("sha");
+		} catch (JSONException e) {
+			LOGGER.warning("Couldn't parse json for commits, downloading anyway");
+			downloadServer = true;
+		}
+		if (tempZip.exists() && !downloadServer) {
+			if (Globals.getInstance().preferences.equals("")) {
+				LOGGER.info("Local SHA missing, downloading");
+				downloadServer = true;
+			} else {
+				if (commitSHA != null && !commitSHA.equals("")) {
+					LOGGER.info("Found commit SHA: "+commitSHA);
+					LOGGER.info("Stored commit SHA: "+Globals.getInstance().preferences.serverFilesCommitSHA);
+					if (commitSHA.equals(Globals.getInstance().preferences.serverFilesCommitSHA)) {
+						LOGGER.info("SHA matches, using cache");
+					} else {
+						LOGGER.info("SHA doesn't match, downloading");
+						downloadServer = true;
+					}
+				} else {
+					LOGGER.info("Couldn't find SHA, downloading");
+					downloadServer = true;
+				}
+			}
+		} else if (!downloadServer) {
+			LOGGER.info("Server cache missing, downloading");
+			downloadServer = true;
+		}
+		if (downloadServer) {
+			tempZip.delete();
+			try {
+				FileUtils.downloadToFile(new URL(Globals.serverBaseUrl), tempZip);
+				Globals.getInstance().preferences.serverFilesCommitSHA = commitSHA;
+				Globals.getInstance().savePreferences();
+			} catch (IOException e) {
+				LOGGER.log(Level.WARNING, e.getMessage(), e);
+				LOGGER.severe("Could not download server base");
+				return;
+			}
 		}
 
 		File tempFolder = FileUtils.getEmptyFolder(new File(Globals.getInstance().appStore, "tempFolder"));
 		FileUtils.extractZipTo(tempZip,tempFolder);
-		tempZip.delete();
 		File serverBaseFolder = new File(tempFolder+File.separator+"FTBServerBase-master"+File.separator+"Server");
 		if (!serverBaseFolder.exists()) {
 			LOGGER.warning("Server base files missing from zip");
@@ -533,7 +571,9 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		if(e.getSource().equals(selector)) {
 			if(selector.getFile() == null) return;
 			extractPack(selector.getFile());
-			serverCreator.setEnabled(true);
+			if (Globals.getModPack().minecraftVersion.equals(Globals.serverMinecraftVersion)) {
+				serverCreator.setEnabled(true);
+			}
 			return;
 		}
 
