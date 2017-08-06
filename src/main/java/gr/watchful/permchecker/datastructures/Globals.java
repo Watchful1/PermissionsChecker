@@ -26,7 +26,8 @@ public class Globals {
 	private ArrayList<UsesPack> packListeners;
 	public boolean changeFlag;
 	public boolean oldVersionsFlag;
-	public ArrayList<String> filesToReplace;
+	public ArrayList<String> filesToReplaceServer;
+	public ArrayList<String> filesToReplaceClient;
 
 	public static final String permUrl = "https://onedrive.live.com/download?resid=96628E67B4C51B81!161&ithint=" +
 			"file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
@@ -42,17 +43,19 @@ public class Globals {
 	public static final String serverCommitsUrl = "https://api.github.com/repos/FeedTheBeast/FTBServerBase/commits";
 	public static final String serverBaseUrl = "https://github.com/FeedTheBeast/FTBServerBase/archive/master.zip";
 	public static final String forgeUniversalUrl = "http://api.feed-the-beast.com/ss/api/GetForgeJar/";
-	public static final String serverMinecraftVersion = "1.10.2";
+	public static final String[] serverMinecraftVersions = {"1.10.2","1.12"};
 
 	public Globals() {
 		nameRegistry = new ModNameRegistry();
 		packListeners = new ArrayList<>();
 
-		filesToReplace = new ArrayList<>();
-		filesToReplace.add("settings.bat");
-		filesToReplace.add("settings.sh");
-		filesToReplace.add("version.json");
+		filesToReplaceServer = new ArrayList<>();
+		filesToReplaceServer.add("settings.bat");
+		filesToReplaceServer.add("settings.sh");
+		filesToReplaceServer.add("version.json");
 
+		filesToReplaceClient = new ArrayList<>();
+		filesToReplaceClient.add("config/Mercurious.cfg");
 	}
 
 	public static Globals getInstance() {

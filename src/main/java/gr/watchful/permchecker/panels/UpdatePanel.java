@@ -15,9 +15,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -186,7 +186,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		}
 		String forgeVersion = m.group(0);
 
-		for (String file : Globals.getInstance().filesToReplace) {
+		for (String file : Globals.getInstance().filesToReplaceServer) {
 			File replaceFile = new File(serverFolder, file);
 			if (!replaceFile.exists()) {
 				LOGGER.warning("File not found, skipping replacement: "+file);
@@ -571,7 +571,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		if(e.getSource().equals(selector)) {
 			if(selector.getFile() == null) return;
 			extractPack(selector.getFile());
-			if (Globals.getModPack().minecraftVersion.equals(Globals.serverMinecraftVersion)) {
+			if (Arrays.asList(Globals.serverMinecraftVersions).contains(Globals.getModPack().minecraftVersion)) {
 				serverCreator.setEnabled(true);
 			}
 			return;
