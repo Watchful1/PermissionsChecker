@@ -43,7 +43,7 @@ public class Globals {
 	public static final String serverCommitsUrl = "https://api.github.com/repos/FeedTheBeast/FTBServerBase/commits";
 	public static final String serverBaseUrl = "https://github.com/FeedTheBeast/FTBServerBase/archive/master.zip";
 	public static final String forgeUniversalUrl = "http://api.feed-the-beast.com/ss/api/GetForgeJar/";
-	public static final String[] serverMinecraftVersions = {"1.10.2","1.12"};
+	public static final String[] serverMinecraftVersions = {"1.10.2","1.12","1.12.1","1.12.2"};
 
 	public Globals() {
 		nameRegistry = new ModNameRegistry();
