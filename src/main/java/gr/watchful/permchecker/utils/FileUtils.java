@@ -344,16 +344,41 @@ public class FileUtils {
 		return bldr.toString();
 	}
 
-	public static String downloadToFile(URL url, File file) throws IOException {
+	public static String downloadToFile(String url, File file) throws IOException {
 		file.getParentFile().mkdirs();
-		URLConnection conn = url.openConnection();
-		conn.setRequestProperty("User-Agent", "FTBPermissionsChecker");
+		HttpURLConnection conn;
+		URL resourceUrl, base, next;
+		String location;
+		while (true)
+		{
+			resourceUrl = new URL(url);
+			conn = (HttpURLConnection) resourceUrl.openConnection();
+
+			conn.setConnectTimeout(15000);
+			conn.setReadTimeout(15000);
+			conn.setInstanceFollowRedirects(false);
+			conn.setRequestProperty("User-Agent", "FTBPermissionsChecker");
+
+			switch (conn.getResponseCode())
+			{
+				case HttpURLConnection.HTTP_MOVED_PERM:
+				case HttpURLConnection.HTTP_MOVED_TEMP:
+					location = conn.getHeaderField("Location");
+					location = URLDecoder.decode(location, "UTF-8");
+					base     = new URL(url);
+					next     = new URL(base, location);  // Deal with relative URLs
+					url      = next.toExternalForm();
+					continue;
+			}
+
+			break;
+		}
+		conn.setInstanceFollowRedirects(true);
 		ReadableByteChannel rbc = Channels.newChannel(conn.getInputStream());
-		String finalUrl = conn.getURL().toString();
 		FileOutputStream fos = new FileOutputStream(file);
 		fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 		fos.close();
-		return finalUrl;
+		return conn.getURL().toString();
 	}
 
 	public static String downloadToString(String url)  {
@@ -449,7 +474,7 @@ public class FileUtils {
 		File jsonFile = new File(minecraftFolder+File.separator+"pack.json");
 		try {
 			System.out.println("URL: "+forgeUrl);
-			downloadToFile(new URL(forgeUrl), jsonFile);
+			downloadToFile(forgeUrl, jsonFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,

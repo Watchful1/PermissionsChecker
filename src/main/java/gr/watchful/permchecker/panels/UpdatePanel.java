@@ -138,7 +138,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		if (downloadServer) {
 			tempZip.delete();
 			try {
-				FileUtils.downloadToFile(new URL(Globals.serverBaseUrl), tempZip);
+				FileUtils.downloadToFile(Globals.serverBaseUrl, tempZip);
 				Globals.getInstance().preferences.serverFilesCommitSHA = commitSHA;
 				Globals.getInstance().savePreferences();
 			} catch (IOException e) {
@@ -162,7 +162,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		String finalUrl;
 		try {
 			String forgeUrl = Globals.forgeUniversalUrl.concat(FileUtils.getForgeUrlSlug(currentPack.ForgeVersion, currentPack.forgeType, currentPack.minecraftVersion));
-			finalUrl = FileUtils.downloadToFile(new URL(forgeUrl), forgeFile);
+			finalUrl = FileUtils.downloadToFile(forgeUrl, forgeFile);
 		} catch (Exception e) {
 			LOGGER.log(Level.WARNING, e.getMessage(), e);
 			LOGGER.severe("Could not download forge");
@@ -170,7 +170,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 		}
 		Matcher m = Pattern.compile("(?:/forge/).*?/").matcher(finalUrl);
 		if (!m.find()) {
-			LOGGER.severe("Could not parse forge url");
+			LOGGER.severe("Could not parse forge url: "+finalUrl);
 			return;
 		}
 		String forgeName = m.group(0);

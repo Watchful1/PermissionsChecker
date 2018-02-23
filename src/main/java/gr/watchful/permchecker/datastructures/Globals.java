@@ -145,7 +145,7 @@ public class Globals {
 		}
 
 		try {
-			FileUtils.downloadToFile(new URL(jsonUrl), file);
+			FileUtils.downloadToFile(jsonUrl, file);
 		} catch (IOException e) {
 			System.out.println("Could not download perm file");
 			return null;

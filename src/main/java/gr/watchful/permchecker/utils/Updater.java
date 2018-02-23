@@ -54,7 +54,7 @@ public class Updater {
 		File newJar = new File(parentFolder+File.separator+"NewPermChecker.jar");
 		LOGGER.info("new Jar: "+newJar.getAbsolutePath());
 		try {
-			FileUtils.downloadToFile(new URL(versionURL), newJar);
+			FileUtils.downloadToFile(versionURL, newJar);
 		} catch (IOException e) {
 			LOGGER.severe("Couldn't download update");
 			return false;
