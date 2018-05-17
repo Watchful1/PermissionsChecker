@@ -27,6 +27,7 @@ public class Globals {
 	public boolean changeFlag;
 	public boolean oldVersionsFlag;
 	public ArrayList<String> filesToReplaceServer;
+	public ArrayList<String> filesToDeleteServer;
 	public ArrayList<String> filesToReplaceClient;
 
 	public static final String permUrl = "https://onedrive.live.com/download?resid=96628E67B4C51B81!161&ithint=" +
@@ -38,7 +39,7 @@ public class Globals {
 	public static final int metaVersion = 1;
 	public static final String curseFileName = "curseKeys.json";
 	public static final String curseProjectRoot = "http://minecraft.curseforge.com/modpacks/";
-	public static final String version = "1.3.5";
+	public static final String version = "1.3.6";
 	public static final String latestReleaseUrl = "https://api.github.com/repos/Watchful1/PermissionsChecker/releases/latest";
 	public static final String serverCommitsUrl = "https://api.github.com/repos/FeedTheBeast/FTBServerBase/commits";
 	public static final String serverBaseUrl = "https://github.com/FeedTheBeast/FTBServerBase/archive/master.zip";
@@ -53,6 +54,10 @@ public class Globals {
 		filesToReplaceServer.add("settings.bat");
 		filesToReplaceServer.add("settings.sh");
 		filesToReplaceServer.add("version.json");
+
+		filesToDeleteServer = new ArrayList<>();
+		filesToDeleteServer.add("animation");
+		filesToDeleteServer.add("resources");
 
 		filesToReplaceClient = new ArrayList<>();
 		filesToReplaceClient.add("config/Mercurious.cfg");

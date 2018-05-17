@@ -202,6 +202,15 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 			FileUtils.writeFile(content, replaceFile);
 		}
 
+		for (String file : Globals.getInstance().filesToDeleteServer) {
+			File replaceFile = new File(serverFolder, file);
+			if (!replaceFile.exists()) {
+				LOGGER.warning("File not found, skipping deletion: "+file);
+				continue;
+			}
+			FileUtils.delete(replaceFile);
+		}
+
 		try {
 			Desktop.getDesktop().open(serverFolder);
 		} catch (IOException e) {
