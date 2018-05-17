@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -141,7 +142,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
 				FileUtils.downloadToFile(Globals.serverBaseUrl, tempZip);
 				Globals.getInstance().preferences.serverFilesCommitSHA = commitSHA;
 				Globals.getInstance().savePreferences();
-			} catch (IOException e) {
+			} catch (IOException | URISyntaxException e) {
 				LOGGER.log(Level.WARNING, e.getMessage(), e);
 				LOGGER.severe("Could not download server base");
 				return;

@@ -7,6 +7,7 @@ import gr.watchful.permchecker.utils.OsTypes;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -151,7 +152,7 @@ public class Globals {
 
 		try {
 			FileUtils.downloadToFile(jsonUrl, file);
-		} catch (IOException e) {
+		} catch (IOException | URISyntaxException e) {
 			System.out.println("Could not download perm file");
 			return null;
 		}

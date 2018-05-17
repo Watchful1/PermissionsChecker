@@ -344,10 +344,11 @@ public class FileUtils {
 		return bldr.toString();
 	}
 
-	public static String downloadToFile(String url, File file) throws IOException {
+	public static String downloadToFile(String url, File file) throws IOException, URISyntaxException {
 		file.getParentFile().mkdirs();
 		HttpURLConnection conn;
 		URL resourceUrl, base, next;
+		URI uri;
 		String location;
 		while (true)
 		{
@@ -367,7 +368,8 @@ public class FileUtils {
 					location = URLDecoder.decode(location, "UTF-8");
 					base     = new URL(url);
 					next     = new URL(base, location);  // Deal with relative URLs
-					url      = next.toExternalForm();
+					uri      = new URI(next.getProtocol(), next.getUserInfo(), next.getHost(), next.getPort(), next.getPath(), next.getQuery(), next.getRef());
+					url      = uri.toASCIIString();
 					continue;
 			}
 
@@ -475,7 +477,7 @@ public class FileUtils {
 		try {
 			System.out.println("URL: "+forgeUrl);
 			downloadToFile(forgeUrl, jsonFile);
-		} catch (IOException e) {
+		} catch (IOException | URISyntaxException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(Globals.getInstance().mainFrame,
 					"Pack.json add failed.\nThis could mean the api is broken or down.\nAlternatively, the forge version doesn't exist.");

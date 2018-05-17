@@ -55,9 +55,9 @@ public class Updater {
 		LOGGER.info("new Jar: "+newJar.getAbsolutePath());
 		try {
 			FileUtils.downloadToFile(versionURL, newJar);
-		} catch (IOException e) {
+		} catch (IOException | URISyntaxException e) {
 			e.printStackTrace();
-			LOGGER.severe("Couldn't download update: "+versionURL);
+			LOGGER.severe("Couldn't download update: " + versionURL);
 			return false;
 		}
 
