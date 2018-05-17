@@ -56,6 +56,7 @@ public class Updater {
 		try {
 			FileUtils.downloadToFile(versionURL, newJar);
 		} catch (IOException e) {
+			e.printStackTrace();
 			LOGGER.severe("Couldn't download update: "+versionURL);
 			return false;
 		}
