@@ -1,16 +1,21 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '1.2.1'
+  id "com.github.johnrengelman.shadow" version "4.0.3"
 }
 
 apply plugin: 'java'
 apply plugin: 'application'
-apply plugin: 'com.github.johnrengelman.shadow'
+mainClassName = 'gr.watchful.permchecker.mainClass'
 
 project.ext {
-    mainClassName = 'gr.watchful.permchecker.mainClass'
+        mainClassName = 'gr.watchful.permchecker.mainClass'
+
+    mainClass = 'gr.watchful.permchecker.mainClass'
+    currentYear = '2019'
 }
 
-version = '1.2.2'
+
+
+version = '1.3.7'
 
 repositories {
     mavenCentral()
@@ -28,6 +33,13 @@ dependencies {
 
 jar {
     manifest {
+        attributes 'Main-Class': project.mainClass
         attributes 'Main-Class': 'gr.watchful.permchecker.mainClass'
     }
+}
+shadowJar.dependsOn(jar)
+
+shadowJar {
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
 }

@@ -33,18 +33,18 @@ public class Globals {
 
 	public static final String permUrl = "https://onedrive.live.com/download?resid=96628E67B4C51B81!161&ithint=" +
 			"file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
-	public static final String jsonUrl = "http://www.feed-the-beast.com/mods/json";
-	public static final String forgeUrl = "http://api.feed-the-beast.com/ss/api/GetForgePackJSON/";
-	public static final String ftbRepoUrl = "http://ftb.cursecdn.com/FTB2/";
+	public static final String jsonUrl = "https://api.feed-the-beast.com/ss/api/modpermissions/";
+	public static final String forgeUrl = "https://api.feed-the-beast.com/ss/api/GetForgePackJSON/";
+	public static final String ftbRepoUrl = "http://ftb.forgecdn.net/FTB2/";
 	public static final String[] modTypes = {"jar", "zip", "disabled", "litemod", "class"};
 	public static final int metaVersion = 1;
 	public static final String curseFileName = "curseKeys.json";
-	public static final String curseProjectRoot = "http://minecraft.curseforge.com/modpacks/";
-	public static final String version = "1.3.6";
+	public static final String curseProjectRoot = "https://minecraft.curseforge.com/modpacks/";
+	public static final String version = "1.3.7";
 	public static final String latestReleaseUrl = "https://api.github.com/repos/Watchful1/PermissionsChecker/releases/latest";
 	public static final String serverCommitsUrl = "https://api.github.com/repos/FeedTheBeast/FTBServerBase/commits";
 	public static final String serverBaseUrl = "https://github.com/FeedTheBeast/FTBServerBase/archive/master.zip";
-	public static final String forgeUniversalUrl = "http://api.feed-the-beast.com/ss/api/GetForgeJar/";
+	public static final String forgeUniversalUrl = "https://api.feed-the-beast.com/ss/api/GetForgeJar/";
 	public static final String[] serverMinecraftVersions = {"1.10.2","1.12","1.12.1","1.12.2"};
 
 	public Globals() {
