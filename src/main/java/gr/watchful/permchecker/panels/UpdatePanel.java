@@ -457,7 +457,7 @@ public class UpdatePanel extends JPanel implements ChangeListener, UsesPack {
             return;
         }
         File packExportFolder = new File(Globals.getInstance().preferences.exportFolder + File.separator +
-                "privatepacks" + File.separator + pack.shortName + File.separator +
+                "modpacks" + File.separator + pack.shortName + File.separator +
                 versionSelector.getSelectedItem().toString().replaceAll("\\.", "_"));
         if (!FileUtils.zipFolderTo(Globals.getInstance().preferences.workingFolder,
                 new File(packExportFolder + File.separator + pack.getZipName()))) {

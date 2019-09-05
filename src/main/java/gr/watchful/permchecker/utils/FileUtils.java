@@ -352,17 +352,18 @@ public class FileUtils {
 		while (true)
 		{
 			resourceUrl = new URL(url);
-			LOGGER.warning(url);
+			LOGGER.warning(url + " " + file.getAbsolutePath());
 			conn = (HttpURLConnection) resourceUrl.openConnection();
 
 			conn.setConnectTimeout(15000);
 			conn.setReadTimeout(15000);
 			conn.setInstanceFollowRedirects(false);
 			conn.setRequestProperty("User-Agent", "FTBPermissionsChecker");
-
+			LOGGER.warning("resp code " + conn.getResponseCode());
 			switch (conn.getResponseCode())
 			{
 				case HttpURLConnection.HTTP_MOVED_PERM:
+			    case HttpURLConnection.HTTP_SEE_OTHER:
 				case HttpURLConnection.HTTP_MOVED_TEMP:
 					location = conn.getHeaderField("Location");
 					location = URLDecoder.decode(location, "UTF-8");
@@ -370,6 +371,8 @@ public class FileUtils {
 					next     = new URL(base, location);  // Deal with relative URLs
 					uri      = new URI(next.getProtocol(), next.getUserInfo(), next.getHost(), next.getPort(), next.getPath(), next.getQuery(), next.getRef());
 					url      = uri.toASCIIString();
+					LOGGER.warning("url2" + location);
+
 					continue;
 			}
 
