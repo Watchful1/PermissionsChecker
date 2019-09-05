@@ -35,7 +35,7 @@ public class Globals {
 			"file%2c.xlsx&app=Excel&authkey=!APQ4QtFrBqa1HwM";
 	public static final String jsonUrl = "https://api.feed-the-beast.com/ss/api/modpermissions/";
 	public static final String forgeUrl = "https://api.feed-the-beast.com/ss/api/GetForgePackJSON/";
-	public static final String ftbRepoUrl = "http://ftb.forgecdn.net/FTB2/";
+	public static final String ftbRepoUrl = "https://ftb.forgecdn.net/FTB2/";
 	public static final String[] modTypes = {"jar", "zip", "disabled", "litemod", "class"};
 	public static final int metaVersion = 1;
 	public static final String curseFileName = "curseKeys.json";
@@ -116,6 +116,7 @@ public class Globals {
 			return;
 		}
 		File prefFile = new File(appStore + File.separator + "preferences.conf");
+		System.out.println(prefFile.getAbsolutePath());
 		if (prefFile.exists()) {
 			preferences = (Preferences) FileUtils.readObject(new File(appStore +
 					File.separator + "preferences.conf"), new Preferences(appStore));
@@ -129,8 +130,7 @@ public class Globals {
 	public boolean updateListings() {
 		jsonFile = new File(appStore.getPath() + File.separator + "Permissions.json");
 		jsonCacheFile = new File(appStore.getPath() + File.separator + "PermissionsCache.json");
-
-		ModInfo[] modInfos = loadListingsFromSite(jsonFile);
+		ModInfo[] modInfos = null;//loadListingsFromSite(jsonFile);
 		if (modInfos == null) modInfos = loadListingsFromCache(jsonCacheFile);
 		if (modInfos == null) return false;
 		nameRegistry.loadMappings(modInfos, "https://dl.dropboxusercontent.com/u/27836116/FTBPermissionsImages/", "png");

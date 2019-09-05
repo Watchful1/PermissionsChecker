@@ -6,7 +6,6 @@ import gr.watchful.permchecker.listenerevent.NamedSelectionEvent;
 import gr.watchful.permchecker.logging.MyLogger;
 import gr.watchful.permchecker.panels.ModPacksPanel;
 import gr.watchful.permchecker.panels.NamedScrollingListPanel;
-import gr.watchful.permchecker.panels.PermissionsPanel;
 import gr.watchful.permchecker.panels.UpdatePanel;
 import gr.watchful.permchecker.utils.FileUtils;
 import gr.watchful.permchecker.utils.OsTypes;
@@ -32,7 +31,6 @@ public class mainClass extends JFrame implements ListsPacks {
 	private JTabbedPane tabbedPane;
 	private ModPacksPanel modPacksPanel;
 	private UpdatePanel updatePanel;
-	private PermissionsPanel permissionsPanel;
 	public SortedListModel<ModPack> modPacksModel;
 	public NamedScrollingListPanel<ModPack> modPacksList;
 	private ModPack oldSelection;
@@ -65,9 +63,6 @@ public class mainClass extends JFrame implements ListsPacks {
 		Globals.getInstance().addListener(modPacksPanel);
 		updatePanel = new UpdatePanel();
 		Globals.getInstance().addListener(updatePanel);
-		permissionsPanel = new PermissionsPanel();
-		Globals.getInstance().addListener(permissionsPanel);
-		updatePanel.permPanel = permissionsPanel;
 
 		modPacksList.addListener(new NamedScrollingListPanelListener() {
 			@Override
@@ -87,7 +82,6 @@ public class mainClass extends JFrame implements ListsPacks {
 
 		tabbedPane.add("Info", modPacksPanel);
 		tabbedPane.add("Update", updatePanel);
-		tabbedPane.add("Permissions", permissionsPanel);
 
 		this.add(tabbedPane);
 
@@ -96,15 +90,6 @@ public class mainClass extends JFrame implements ListsPacks {
 		JMenu menu = new JMenu("Temp"); // with the submenus
 		menuBar.add(menu);
 
-		JMenuItem updatePerms = new JMenuItem("Update Permissions");
-		updatePerms.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				Globals.getInstance().updateListings();
-				permissionsPanel.invalidateContents();
-			}
-		});
-		menu.add(updatePerms);
 
 		JMenuItem newPack = new JMenuItem("Add pack");
 		newPack.addActionListener(new ActionListener() {

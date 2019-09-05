@@ -19,7 +19,6 @@ public class Preferences {
 	public ArrayList<String> minecraftVersions;
 	public String defaultMinecraftVersion;
 	public boolean copyImportAssets;
-	public ArrayList<String> listedPackTypes;
 	public String serverFilesCommitSHA;
 
 	public Preferences(File appStore) {
@@ -40,6 +39,8 @@ public class Preferences {
 
 		if(minecraftVersions == null) {
 			minecraftVersions = new ArrayList<>();
+			minecraftVersions.add("1.14.4");
+			minecraftVersions.add("1.12.2");
 			minecraftVersions.add("1.11");
 			minecraftVersions.add("1.10.2");
 			minecraftVersions.add("1.10");
@@ -49,12 +50,6 @@ public class Preferences {
 			minecraftVersions.add("1.7.10");
 		}
 		if(defaultMinecraftVersion == null || defaultMinecraftVersion.equals("")) defaultMinecraftVersion = "1.7.10";
-		if(listedPackTypes == null) {
-			listedPackTypes = new ArrayList<>();
-			listedPackTypes.add("");
-			listedPackTypes.add("thirdparty");
-			listedPackTypes.add("modpacks");
-		}
 	}
 
 	public File getWorkingMinecraftFolder() {

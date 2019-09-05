@@ -14,17 +14,13 @@ import java.io.File;
 @SuppressWarnings("serial")
 public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 	private LabelField nameField;
-	private LabelField authorField;
 	private LabelField shortNameField;
 	private LabelField keyField;
 	private HTMLField descriptionField;
 	private DropdownSelector minecraftVersionSelector;
 	private VersionEditor versionEditor;
 	private ForgeEditor forgeEditor;
-	private PublicField publicField;
 	private LabelField curseField;
-	private CheckboxField java8Required;
-	private DropdownSelector listedPackTypeSelector;
 
 	private ModPack oldPack;
 
@@ -39,8 +35,6 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 
 		nameField = new LabelField("Name", this);
 		this.add(nameField);
-		authorField = new LabelField("Author", this);
-		this.add(authorField);
 		shortNameField = new LabelField("ShortName");
 		shortNameField.lock("This is autocomputed, changing it breaks lots of stuff");
 		this.add(shortNameField);
@@ -69,15 +63,8 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		horizHolderPublicJava.setAlignmentX(0);
 		horizHolderPublicJava.setLayout(new BoxLayout(horizHolderPublicJava, BoxLayout.X_AXIS));
 		horizHolderPublicJava.add(Box.createRigidArea(new Dimension(90, 1)));
-		publicField = new PublicField(this);
-		horizHolderPublicJava.add(publicField);
 		horizHolderPublicJava.add(Box.createRigidArea(new Dimension(60, 1)));
-		java8Required = new CheckboxField("Java 8 required", this);
-		horizHolderPublicJava.add(java8Required);
 		horizHolderPublicJava.add(Box.createRigidArea(new Dimension(60, 1)));
-		listedPackTypeSelector = new DropdownSelector("Listed Type", this);
-		listedPackTypeSelector.setSelections(Globals.getInstance().preferences.listedPackTypes);
-		horizHolderPublicJava.add(listedPackTypeSelector);
 		this.add(horizHolderPublicJava);
 	}
 	
@@ -121,14 +108,15 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		}
 
 		pack.name = nameField.getText();
-		pack.author = authorField.getText();
+		if (pack.author == null || pack.author.length() < 1) {
+		pack.author = "The FTB Team";
+		}
 		pack.shortName = shortNameField.getText(); // TODO detect changes here
 		pack.key = keyField.getText(); // TODO detect changes here
 		pack.description = descriptionField.getText();
 		pack.minecraftVersion = minecraftVersionSelector.getSelection();
 		pack.metaVersions = versionEditor.getVersions();
 		pack.recommendedVersion = versionEditor.getRecommendedVersion();
-		pack.forgeType = forgeEditor.getForgeType();
 		pack.ForgeVersion = forgeEditor.getForgeVersion();
 		/*pack.icon = iconSelector.getFile();
 		pack.splash = splashSelector.getFile();
@@ -142,19 +130,14 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 
 	public void setPack(ModPack pack) {
 		nameField.setText(pack.name);
-		authorField.setText(pack.author);
 		shortNameField.setText(pack.shortName);
 		keyField.setText(pack.key);
 		descriptionField.setText(pack.description);
 		minecraftVersionSelector.setSelection(pack.minecraftVersion);
 		versionEditor.setVersions(pack.metaVersions);
 		versionEditor.setRecommendedVersion(pack.recommendedVersion);
-		forgeEditor.setForgeType(pack.forgeType);
 		forgeEditor.setForgeVersion(pack.ForgeVersion);
-		publicField.setPublic(pack.isPublic);
 		curseField.setText(pack.curseID);
-		java8Required.setChecked(pack.java8required);
-		listedPackTypeSelector.setSelection(pack.listedPackType);
 	}
 
 	@Override
@@ -183,8 +166,6 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 		if(e.getSource().equals(nameField)) {
 			Globals.getModPack().name = nameField.getText();
 			Globals.getInstance().listsPacks.nameChanged();
-		} else if(e.getSource().equals(authorField)) {
-			Globals.getModPack().author = authorField.getText();
 		} else if(e.getSource().equals(keyField)) {
 			if(checkValidKey(keyField.getText()) == null) {
 				keyField.setText(Globals.getModPack().key);
@@ -200,7 +181,6 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 			Globals.getModPack().metaVersions = versionEditor.getVersions();
 			Globals.getModPack().recommendedVersion = versionEditor.getRecommendedVersion();
 		} else if(e.getSource().equals(forgeEditor)) {
-			Globals.getModPack().forgeType = forgeEditor.getForgeType();
 			Globals.getModPack().ForgeVersion = forgeEditor.getForgeVersion();
 		} else if(e.getSource().equals(curseField)) {
 			if(curseField.getText() != null && !curseField.getText().equals("")) {
@@ -212,12 +192,6 @@ public class ModPacksPanel extends JPanel implements UsesPack, ChangeListener {
 				curseField.setText(result);
 			}
 			Globals.getModPack().curseID = curseField.getText();
-		} else if(e.getSource().equals(publicField)) {
-			Globals.getModPack().isPublic = publicField.isPublic();
-		} else if(e.getSource().equals(java8Required)) {
-			Globals.getModPack().java8required = java8Required.isChecked();
-		} else if(e.getSource().equals(listedPackTypeSelector)) {
-			Globals.getModPack().listedPackType = listedPackTypeSelector.getSelection();
 		} else {
 			changed = false;
 		}

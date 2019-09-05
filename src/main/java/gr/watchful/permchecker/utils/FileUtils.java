@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import gr.watchful.permchecker.datastructures.ForgeType;
 import gr.watchful.permchecker.datastructures.Globals;
 import gr.watchful.permchecker.datastructures.ModPack;
 import gr.watchful.permchecker.datastructures.ModPackVersion;
@@ -353,6 +352,7 @@ public class FileUtils {
 		while (true)
 		{
 			resourceUrl = new URL(url);
+			LOGGER.warning(url);
 			conn = (HttpURLConnection) resourceUrl.openConnection();
 
 			conn.setConnectTimeout(15000);
@@ -453,26 +453,22 @@ public class FileUtils {
 		return getObject(readFile(file), object);
 	}
 
-	public static boolean addForge(File minecraftFolder, ForgeType forgeType, String mcVersion) {
-		return addForge(minecraftFolder, 0, forgeType, mcVersion);
+	public static boolean addForge(File minecraftFolder, String mcVersion) {
+		return addForge(minecraftFolder, 0, mcVersion);
 	}
 
 	public static boolean addForge(File minecraftFolder, int forgeVersion) {
-		return addForge(minecraftFolder, forgeVersion, ForgeType.VERSION, "");
+		return addForge(minecraftFolder, forgeVersion, "");
 	}
 
-	public static String getForgeUrlSlug(int forgeVersion, ForgeType forgeType, String mcVersion) {
+	public static String getForgeUrlSlug(int forgeVersion, String mcVersion) {
 		String forgeUrl = "";
-		if(forgeType.equals(ForgeType.RECOMMENDED) || forgeType.equals(ForgeType.LATEST)) {
-			if (mcVersion != null && !mcVersion.equals("")) forgeUrl = forgeUrl.concat(mcVersion).concat("-");
-			if (forgeType.equals(ForgeType.RECOMMENDED)) forgeUrl = forgeUrl.concat("recommended");
-			else forgeUrl = forgeUrl.concat("latest");
-		} else forgeUrl = forgeUrl.concat(Integer.toString(forgeVersion));
+		forgeUrl = forgeUrl.concat(Integer.toString(forgeVersion));
 		return forgeUrl;
 	}
 
-	private static boolean addForge(File minecraftFolder, int forgeVersion, ForgeType forgeType, String mcVersion) {
-		String forgeUrl = Globals.forgeUrl.concat(getForgeUrlSlug(forgeVersion, forgeType, mcVersion));
+	private static boolean addForge(File minecraftFolder, int forgeVersion, String mcVersion) {
+		String forgeUrl = Globals.forgeUrl.concat(getForgeUrlSlug(forgeVersion, mcVersion));
 		File jsonFile = new File(minecraftFolder+File.separator+"pack.json");
 		try {
 			System.out.println("URL: "+forgeUrl);

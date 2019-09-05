@@ -1,7 +1,5 @@
 package gr.watchful.permchecker.panels;
 
-import gr.watchful.permchecker.datastructures.ForgeType;
-
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -16,9 +14,6 @@ public class ForgeEditor extends JPanel implements ActionListener {
 	private JTextField forgeVersionEditor;
 	private ChangeListener changeListener;
 	private int oldVersion;
-	private ForgeType oldType;
-	private JRadioButton recommendedButton;
-	private JRadioButton latestButton;
 	private ButtonGroup buttonGroup;
 
 	public ForgeEditor(String name) {
@@ -28,7 +23,6 @@ public class ForgeEditor extends JPanel implements ActionListener {
 	public ForgeEditor(String name, ChangeListener changeListener) {
 		this.changeListener = changeListener;
 		oldVersion = -1;
-		oldType = ForgeType.RECOMMENDED;
 
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setAlignmentX(0);
@@ -40,19 +34,6 @@ public class ForgeEditor extends JPanel implements ActionListener {
 		this.add(label);
 
 		this.add(Box.createHorizontalGlue());
-
-		buttonGroup = new ButtonGroup();
-		this.add(new JLabel("Recommended"));
-		recommendedButton = new JRadioButton();
-		recommendedButton.addActionListener(this);
-		buttonGroup.add(recommendedButton);
-		this.add(recommendedButton);
-
-		this.add(new JLabel("  Latest"));
-		latestButton = new JRadioButton();
-		latestButton.addActionListener(this);
-		buttonGroup.add(latestButton);
-		this.add(latestButton);
 
 		this.add(new JLabel("  Version"));
 		forgeVersionEditor = new JTextField();
@@ -67,8 +48,6 @@ public class ForgeEditor extends JPanel implements ActionListener {
 			@Override
 			public void focusLost(FocusEvent e) {
 				if(oldVersion == getForgeVersion()) return;
-				if(getForgeVersion() == -1) setForgeType(ForgeType.RECOMMENDED);
-				else setForgeType(ForgeType.VERSION);
 				oldVersion = getForgeVersion();
 				notifyChanged();
 			}
@@ -76,22 +55,6 @@ public class ForgeEditor extends JPanel implements ActionListener {
 		this.add(forgeVersionEditor);
 	}
 
-	public void setForgeType(ForgeType forgeType) {
-		oldType = forgeType;
-		if(forgeType.equals(ForgeType.RECOMMENDED)) {
-			setForgeVersion(-1);
-			latestButton.setSelected(false);
-
-			recommendedButton.setSelected(true);
-		} else if(forgeType.equals(ForgeType.LATEST)) {
-			setForgeVersion(-1);
-			recommendedButton.setSelected(false);
-
-			latestButton.setSelected(true);
-		} else {
-			buttonGroup.clearSelection();
-		}
-	}
 
 	public void setForgeVersion(int forgeVersion) {
 		oldVersion = forgeVersion;
@@ -102,16 +65,6 @@ public class ForgeEditor extends JPanel implements ActionListener {
 		}
 	}
 
-	public ForgeType getForgeType() {
-		if(recommendedButton.isSelected()) {
-			return ForgeType.RECOMMENDED;
-		} else if(latestButton.isSelected()) {
-			return ForgeType.LATEST;
-		} else if(getForgeVersion() != -1) {
-			return ForgeType.VERSION;
-		}
-		return null; //shouldn't happen
-	}
 
 	public int getForgeVersion() {
 		if(forgeVersionEditor.getText().equals("")) return -1;
@@ -132,9 +85,6 @@ public class ForgeEditor extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(oldType.equals(getForgeType())) return;
-		oldType = getForgeType();
-		setForgeVersion(-1);
 		notifyChanged();
 	}
 }

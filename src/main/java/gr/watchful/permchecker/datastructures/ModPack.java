@@ -22,7 +22,6 @@ public class ModPack {
 	public ArrayList<String> versions;//legacy
 	public ArrayList<String> mods;
 	public ArrayList<String> unknownModIDs;
-	public ForgeType forgeType;
 	public int ForgeVersion;
 	public boolean isPublic;
 
@@ -47,7 +46,6 @@ public class ModPack {
 	public transient File storageLocation;
 	public int metaVersion;
 	public boolean java8required;
-	public String listedPackType;
 
 	public HashMap<String, String> shortNameMappings;
 	public HashMap<String, ModInfo> modInfoMappings;
@@ -60,7 +58,7 @@ public class ModPack {
 
 	public void init() {
 		if(name == null || name.equals("")) name = "Unnamed";
-		if(author == null || author.equals("")) author = "none";
+		if(author == null || author.equals("")) author = "The FTB Team";
 		if(shortName == null) shortName = "";
 		if(curseID == null) curseID = "";
 		if(key == null || key.equals("")) key = generateKey();
@@ -73,10 +71,8 @@ public class ModPack {
 			minecraftVersion = Globals.getInstance().preferences.defaultMinecraftVersion;
 		if(mods == null) mods = new ArrayList<>();
 		if(unknownModIDs == null) unknownModIDs = new ArrayList<>();
-		if(forgeType == null) forgeType = ForgeType.RECOMMENDED;
 		if(shortNameMappings == null) shortNameMappings = new HashMap<>();
 		if(modInfoMappings == null) modInfoMappings = new HashMap<>();
-		if(listedPackType == null) listedPackType = "";
 		ArrayList<String> badNames = new ArrayList<>();
 
 		for(ModInfo modInfo : modInfoMappings.values()) {
